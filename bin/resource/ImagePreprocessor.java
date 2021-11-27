@@ -1,0 +1,135 @@
+package bin.resource;
+
+import java.awt.image.RescaleOp;
+import java.awt.image.BufferedImage;
+
+public class ImagePreprocessor {
+  public static BufferedImage wrapPoles(BufferedImage originalImage) {
+    // for (int i = 0; i < originalImage.getHeight(); i++) {
+    //   int circleWidth = originalImage.getHeight() - (int) Math.sqrt(Math.pow(originalImage.getHeight() / 2f, 2) - Math.pow(i - originalImage.getHeight() / 2f, 2));
+    //   float circleRatio = (originalImage.getWidth() + 2f * circleWidth) / (float) originalImage.getWidth();
+    //   for (int j = 0; j < originalImage.getWidth(); j++) {
+    //     int color = originalImage.getRGB((int)(j / circleRatio + circleWidth / 2), i);
+    //     newImage.setRGB(j, i, color);
+    //   }
+    // }
+    // return newImage;
+    BufferedImage newImage = new BufferedImage(originalImage.getWidth() * 3 / 2, originalImage.getHeight(), originalImage.getType());
+    for (int i = 0; i < originalImage.getWidth() * 3 / 4; i++) {
+      for (int j = 0; j < originalImage.getHeight(); j++) {
+        int color = originalImage.getRGB(i, j);
+        newImage.setRGB(i, j, color);
+        newImage.setRGB(i + originalImage.getWidth() * 3 / 4, j, color);
+      }
+    }
+
+    for (int i = 0; i < originalImage.getWidth() / 4; i++) {
+      float blend = 1 - Math.abs(i - originalImage.getWidth() / 8f) / (originalImage.getWidth() / 8f);
+      for (int j = 0; j < originalImage.getHeight(); j++) {
+
+        int oldColor;
+        int newColor;
+
+        if (i < originalImage.getWidth() / 8) {
+          oldColor = originalImage.getRGB(i + originalImage.getWidth() * 3 / 4, j);
+          newColor = newImage.getRGB(i + originalImage.getWidth() * 11 / 8, j);
+          newImage.setRGB(i + originalImage.getWidth() * 11 / 8, j, mixColors(oldColor, newColor, blend));
+        }
+
+        oldColor = originalImage.getRGB(i + originalImage.getWidth() * 3 / 4, j);
+        newColor = newImage.getRGB(i + originalImage.getWidth() * 5 / 8, j);
+        newImage.setRGB(i + originalImage.getWidth() * 5 / 8, j, mixColors(oldColor, newColor, blend));
+
+        if (i >= originalImage.getWidth() / 8) {
+          oldColor = originalImage.getRGB(i + originalImage.getWidth() * 3 / 4, j);
+          newColor = newImage.getRGB(i - originalImage.getWidth() / 8, j);
+          newImage.setRGB(i - originalImage.getWidth() / 8, j, mixColors(oldColor, newColor, blend));
+        }
+      }
+    }
+    return newImage;
+  }
+
+  private static int mixColors(int color1, int color2, float mixRatio) {
+    int red = (int) (mixRatio * (float) ((color1 >> 16) & 255) + (1 - mixRatio) * (float) ((color2 >> 16) & 255));
+    int green = (int) (mixRatio * (float) ((color1 >> 8) & 255) + (1 - mixRatio) * (float) ((color2 >> 8) & 255));
+    int blue = (int) (mixRatio * (float) (color1 & 255) + (1 - mixRatio) * (float) (color2 & 255));
+    return ((red & 255) << 16) + ((green & 255) << 8) + (blue & 255);
+  }
+
+  private static float colorStrength(int color) {
+    int red = (color >> 16) & 255;
+    int green = (color >> 8) & 255;
+    int blue = color & 255;
+    return (red + green + blue) / (255f * 3f);
+  }
+
+  private static int strengthToColor(float strength) {
+    return 0x010101 * (int)(strength * 255);
+  }
+
+  public static BufferedImage mask(BufferedImage originalImage, float threshold) {
+    BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    for (int i = 0; i < originalImage.getWidth(); i++) {
+      for (int j = 0; j < originalImage.getHeight(); j++) {
+        int color = originalImage.getRGB(i, j);
+        if (colorStrength(color) < threshold) {
+          newImage.setRGB(i, j, 0);
+        } else {
+          newImage.setRGB(i, j, color);
+        }
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage flatMask(BufferedImage originalImage, float threshold) {
+    BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    for (int i = 0; i < originalImage.getWidth(); i++) {
+      for (int j = 0; j < originalImage.getHeight(); j++) {
+        int color = originalImage.getRGB(i, j);
+        if (colorStrength(color) < threshold) {
+          newImage.setRGB(i, j, 0);
+        } else {
+          newImage.setRGB(i, j, 0xffffffff);
+        }
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage combineImagesMult(BufferedImage image1, BufferedImage image2, float scale) {
+    if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+      System.out.println("incompatable images");
+      return null;
+    }
+    BufferedImage newImage = new BufferedImage(image1.getWidth(), image1.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image1.getWidth(); i++) {
+      for (int j = 0; j < image1.getHeight(); j++) {
+        int color1 = image1.getRGB(i, j);
+        int color2 = image2.getRGB(i, j);
+        newImage.setRGB(i, j, strengthToColor(colorStrength(color1) * colorStrength(color2) * scale));
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage adjustContrast(BufferedImage image, float scale, float offset){
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    RescaleOp rescaleOp = new RescaleOp(scale, offset, null);
+    rescaleOp.filter(image, newImage);
+    return newImage;
+  }
+
+  public static BufferedImage invert(BufferedImage image) {
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        newImage.setRGB(i, j, strengthToColor(1f-colorStrength(color1)));
+      }
+    }
+    return newImage;
+  }
+
+}
