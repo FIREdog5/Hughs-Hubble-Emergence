@@ -1,5 +1,8 @@
 package bin.resource;
 
+import bin.resource.proceduralGeneration.*;
+import bin.resource.proceduralGeneration.modifiers.*;
+
 public class ImageResources{
   //tests
   public static ImageResource error = null;
@@ -37,7 +40,7 @@ public class ImageResources{
     capTest = new NoiseMaskedFlatResource("/assets/images/tests/capTest.png",.1f , 1, 1000);
     cloudTest2 = new NoiseMaskedFlatResource("/assets/images/tests/cloudTest2.png",.4f , 1, 800);
     //TODO: make contrast its own thing lol
-    generationTest = new NoiseMaskedResource(ImagePreprocessor.adjustContrast(
+    generationTest = new PolarResource(ImagePreprocessor.adjustContrast(
       ImagePreprocessor.combineImagesMult(
         ImagePreprocessor.adjustContrast(
           ImageGenerator.OpenSimpleNoiseTexture(1L, 70d, 2400, 800),
@@ -47,12 +50,19 @@ public class ImageResources{
           ImagePreprocessor.invert(
             ImageGenerator.OpenSimpleNoiseTexture(1L, 20d, 2400, 800)),
               1.3f,
-              70f),
-          1f),
-        1.6f, -100f),
-        .3f,
-        1,
-        1000);
+              70f)),
+        1.6f, -100f));
+
+    CompoundImage baseImage = new CompoundImage();
+    baseImage.addStep(new ImageCreateModifier(1L, 70d));
+    baseImage.addStep(new ImageContrastModifier(1.9d, -130d));
+    SimpleImage secondImage = new SimpleImage();
+    secondImage.addStep(new ImageCreateModifier(1L, 20d));
+    secondImage.addStep(new ImageInvertModifier());
+    secondImage.addStep(new ImageContrastModifier(1.3d, 70d));
+    baseImage.addStep(new ImageMultModifier(secondImage));
+    baseImage.addStep(new ImageContrastModifier(1.6d, -100d));
+    generationTest = new PolarResource(baseImage.resolve(2400, 800));
 
 
     //resources

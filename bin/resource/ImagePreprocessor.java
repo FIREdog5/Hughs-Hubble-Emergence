@@ -68,6 +68,16 @@ public class ImagePreprocessor {
     return 0x010101 * (int)(strength * 255);
   }
 
+  private static int clampColor(int color) {
+    int red = (color >> 16) & 255;
+    int green = (color >> 8) & 255;
+    int blue = color & 255;
+    red = Math.min(255, Math.max(0, red)) << 16;
+    green = Math.min(255, Math.max(0, green)) << 8;
+    blue = Math.min(255, Math.max(0, blue));
+    return (red + green + blue);
+  }
+
   public static BufferedImage mask(BufferedImage originalImage, float threshold) {
     BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
     for (int i = 0; i < originalImage.getWidth(); i++) {
@@ -98,7 +108,7 @@ public class ImagePreprocessor {
     return newImage;
   }
 
-  public static BufferedImage combineImagesMult(BufferedImage image1, BufferedImage image2, float scale) {
+  public static BufferedImage combineImagesMult(BufferedImage image1, BufferedImage image2) {
     if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
       System.out.println("incompatable images");
       return null;
@@ -108,7 +118,39 @@ public class ImagePreprocessor {
       for (int j = 0; j < image1.getHeight(); j++) {
         int color1 = image1.getRGB(i, j);
         int color2 = image2.getRGB(i, j);
-        newImage.setRGB(i, j, strengthToColor(colorStrength(color1) * colorStrength(color2) * scale));
+        newImage.setRGB(i, j, clampColor(strengthToColor(colorStrength(color1) * colorStrength(color2))));
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage combineImagesAdd(BufferedImage image1, BufferedImage image2) {
+    if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+      System.out.println("incompatable images");
+      return null;
+    }
+    BufferedImage newImage = new BufferedImage(image1.getWidth(), image1.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image1.getWidth(); i++) {
+      for (int j = 0; j < image1.getHeight(); j++) {
+        int color1 = image1.getRGB(i, j);
+        int color2 = image2.getRGB(i, j);
+        newImage.setRGB(i, j, clampColor(strengthToColor(colorStrength(color1) + colorStrength(color2))));
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage combineImagesSubtract(BufferedImage image1, BufferedImage image2) {
+    if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+      System.out.println("incompatable images");
+      return null;
+    }
+    BufferedImage newImage = new BufferedImage(image1.getWidth(), image1.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image1.getWidth(); i++) {
+      for (int j = 0; j < image1.getHeight(); j++) {
+        int color1 = image1.getRGB(i, j);
+        int color2 = image2.getRGB(i, j);
+        newImage.setRGB(i, j, clampColor(strengthToColor(colorStrength(color1) - colorStrength(color2))));
       }
     }
     return newImage;
@@ -126,7 +168,7 @@ public class ImagePreprocessor {
     for (int i = 0; i < image.getWidth(); i++) {
       for (int j = 0; j < image.getHeight(); j++) {
         int color1 = image.getRGB(i, j);
-        newImage.setRGB(i, j, strengthToColor(1f-colorStrength(color1)));
+        newImage.setRGB(i, j, clampColor(strengthToColor(1f-colorStrength(color1))));
       }
     }
     return newImage;
