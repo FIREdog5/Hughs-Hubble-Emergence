@@ -36,6 +36,6 @@ run:
 				java -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" -D"java.library.path"="/natives" bin/ClientMain.java $(JAVA_ARGS)
 
 help:
-				@echo "here are the valid make targets:"
+				@echo here are the valid make targets:
 				@powershell 'cat makefile | Select-String -Pattern "##" | Select-String -NotMatch -Pattern "fgrep|Select-String"'
 endif
