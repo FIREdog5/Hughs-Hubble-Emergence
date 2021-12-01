@@ -13,10 +13,8 @@ public class GameEventListener extends EventListener {
     GL2 gl = ClientMain.gl;
     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-    Graphics.drawColor(new Color("#ffffff"));
-    Graphics.drawImage(ImageResources.generationTest, 0, 0, 96, 32);
 
     Graphics.nextFrame();
-    // GameLoop.renderWorld();
+     GameLoop.renderWorld();
   }
 }
