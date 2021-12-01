@@ -30,12 +30,12 @@ classes:
 				javac -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" bin/ClientMain.java
 
 clean:
-				ls *.class -Recurse | foreach {rm $_}
+				dir *.class -Recurse | foreach {rm $_}
 
 run:
 				java -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" -D"java.library.path"="/natives" bin/ClientMain.java $(JAVA_ARGS)
 
 help:
 				@echo "here are the valid make targets:"
-				@cat makefile | Select-String -Pattern "##" | Select-String -NotMatch -Pattern "fgrep|Select-String"
+				@ cat makefile | Select-String -Pattern "##" | Select-String -NotMatch -Pattern "fgrep|Select-String"
 endif
