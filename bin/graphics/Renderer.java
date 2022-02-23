@@ -25,6 +25,7 @@ public class Renderer {
     caps.setNumSamples(5);
 
     window = GLWindow.create(caps);
+
     window.setSize(screenWidth, screenHeight);
     window.setResizable(false);
     window.setFullscreen(true);

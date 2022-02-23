@@ -20,6 +20,8 @@ public class ImageResources{
   public static ImageResource capTest = null;
   public static ImageResource cloudTest2 = null;
   public static ImageResource generationTest = null;
+  public static ImageResource terainShaderTest = null;
+  public static ImageResource biomeShaderTest = null;
 
   //resources
 
@@ -39,6 +41,8 @@ public class ImageResources{
     maskTest3 = new NoiseMaskedResource("/assets/images/tests/noiseTest.png",.65f , 1, 1000);
     capTest = new NoiseMaskedFlatResource("/assets/images/tests/capTest.png",.1f , 1, 1000);
     cloudTest2 = new NoiseMaskedFlatResource("/assets/images/tests/cloudTest2.png",.4f , 1, 800);
+    terainShaderTest = new ImageResource("/assets/images/tests/terainShader.png");
+    biomeShaderTest = new ImageResource("/assets/images/tests/biomeShaderTest.png");
     //TODO: make contrast its own thing lol
     generationTest = new PolarResource(ImagePreprocessor.adjustContrast(
       ImagePreprocessor.combineImagesMult(

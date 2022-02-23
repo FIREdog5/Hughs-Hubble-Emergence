@@ -72,6 +72,7 @@ public abstract class EventListener implements GLEventListener {
     gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
     gl.glClearColor(0,0,0,1);
     gl.glEnable(GL2.GL_TEXTURE_2D);
+    Shaders.init();
     ImageResources.init();
   }
 
