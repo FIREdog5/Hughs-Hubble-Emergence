@@ -13,6 +13,7 @@ public class GameEventListener extends EventListener {
     GL2 gl = ClientMain.gl;
     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
+<<<<<<< HEAD
     Shaders.terrainShader.startShader(gl);
 
     gl.glActiveTexture(GL2.GL_TEXTURE0+1);
@@ -29,8 +30,10 @@ public class GameEventListener extends EventListener {
 
     Graphics.drawImage(ImageResources.generationTest, 0, -16, 96, 32);
 
+=======
+>>>>>>> 8b0a433d5c7f00baf1497699ca50f9be7b797d9c
 
     Graphics.nextFrame();
-    // GameLoop.renderWorld();
+     GameLoop.renderWorld();
   }
 }
