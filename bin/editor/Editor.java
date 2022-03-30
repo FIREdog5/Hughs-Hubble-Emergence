@@ -27,6 +27,8 @@ public class Editor extends Thread{
     world.addWorldObject(new Planet(-20, -20, Palettes.earth1));
     world.addWorldObject(new Planet(20, -20, Palettes.earth1));
 
+    System.out.println(EditorUtils.openResource());
+
     while (this.running) {
       Renderer.render();
     }

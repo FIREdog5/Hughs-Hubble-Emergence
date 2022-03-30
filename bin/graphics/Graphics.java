@@ -181,12 +181,13 @@ public class Graphics{
     float rotBase = (frame % image.getFrameDelay()) / (float)image.getFrameDelay() * 0.5f;
     float rotTop = 0.25f;
 
-    //
+    // color flipping for debugging
     // int colorFlipper = 0;
-    //
+    // end color flipping for debugging
 
-    float increment = (float) Math.ceil(radius);
-    float jInc = .1f;
+    // decide how many increments are needed for this zoom
+    // 8 is magic number, enough for the little guys, not too much for the big guys... TODO make non-linear, its probably too much for the big guys
+    float increment = (float) Math.ceil(radius) * 8;
 
     float rotFrame = (float)(rotTop / (2f * radius));
 
@@ -197,48 +198,54 @@ public class Graphics{
     float uCoords[] = new float[4];
     float vCoords[] = new float[4];
 
-    for(float c = -radius; c < radius; c+= jInc) {
-      jInc = Math.max(((-1 * c * c / radius + radius) / 3), .1f);
-      if (c > radius) {
-        c = radius;
-      }
-      float j1 = c;
-      float j2 = Math.min(c + jInc, radius);
-      //
+    for(float c = 0f; c < increment; c+= 1) {
+      float theta1 = c/increment * (float)Math.PI;
+      float theta2 = (c+1f)/increment * (float)Math.PI;
+      float j1 = (float)(radius * Math.cos(theta1));
+      float j2 = (float)(radius * Math.cos(theta2));
+      // color flipping for debugging
       // colorFlipper++;
       // colorFlipper %= 2;
-      //
+      // end color flipping for debugging
       yCoords[0] = j1 + y;
       yCoords[1] = j1 + y;
       yCoords[2] = j2 + y;
       yCoords[3] = j2 + y;
-      float quadBase = frameBase + (float)(frameTop / (2 * radius)) * (float)(-j1 + radius);
-      float quadTop = frameBase + (float)(frameTop / (2 * radius)) * (float)(-j2 + radius);
+      float quadBase = frameBase + (float)((frameTop - frameBase) / increment) * c;
+      float quadTop = frameBase + (float)((frameTop - frameBase) / increment) * (c+1f);
 
       float i1Inc = (float)Math.sqrt(radius * radius - j1 * j1) / radius;
       float i2Inc = (float)Math.sqrt(radius * radius - (j2) * (j2)) / radius;
-      for(float i = -radius; i < radius - .001f; i+=radius / increment) {
-        //
+
+      float width1 = radius * (float)Math.sin(theta1);
+      float width2 = radius * (float)Math.sin(theta2);
+
+      for(float i = 0f; i < increment; i+=1) {
+        // color flipping for debugging
         // if(colorFlipper == 1){
         //   Graphics.drawColor(new Color("#ff0000"));
         // } else {
         //   Graphics.drawColor(new Color("#00ff00"));
         // }
-        // Graphics.drawColor(new Color("#ffffff"));
+        // // Graphics.drawColor(new Color("#ffffff"));
         // colorFlipper++;
         // colorFlipper %= 2;
-        //
-        float i1 = i * i1Inc;
-        float i2 = (i + radius / increment) * i1Inc;
-        float i3 = (i + radius / increment) * i2Inc;
-        float i4 = i * i2Inc;
-        xCoords[0] = i1 + x;
-        xCoords[1] = i2 + x;
-        xCoords[2] = i3 + x;
-        xCoords[3] = i4 + x;
+        // end color flipping for debugging
 
-        float quadLeft = rotBase + rotFrame * (float)(i + radius);
-        float quadRight = rotBase + rotFrame * (float)(i + radius / increment + radius);
+        float theta3 = i/increment * (float)Math.PI;
+        float theta4 = (i+1f)/increment * (float)Math.PI;
+        float i1 = -(float)(width1 * Math.cos(theta3));
+        float i2 = -(float)(width2 * Math.cos(theta3));
+        float i3 = -(float)(width1 * Math.cos(theta4));
+        float i4 = -(float)(width2 * Math.cos(theta4));
+
+        xCoords[0] = i1 + x;
+        xCoords[1] = i3 + x;
+        xCoords[2] = i4 + x;
+        xCoords[3] = i2 + x;
+
+        float quadLeft = rotBase + rotTop * (float)(i / increment);
+        float quadRight = rotBase + rotTop * (float)((i+1) / increment);
         uCoords[0] = quadLeft;
         uCoords[1] = quadRight;
         uCoords[2] = quadRight;
@@ -247,10 +254,12 @@ public class Graphics{
         vCoords[1] = quadBase;
         vCoords[2] = quadTop;
         vCoords[3] = quadTop;
-        gl.glTexCoord2f(uCoords[3], vCoords[3]);
-        gl.glVertex2f(xCoords[3], yCoords[3]);
-        gl.glTexCoord2f(uCoords[0], vCoords[0]);
-        gl.glVertex2f(xCoords[0], yCoords[0]);
+
+        //I think the first half of these are useless?
+        // gl.glTexCoord2f(uCoords[3], vCoords[3]);
+        // gl.glVertex2f(xCoords[3], yCoords[3]);
+        // gl.glTexCoord2f(uCoords[0], vCoords[0]);
+        // gl.glVertex2f(xCoords[0], yCoords[0]);
         gl.glTexCoord2f(uCoords[2], vCoords[2]);
         gl.glVertex2f(xCoords[2], yCoords[2]);
         gl.glTexCoord2f(uCoords[1], vCoords[1]);
@@ -261,8 +270,7 @@ public class Graphics{
       gl.glVertex2f(xCoords[2], yCoords[2]);
       gl.glTexCoord2f(uCoords[2], vCoords[2]);
 
-      float i4 = -radius * i2Inc;
-      xCoords[3] = i4 + x;
+      xCoords[3] = x - width2;
 
       gl.glVertex2f(xCoords[3], yCoords[3]);
       gl.glTexCoord2f(uCoords[3], vCoords[3]);

@@ -66,7 +66,7 @@ public class ImageResources{
     secondImage.addStep(new ImageContrastModifier(1.3d, 70d));
     baseImage.addStep(new ImageMultModifier(secondImage));
     baseImage.addStep(new ImageContrastModifier(1.6d, -100d));
-    generationTest = new PolarResource(baseImage.resolve(2400, 800));
+    generationTest = new PolarResource(baseImage.resolve(2400, 800), 1, 1000);
 
 
     //resources
