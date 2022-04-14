@@ -1,9 +1,12 @@
 package bin.world;
 
-import bin.graphics.Graphics;
 import bin.graphics.Color;
 import bin.resource.ImageResources;
 import bin.resource.palette.Palette;
+import bin.graphics.objects.GradientHalo;
+import bin.graphics.objects.Global;
+import bin.graphics.objects.Circle;
+import bin.graphics.objects.Globe;
 
 
 public class Planet implements IDrawable {
@@ -23,19 +26,19 @@ public class Planet implements IDrawable {
     return camera.getCameraRightBound() > this.x - this.size && camera.getCameraLeftBound() < this.x + this.size && camera.getCameraTopBound() > this.y - this.size && camera.getCameraBottomBound() < this.y + this.size;
   }
   public void render(Camera camera) {
-    Graphics.drawGradientHalo(camera.scaleToZoom(this.size + 2), camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y), this.palette.lowerAtmosphereColor, this.palette.upperAtmosphereColor);
-    Graphics.drawColor(this.palette.oceanColor);
-    Graphics.drawCircle(camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
-    Graphics.drawColor(this.palette.landColor);
-    Graphics.drawGlobe(ImageResources.maskTest, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
-    Graphics.drawColor(this.palette.mountainColor);
-    Graphics.drawGlobe(ImageResources.maskTest2, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
-    Graphics.drawColor(this.palette.snowColor);
-    Graphics.drawGlobe(ImageResources.maskTest3, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
-    Graphics.drawColor(this.palette.poleColor);
-    Graphics.drawGlobe(ImageResources.capTest, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
-    Graphics.drawColor(this.palette.cloudColor);
-    Graphics.drawGlobe(ImageResources.cloudTest2, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    GradientHalo.draw(camera.scaleToZoom(this.size + 2), camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y), this.palette.lowerAtmosphereColor, this.palette.upperAtmosphereColor);
+    Global.drawColor(this.palette.oceanColor);
+    Circle.draw(camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Global.drawColor(this.palette.landColor);
+    Globe.draw(ImageResources.maskTest, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Global.drawColor(this.palette.mountainColor);
+    Globe.draw(ImageResources.maskTest2, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Global.drawColor(this.palette.snowColor);
+    Globe.draw(ImageResources.maskTest3, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Global.drawColor(this.palette.poleColor);
+    Globe.draw(ImageResources.capTest, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Global.drawColor(this.palette.cloudColor);
+    Globe.draw(ImageResources.cloudTest2, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
     // System.out.println(camera.scaleToZoom(10));
     // System.out.println(camera.convertXToCamera(this.x));
     // System.out.println(camera.convertYToCamera(this.y));

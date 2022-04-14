@@ -3,6 +3,8 @@ package bin.graphics;
 import bin.ClientMain;
 import bin.engine.GameLoop;
 import bin.resource.ImageResources;
+import bin.graphics.objects.Global;
+import bin.graphics.objects.Image;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -21,15 +23,15 @@ public class GameEventListener extends EventListener {
     // gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
     // gl.glActiveTexture(GL2.GL_TEXTURE0);
     //
-    // Graphics.drawColor(new Color("#ffffff"));
-    // Graphics.drawImage(ImageResources.generationTest, 0, 16, 96, 32);
+    // Global.drawColor(new Color("#ffffff"));
+    // Image.draw(ImageResources.generationTest, 0, 16, 96, 32);
     //
     // Shaders.terrainShader.stopShader(gl);
     //
     //
-    // Graphics.drawImage(ImageResources.generationTest, 0, -16, 96, 32);
+    // Image.draw(ImageResources.generationTest, 0, -16, 96, 32);
 
-    Graphics.nextFrame();
+    Global.nextFrame();
     GameLoop.renderWorld();
   }
 }

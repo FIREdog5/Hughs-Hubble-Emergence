@@ -2,6 +2,7 @@ package bin.input;
 
 import bin.engine.GameLoop;
 import bin.editor.Editor;
+import bin.test.GraphicsTest;
 
 import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.event.MouseEvent;
@@ -20,6 +21,7 @@ public class MouseInput implements MouseListener {
   @Override
   public void mouseExited(MouseEvent event) {
     GameLoop.mouseReleased();
+    GraphicsTest.mouseReleased();
   }
   @Override
   public void mouseMoved(MouseEvent event) {
@@ -27,15 +29,18 @@ public class MouseInput implements MouseListener {
   @Override
   public void mousePressed(MouseEvent event) {
     GameLoop.mousePressed();
+    GraphicsTest.mousePressed();
     // startLoc = MouseInfo.getPointerInfo().getLocation();
   }
   @Override
   public void mouseReleased(MouseEvent event) {
     GameLoop.mouseReleased();
+    GraphicsTest.mouseReleased();
   }
   @Override
   public void mouseWheelMoved(MouseEvent event) {
     GameLoop.zoomWorld(event.getRotation()[1] + event.getRotation()[0]);
     Editor.zoomWorld(event.getRotation()[1] + event.getRotation()[0]);
+    GraphicsTest.zoomWorld(event.getRotation()[1] + event.getRotation()[0]);
   }
 }

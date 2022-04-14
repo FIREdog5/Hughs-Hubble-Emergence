@@ -1,6 +1,8 @@
 package bin.editor;
 
 import javax.swing.JFileChooser;
+import java.awt.Window;
+import javax.swing.JDialog;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Container;
@@ -30,12 +32,15 @@ public class EditorUtils {
     File dirToLock = new File("assets/generated");
     Boolean old = UIManager.getBoolean("FileChooser.readOnly");
     UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-    JFileChooser fc = new JFileChooser(".");
     JFileChooser jfc = new JFileChooser(dirToLock);
     disableNav(jfc);
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Planet Terrain", "json");
     jfc.setFileFilter(filter);
-    int returnValue = jfc.showOpenDialog(null);
+    JDialog wrapper = new JDialog((Window)null);
+    wrapper.setVisible(true);
+    wrapper.setAlwaysOnTop(true);
+    int returnValue = jfc.showOpenDialog(wrapper);
+    wrapper.setVisible(false);
     UIManager.put("FileChooser.readOnly", old);
 
     if (returnValue == JFileChooser.APPROVE_OPTION) {

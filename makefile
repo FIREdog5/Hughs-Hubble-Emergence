@@ -8,6 +8,10 @@ editor: ## 'make editor' will run the planet editor.
 editor: JAVA_ARGS="--editor"
 editor: default
 
+graphicsTest: ## 'make graphicsTest' will run the planet editor.
+graphicsTest: JAVA_ARGS="--graphicsTest"
+graphicsTest: default
+
 classes: ## 'make classes' will compile the project.
 				javac -classpath ".:.\lib\gluegen-rt.jar:.\lib\jogl-all.jar" bin/ClientMain.java
 
@@ -23,12 +27,15 @@ report: ## 'make report' prints the os
 help: ## 'make help' shows this help message
 				@echo "here are the valid make targets:"
 				@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
-				
+
 else
 default: clean classes run
 
 editor: JAVA_ARGS="--editor"
 editor: default
+
+graphicsTest: JAVA_ARGS="--graphicsTest"
+graphicsTest: default
 
 classes:
 				javac -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" bin/ClientMain.java

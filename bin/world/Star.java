@@ -1,7 +1,9 @@
 package bin.world;
 
-import bin.graphics.Graphics;
 import bin.graphics.Color;
+import bin.graphics.objects.Global;
+import bin.graphics.objects.Circle;
+
 
 public class Star implements IDrawable {
   private float x;
@@ -14,8 +16,8 @@ public class Star implements IDrawable {
     return true;
   }
   public void render(Camera camera) {
-    Graphics.drawColor(new Color("#ffffff"));
-    Graphics.drawCircle(camera.scaleToZoom(10), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Global.drawColor(new Color("#ffffff"));
+    Circle.draw(camera.scaleToZoom(10), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
     // System.out.println(camera.scaleToZoom(10));
     // System.out.println(camera.convertXToCamera(this.x));
     // System.out.println(camera.convertYToCamera(this.y));

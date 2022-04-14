@@ -17,7 +17,7 @@ public class Renderer {
 
   public static float unitsWide = 100;
 
-  public static void init(boolean editor) {
+  public static void init(String mode) {
     GLProfile.initSingleton();
     profile = GLProfile.get(GLProfile.GL2);
     GLCapabilities caps = new GLCapabilities(profile);
@@ -29,10 +29,16 @@ public class Renderer {
     window.setSize(screenWidth, screenHeight);
     window.setResizable(false);
     window.setFullscreen(true);
-    if (editor) {
-      window.addGLEventListener(new EditorEventListener());
-    } else {
-      window.addGLEventListener(new GameEventListener());
+    switch (mode) {
+      case "editor":
+        window.addGLEventListener(new EditorEventListener());
+        break;
+      case "graphicsTest":
+        window.addGLEventListener(new GraphicsTestEventListener());
+        break;
+      default:
+        window.addGLEventListener(new GameEventListener());
+        break;
     }
     window.addMouseListener(new MouseInput());
 
