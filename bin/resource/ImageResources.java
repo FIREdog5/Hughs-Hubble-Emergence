@@ -8,6 +8,7 @@ public class ImageResources{
   public static ImageResource error = null;
   public static ImageResource test = null;
   public static ImageResource starTest1 = null;
+  public static ImageResource primordialGalaxy = null;
   public static ImageResource poleTest = null;
   public static ImageResource earthTest = null;
   public static ImageResource transparencyTest = null;
@@ -30,6 +31,7 @@ public class ImageResources{
     error = new ImageResource("/assets/images/tests/error.png");
     test = new ImageResource("/assets/images/tests/test.png", 3, 30);
     starTest1 = new ImageResource("/assets/images/tests/startest1.png", 8, 3, true);
+    primordialGalaxy = new ImageResource("/assets/images/tests/Primordial-galaxy.jpg");
     poleTest = new ImageResource("/assets/images/tests/poletest.png", 1, 60);
     earthTest = new ImageResource("/assets/images/tests/earth.png", 1, 150);
     transparencyTest = new ImageResource("/assets/images/tests/transparencyTest.png");

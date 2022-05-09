@@ -59,7 +59,43 @@ public class Image {
     gl.glTranslatef(-x, -y, 0);
   }
 
+  public static void draw(Texture texture, float x, float y, float width, float height, float rotation) {
+    GL2 gl = ClientMain.gl;
+
+    if (texture == null) {
+      texture = ImageResources.error.getTexture();
+    }
+
+    // gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
+
+    gl.glTranslatef(x, y, 0);
+    gl.glRotatef(rotation, 0, 0, 1);
+
+    gl.glBegin(GL2.GL_QUADS);
+    {
+      gl.glTexCoord2f(0, 0);
+      gl.glVertex2f(-width / 2, -height / 2);
+      gl.glTexCoord2f(1, 0);
+      gl.glVertex2f(width / 2, -height / 2);
+      gl.glTexCoord2f(1, 1);
+      gl.glVertex2f(width / 2, height / 2);
+      gl.glTexCoord2f(0, 1);
+      gl.glVertex2f(-width / 2, height / 2);
+    }
+    gl.glEnd();
+    gl.glFlush();
+
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+
+    gl.glRotatef(-rotation, 0, 0, 1);
+    gl.glTranslatef(-x, -y, 0);
+  }
+
   public static void draw(ImageResource image, float x, float y, float width, float height) {
     draw(image, x, y, width, height, 0);
+  }
+
+  public static void draw(Texture texture, float x, float y, float width, float height) {
+    draw(texture, x, y, width, height, 0);
   }
 }

@@ -20,11 +20,17 @@ import bin.graphics.ui.UIBoxRow;
 import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIText;
 import bin.graphics.ui.UITextBlock;
+import bin.graphics.Shaders;
+import bin.ClientMain;
 
 import bin.graphics.Renderer;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.GL2;
+import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 public class GraphicsTest extends Thread{
 
@@ -159,6 +165,12 @@ public class GraphicsTest extends Thread{
         return;
       }
 
+      GL2 gl = ClientMain.gl;
+
+      //draw stary test field
+      Image.draw(ImageResources.primordialGalaxy, camera.convertXToCamera(110), camera.convertYToCamera(50), camera.scaleToZoom(162), camera.scaleToZoom(108));
+
+
       //draw circles
       Global.drawColor(new Color("#ffffff"));
       float[] circles = {.1f, .5f, 1f, 2f, 5f, 10f, 20f, 50f};
@@ -206,6 +218,34 @@ public class GraphicsTest extends Thread{
 
       //draw UI
       screen.render();
+
+      //render blackhole
+      Shaders.blackHoleShader.startShader(gl);
+      int[] textures = new int[1];
+      gl.glGenTextures(1, textures, 0);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[0]);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      int bhSize = 10 * Renderer.getWindowWidth() / 100;
+      bhSize = bhSize % 2 == 0 ? bhSize : bhSize + 1;
+      FloatBuffer buffer = FloatBuffer.allocate(4 * bhSize * bhSize);
+      // System.out.println(Arrays.toString(buffer.array()));
+      gl.glReadBuffer(GL2.GL_BACK);
+      gl.glReadPixels(Renderer.getWindowWidth() / 2 - bhSize / 2, Renderer.getWindowHeight() / 2 - bhSize / 2, bhSize, bhSize, GL2.GL_RGBA, GL2.GL_FLOAT, buffer);
+      gl.glTexImage2D(GL2.GL_TEXTURE_2D, 0, GL2.GL_RGBA, bhSize, bhSize, 0, GL2.GL_RGBA, GL2.GL_FLOAT, buffer);
+      // System.out.println(Arrays.toString(buffer.array()));
+      // System.out.println(gl.glGetError());
+
+      // Texture tex = new Texture(gl, texD);
+      // gl.glCopyTexImage2D(GL2.GL_TEXTURE_2D, 0, GL2.GL_RGBA, Renderer.screenWidth / 2 - 5, Renderer.screenHeight / 2 - 5, 10, 10, 0);
+      // gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+      // gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      Image.draw((Texture)null, 0, 0, 10, 10);
+      Shaders.blackHoleShader.stopShader(gl);
+      // Global.drawColor(new Color("#000000"));
+      // Circle.draw(10f/6f + .05f, 0, 0);
+      // Global.drawColor(new Color("#ffffff"));
     }
 
     public static void zoomWorld(float deltaZoom) {
