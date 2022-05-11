@@ -22,7 +22,7 @@ public class Shaders {
 		}
 
     File blackHoleFS = new File("bin/graphics/shaders/blackHoleShader.fs");
-    String bHUniforms[] = {"buffer_in"};
+    String bHUniforms[] = {"buffer_in", "params"};
     blackHoleShader = new ShaderProgram();
     if (!blackHoleShader.init(gl2, vertexShader, blackHoleFS, bHUniforms)) {
 			throw new IllegalStateException("Unable to initiate the shaders!");

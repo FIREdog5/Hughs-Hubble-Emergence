@@ -1,8 +1,23 @@
+//texture
 uniform sampler2D buffer_in;
+// x, y, size, Renderer.unitsWide
+uniform vec4 params;
 
 void main(void)
 {
-  float dist = distance(vec2(0.5, 0.5),gl_TexCoord[0].st) * 24;
+  //setup
+  vec2 textureSize2d = textureSize(buffer_in, 0);
+
+  float unitsWide = params[3];
+  float unitsTall = textureSize2d.y / (textureSize2d.x / unitsWide);
+
+  float centerX = (params[0] + unitsWide / 2) / unitsWide;
+  float centerY = (params[1] + unitsTall / 2) / unitsTall;
+  float sizeX = params[2] / unitsWide;
+  float sizeY = params[2] / unitsTall;
+
+  //black hole resampling math
+  float dist = distance(vec2(centerX, centerY) / vec2(sizeX, sizeY),gl_TexCoord[0].st / vec2(sizeX, sizeY)) * 24 * 1;
   float locX = gl_TexCoord[0].s;
   float locY = gl_TexCoord[0].t;
   if (dist <= 12) {
@@ -10,23 +25,17 @@ void main(void)
     if (dist > 4 && dist < 8) {
       newDist = -1*(1-sqrt(1-pow(dist/4 - 2, 2)))*12*4;
     } else if (dist >= 8 && dist <= 10) {
-      newDist = pow(dist - 10, .3333) * -4.73 + 5.959;
+      newDist = abs(pow(10 - dist, .3333)) * -4.73 + 5.959;
     }
     else if (dist >= 8) {
-      newDist = pow(dist - 10, .3333) * 4.73 + 5.959;
+      newDist = abs(pow(dist - 10, .3333)) * 4.73 + 5.959;
     }
     newDist = newDist / 12.0;
-    // if (dist <= 2) {
-    //   newDist = (1-sqrt(1-(dist/2-1) * (dist/2-1)))*12;
-    // } else {
-    //   newDist = (1-sqrt(1-(dist/1-2) * (dist/1-2)));
-    // }
-    locX = 0.5 + (locX - 0.5) * newDist;
-    locY = 0.5 + (locY - 0.5) * newDist;
+    locX = centerX + (locX - centerX) * newDist;
+    locY = centerY + (locY - centerY) * newDist;
   }
 
-  vec2 textureSize2d = textureSize(buffer_in, 0);
-
+  // bilinear interpolation
   vec2 ratio = vec2(locX * textureSize2d.x - floor(locX * textureSize2d.x), locY * textureSize2d.y - floor(locY * textureSize2d.y));
 
   vec2 lowerLeftPos = vec2(floor(locX * textureSize2d.x), floor(locY * textureSize2d.y)) / textureSize2d;
