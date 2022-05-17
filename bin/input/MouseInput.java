@@ -16,7 +16,7 @@ public class MouseInput implements MouseListener {
   }
   @Override
   public void mouseEntered(MouseEvent event) {
-
+    GraphicsTest.mouseMoved();
   }
   @Override
   public void mouseExited(MouseEvent event) {
@@ -25,12 +25,13 @@ public class MouseInput implements MouseListener {
   }
   @Override
   public void mouseMoved(MouseEvent event) {
+    GraphicsTest.mouseMoved();
   }
   @Override
   public void mousePressed(MouseEvent event) {
     GameLoop.mousePressed();
     GraphicsTest.mousePressed();
-    // startLoc = MouseInfo.getPointerInfo().getLocation();
+    //Point startLoc = MouseInfo.getPointerInfo().getLocation();
   }
   @Override
   public void mouseReleased(MouseEvent event) {
@@ -41,6 +42,6 @@ public class MouseInput implements MouseListener {
   public void mouseWheelMoved(MouseEvent event) {
     GameLoop.zoomWorld(event.getRotation()[1] + event.getRotation()[0]);
     Editor.zoomWorld(event.getRotation()[1] + event.getRotation()[0]);
-    GraphicsTest.zoomWorld(event.getRotation()[1] + event.getRotation()[0]);
+    GraphicsTest.mouseScrolled(event.getRotation()[1] + event.getRotation()[0]);
   }
 }

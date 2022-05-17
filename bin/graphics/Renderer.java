@@ -58,6 +58,10 @@ public class Renderer {
     return profile;
   }
 
+  public static GLWindow getWindow() {
+    return window;
+  }
+
   public static void render() {
     if (window == null) {
       return;
