@@ -41,7 +41,7 @@ classes:
 				javac -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" bin/ClientMain.java
 
 clean:
-				powershell "ls *.class -Recurse | foreach {rm $_}"
+				powershell "ls *.class -Recurse | foreach {rm $$PSItem}"
 
 run:
 				java -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" -D"java.library.path"="/natives" bin/ClientMain.java $(JAVA_ARGS)
