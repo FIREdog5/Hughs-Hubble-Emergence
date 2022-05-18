@@ -28,7 +28,7 @@ public class UIBoxRow extends UIBox {
       sum = Math.max(child.x, sum);
     }
 
-    minimum = Math.max(minimum, Math.max(child.getX() - this.getX(), 0) + child.getPadding() + this.margin + child.getWidth());
+    minimum = Math.max(minimum, sum + child.getPadding() + this.margin + child.getWidth());
     if (this.maxWidth != -1) {
       minimum = Math.min(minimum, maxWidth);
     }

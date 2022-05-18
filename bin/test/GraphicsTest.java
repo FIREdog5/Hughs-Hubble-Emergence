@@ -33,6 +33,8 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLException;
 
 public class GraphicsTest extends Thread{
 
@@ -240,9 +242,30 @@ public class GraphicsTest extends Thread{
 
     }
 
+    private static boolean lockContext() {
+      if (Renderer.getWindow().getContext() == null) {
+        return false;
+      }
+      GLContext context = Renderer.getWindow().getContext();
+      if (!context.isCurrent()) {
+        context.makeCurrent();
+      }
+      return true;
+    }
+
+    private static void releaseContext() {
+      if (Renderer.getWindow().getContext() == null) {
+        return;
+      }
+      GLContext context = Renderer.getWindow().getContext();
+      if (context.isCurrent()) {
+        context.release();
+      }
+    }
+
     public static void mouseScrolled(float amount) {
       zoomWorld(amount);
-      if (clickHandler == null || Renderer.getProfile() == null) {
+      if (clickHandler == null || !lockContext()) {
         return;
       }
       Point location = MouseInfo.getPointerInfo().getLocation();
@@ -250,6 +273,7 @@ public class GraphicsTest extends Thread{
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
       clickHandler.processScrollOver(unitX, unitY, amount);
+      releaseContext();
     }
 
     private static void zoomWorld(float deltaZoom) {
@@ -262,7 +286,7 @@ public class GraphicsTest extends Thread{
     public static void mousePressed() {
       startLoc = MouseInfo.getPointerInfo().getLocation();
       mouseIsPressed = true;
-      if (clickHandler == null || Renderer.getProfile() == null) {
+      if (clickHandler == null || !lockContext()) {
         return;
       }
       Point location = MouseInfo.getPointerInfo().getLocation();
@@ -270,11 +294,12 @@ public class GraphicsTest extends Thread{
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
       clickHandler.processMouseDown(unitX, unitY, false);
+      releaseContext();
     }
 
     public static void mouseReleased() {
       mouseIsPressed = false;
-      if (clickHandler == null || Renderer.getProfile() == null) {
+      if (clickHandler == null || !lockContext()) {
         return;
       }
       Point location = MouseInfo.getPointerInfo().getLocation();
@@ -283,10 +308,11 @@ public class GraphicsTest extends Thread{
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
       clickHandler.processClick(unitX, unitY);
       clickHandler.processMouseDown(unitX, unitY, true);
+      releaseContext();
     }
 
     public static void mouseMoved() {
-      if (clickHandler == null || Renderer.getProfile() == null) {
+      if (clickHandler == null || !lockContext()) {
         return;
       }
       Point location = MouseInfo.getPointerInfo().getLocation();
@@ -294,6 +320,7 @@ public class GraphicsTest extends Thread{
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
       clickHandler.processMouseMove(unitX, unitY);
+      releaseContext();
     }
 
 }

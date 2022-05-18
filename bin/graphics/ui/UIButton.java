@@ -63,11 +63,11 @@ public class UIButton extends UIBoxCol implements IClickable {
   public void render() {
     if (!this.noBackground) {
       Global.drawColor(this.getColor());
-      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() - (this.isMouseDown ? .2f : 0)), (this.getHeight() - (this.isMouseDown ? .2f : 0)), this.radius);
+      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.isMouseDown ? .2f : 0)), (this.getHeight() + (this.isMouseDown ? .2f : 0)), this.radius);
     }
     if (this.outlineWeight > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() - (this.isMouseDown ? .2f : 0)), (this.getHeight() - (this.isMouseDown ? .2f : 0)), this.radius, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.isMouseDown ? .2f : 0)), (this.getHeight() + (this.isMouseDown ? .2f : 0)), this.radius, this.outlineWeight);
     }
     for (int i = 0; i < this.children.size(); i++) {
       this.children.get(i).render();

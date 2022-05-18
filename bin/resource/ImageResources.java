@@ -26,6 +26,10 @@ public class ImageResources{
 
   //resources
 
+  //icons
+  public static ImageResource globeIcon = null;
+  public static ImageResource mapIcon = null;
+
   public static void init() {
     //tests
     error = new ImageResource("/assets/images/tests/error.png");
@@ -73,6 +77,9 @@ public class ImageResources{
 
     //resources
 
+    //icons
+    globeIcon = new ImageResource("/assets/images/icons/globeIcon.png");
+    mapIcon = new ImageResource("/assets/images/icons/mapIcon.png");
 
     System.out.println("Loaded all resources");
   }

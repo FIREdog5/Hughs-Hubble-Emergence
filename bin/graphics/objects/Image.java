@@ -66,7 +66,7 @@ public class Image {
       texture = ImageResources.error.getTexture();
     }
 
-    // gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
 
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
