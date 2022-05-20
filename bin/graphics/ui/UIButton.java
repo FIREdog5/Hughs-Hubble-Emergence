@@ -11,21 +11,24 @@ import bin.graphics.objects.RoundedBoxOutline;
 
 public class UIButton extends UIBoxCol implements IClickable {
   private ClickHandler clickHandler;
-  private boolean isMouseOver;
+  private boolean isMousedOver;
   private boolean isMouseDown;
+  //set z to -1 to be ignored
+  private int z;
   public Color mouseOverColor;
   public Color mouseOverOutlineColor;
 
   public UIButton(UIElement parent) {
     super(parent);
-    this.isMouseOver = false;
+    this.isMousedOver = false;
     this.mouseOverColor = null;
     this.mouseOverOutlineColor = null;
+    this.z = 0;
   }
 
   @Override
   public Color getColor() {
-    if (this.isMouseOver && this.mouseOverColor != null) {
+    if (this.isMousedOver && this.mouseOverColor != null) {
       return this.mouseOverColor;
     } else if (this.color != null) {
       return this.color;
@@ -38,7 +41,7 @@ public class UIButton extends UIBoxCol implements IClickable {
 
   @Override
   public Color getOutlineColor() {
-    if (this.isMouseOver && this.mouseOverOutlineColor != null) {
+    if (this.isMousedOver && this.mouseOverOutlineColor != null) {
       return this.mouseOverOutlineColor;
     } else if (this.outlineColor != null) {
       return this.outlineColor;
@@ -73,6 +76,20 @@ public class UIButton extends UIBoxCol implements IClickable {
       this.children.get(i).render();
     }
   }
+  @Override
+  public int getZ(){
+    return this.z;
+  }
+
+  @Override
+  public void setZ(int z){
+    this.z = z;
+  }
+
+  @Override
+  public boolean getIsMousedOver() {
+    return this.isMousedOver;
+  }
 
   @Override
   public void setClickHandler(ClickHandler clickHandler) {
@@ -102,12 +119,12 @@ public class UIButton extends UIBoxCol implements IClickable {
 
   @Override
   public void mousedOver(float x, float y) {
-    this.isMouseOver = true;
+    this.isMousedOver = true;
   }
 
   @Override
   public void mousedOff(float x, float y) {
-    this.isMouseOver = false;
+    this.isMousedOver = false;
   }
 
   @Override

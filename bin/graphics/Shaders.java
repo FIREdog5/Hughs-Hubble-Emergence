@@ -15,7 +15,7 @@ public class Shaders {
 
     File vertexShader = new File("bin/graphics/shaders/default.vs");
 		File fragmentShader = new File("bin/graphics/shaders/colorGradientShader.fs");
-    String uniforms[] = {"text_in", "inSampler"};
+    String uniforms[] = {"heightSampler", "paletteSampler", "biomeSampler"};
     terrainShader = new ShaderProgram();
 		if (!terrainShader.init(gl2, vertexShader, fragmentShader, uniforms)) {
 			throw new IllegalStateException("Unable to initiate the shaders!");

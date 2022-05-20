@@ -13,7 +13,7 @@ public class Generation {
       world.addWorldObject(new Planet(x, y, Palettes.earth1));
     }
     world.addWorldObject(new Planet(0, 0, Palettes.earth1));
-    world.addWorldObject(new Planet(20, 20, Palettes.earth2));
+    world.addWorldObject(new Planet(20, 20, Palettes.earth1));
     world.addWorldObject(new Planet(-20, 20, Palettes.earth1));
     world.addWorldObject(new Planet(-20, -20, Palettes.earth1));
     world.addWorldObject(new Planet(20, -20, Palettes.earth1));

@@ -6,7 +6,11 @@ import bin.resource.Palettes;
 import bin.resource.ImageResources;
 import bin.input.ClickHandler;
 import bin.graphics.Color;
+import bin.graphics.Shaders;
 import bin.ClientMain;
+
+import bin.graphics.objects.Image;
+import bin.graphics.objects.Global;
 
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxRow;
@@ -14,7 +18,7 @@ import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIButton;
 import bin.graphics.ui.UIImage;
 
-
+import com.jogamp.opengl.GL2;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import com.jogamp.opengl.GLContext;
@@ -127,7 +131,29 @@ public class Editor extends Thread{
     if (world == null) {
       return;
     }
-    world.renderWorld();
+    if (view.equals("globe")) {
+      world.renderWorld();
+    } else if (view.equals("map")) {
+      GL2 gl = ClientMain.gl;
+
+      Shaders.terrainShader.startShader(gl);
+
+      gl.glActiveTexture(GL2.GL_TEXTURE0+1);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.biomeShaderTest.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+2);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.generationTest2.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0);
+
+      Global.drawColor(new Color("#ffffff"));
+      Image.draw(ImageResources.generationTest, 0, 0, world.camera.scaleToZoom(96), world.camera.scaleToZoom(32));
+
+      Shaders.terrainShader.stopShader(gl);
+
+    }
     screen.render();
   }
 
@@ -153,10 +179,10 @@ public class Editor extends Thread{
   }
 
   public static void mouseScrolled(float amount) {
-    zoomWorld(amount);
     if (clickHandler == null || !lockContext()) {
       return;
     }
+    zoomWorld(amount);
     Point location = MouseInfo.getPointerInfo().getLocation();
     float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
     float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);

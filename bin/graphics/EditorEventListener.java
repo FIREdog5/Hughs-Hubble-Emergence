@@ -40,12 +40,6 @@ public class EditorEventListener extends EventListener {
 
     //end better planets
 
-    // Global.drawColor(new Color("#ffffff"));
-    // RoundedBoxOutline.draw(0, 0, 20, 20, 5, .2f);
-    // RoundedBoxOutline.draw(0, 0, 17, 10, 2, .1f);
-    // RoundedBox.draw(0, 0, 4.5f, 9, 1);
-
-
     Global.nextFrame();
     Editor.render();
   }

@@ -142,6 +142,16 @@ public class GraphicsTest extends Thread{
 
       clickHandler.register(innerButton);
 
+      UIButton innerButton2 = new UIButton(innerButton);
+      innerButton2.minWidth = 2;
+      innerButton2.minHeight = 1;
+      innerButton2.color = new Color("#ffffff");
+      innerButton2.mouseOverColor = new Color("#777777");
+      innerButton2.padding = .5f;
+
+      clickHandler.register(innerButton2);
+      innerButton.addChild(innerButton2);
+
       UIBoxCol innerBoxCol3 = new UIBoxCol(innerBoxRow1);
       innerBoxCol3.x = 0;
       innerBoxCol3.y = 0;

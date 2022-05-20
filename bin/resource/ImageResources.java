@@ -21,8 +21,10 @@ public class ImageResources{
   public static ImageResource capTest = null;
   public static ImageResource cloudTest2 = null;
   public static ImageResource generationTest = null;
+  public static ImageResource generationTest2 = null;
   public static ImageResource terainShaderTest = null;
   public static ImageResource biomeShaderTest = null;
+  public static ImageResource biomeGradientTest = null;
 
   //resources
 
@@ -49,6 +51,7 @@ public class ImageResources{
     cloudTest2 = new NoiseMaskedFlatResource("/assets/images/tests/cloudTest2.png",.4f , 1, 800);
     terainShaderTest = new ImageResource("/assets/images/tests/terainShader.png");
     biomeShaderTest = new ImageResource("/assets/images/tests/biomeShaderTest.png");
+    biomeGradientTest = new ImageResource("/assets/images/tests/biomeGradientTest.png");
     //TODO: make contrast its own thing lol
     generationTest = new PolarResource(ImagePreprocessor.adjustContrast(
       ImagePreprocessor.combineImagesMult(
@@ -73,6 +76,17 @@ public class ImageResources{
     baseImage.addStep(new ImageMultModifier(secondImage));
     baseImage.addStep(new ImageContrastModifier(1.6d, -100d));
     generationTest = new PolarResource(baseImage.resolve(2400, 800), 1, 1000);
+
+    CompoundImage baseImage2 = new CompoundImage();
+    baseImage2.addStep(new ImageCreateModifier(2L, 270d));
+    baseImage2.addStep(new ImageContrastModifier(1.9d, -130d));
+    SimpleImage secondImage2 = new SimpleImage();
+    secondImage2.addStep(new ImageCreateModifier(2L, 170d));
+    secondImage2.addStep(new ImageInvertModifier());
+    secondImage2.addStep(new ImageContrastModifier(1.3d, 70d));
+    baseImage2.addStep(new ImageMultModifier(secondImage2));
+    baseImage2.addStep(new ImageContrastModifier(1.6d, -100d));
+    generationTest2 = new PolarResource(baseImage2.resolve(2400, 800), 1, 1000);
 
 
     //resources
