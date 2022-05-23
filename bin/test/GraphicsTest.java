@@ -22,6 +22,8 @@ import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIText;
 import bin.graphics.ui.UITextBlock;
 import bin.graphics.ui.UIButton;
+import bin.graphics.ui.complex.UIPopUp;
+import bin.graphics.ui.complex.UITestCircle;
 import bin.graphics.Shaders;
 import bin.ClientMain;
 import bin.graphics.Renderer;
@@ -169,6 +171,28 @@ public class GraphicsTest extends Thread{
       innerBoxRow1.addChild(innerBoxCol3);
       screen.addChild(outerBoxRow);
 
+      UIPopUp popUp = new UIPopUp(screen);
+      popUp.anchor = innerBoxRow2;
+      popUp.position = "right";
+      popUp.offset = 1;
+      popUp.minWidth = 4;
+      popUp.minHeight = 1;
+      popUp.color = new Color("#0000ff");
+      popUp.outlineColor = new Color("#AAAAAA");
+      popUp.outlineWeight = .3f;
+
+      screen.addChild(popUp);
+
+      UITestCircle testCircle = new UITestCircle(screen);
+      testCircle.circleRadius = 2;
+      testCircle.color = new Color("#0000ff");
+      testCircle.mouseOverColor = new Color("#2288ff");
+      testCircle.x = 10;
+      testCircle.y = 10;
+
+      screen.addChild(testCircle);
+      clickHandler.register(testCircle);
+
       while (this.running) {
         if (mouseIsPressed) {
           Point currentLoc = MouseInfo.getPointerInfo().getLocation();
@@ -188,6 +212,7 @@ public class GraphicsTest extends Thread{
       GL2 gl = ClientMain.gl;
 
       //draw stary test field
+      Global.drawColor(new Color("#ffffff"));
       Image.draw(ImageResources.primordialGalaxy, camera.convertXToCamera(110), camera.convertYToCamera(50), camera.scaleToZoom(162), camera.scaleToZoom(108));
 
 
