@@ -48,6 +48,10 @@ public class ClickHandler {
     }
   }
 
+  public boolean isMouseOnElement() {
+    return this.mousedDown.size() > 0;
+  }
+
   public void processMouseDown(float x, float y, boolean offScreen) {
     ArrayList<IClickable> mousedDownCopy = (ArrayList<IClickable>) this.mousedDown.clone();
     for(IClickable clickable : mousedDownCopy) {
@@ -79,6 +83,7 @@ public class ClickHandler {
     }
     boolean found = false;
     for(IClickable clickable : this.clickables) {
+      clickable.mouseMoved(x, y);
       if (!found) {
         if (clickable.isMouseOver(x, y)) {
           clickable.mousedOver(x, y);
@@ -94,6 +99,10 @@ public class ClickHandler {
         }
       }
     }
+  }
+
+  public void processMouseDragged(float x, float y) {
+    this.processMouseMove(x, y);
   }
 
   public void processScrollOver(float x, float y, float amount) {

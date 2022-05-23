@@ -235,4 +235,16 @@ public class Editor extends Thread{
     releaseContext();
   }
 
+  public static void mouseDragged() {
+    if (clickHandler == null || !lockContext()) {
+      return;
+    }
+    Point location = MouseInfo.getPointerInfo().getLocation();
+    float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
+    float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
+    float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
+    clickHandler.processMouseDragged(unitX, unitY);
+    releaseContext();
+  }
+
 }

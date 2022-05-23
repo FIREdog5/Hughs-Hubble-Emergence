@@ -51,32 +51,24 @@ public class UITestCircle extends UIButton {
 
   @Override
   public boolean isMouseOver(float x, float y) {
-    return Math.hypot(this.getX() - x, this.getY() - y) <= this.circleRadius;
+    return Math.hypot(this.getX() + this.circleRadius - x, this.getY() - this.circleRadius - y) <= this.circleRadius;
   }
 
   @Override
   public void mousedDown(float x, float y) {
-    // this.isMouseDown = true;
-    this.deltaX = x - this.getX() + radius;
-    this.deltaX = y - this.getY() - radius;
+    if(!this.getIsMouseDown()) {
+      this.setIsMouseDown(true);
+      this.deltaX = x - this.getX();
+      this.deltaY = y - this.getY();
+    }
   }
 
   @Override
-  public void mousedOver(float x, float y) {
-    super.mousedOver(x, y);
-    // if (this.isMouseDown) {
-    //   this.x = x - this.deltaX;
-    //   this.x = y - this.deltaY;
-    // }
-  }
-
-  @Override
-  public void mousedOff(float x, float y) {
-    super.mousedOff(x, y);
-    // if (this.isMouseDown) {
-    //   this.x = x - this.deltaX;
-    //   this.x = y - this.deltaY;
-    // }
+  public void mouseMoved(float x, float y) {
+    if (this.getIsMouseDown()) {
+      this.x = x - this.deltaX;
+      this.y = y - this.deltaY;
+    }
   }
 
   @Override

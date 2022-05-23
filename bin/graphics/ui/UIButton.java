@@ -63,6 +63,24 @@ public class UIButton extends UIBoxCol implements IClickable {
   // }
 
   @Override
+  public boolean getIsMousedOver() {
+    return this.isMousedOver;
+  }
+
+  protected void setIsMousedOver(boolean isMousedOver){
+    this.isMousedOver = isMousedOver;
+  }
+
+  public boolean getIsMouseDown() {
+    return this.isMouseDown;
+  }
+
+  protected void setIsMouseDown(boolean isMouseDown){
+    this.isMouseDown = isMouseDown;
+  }
+
+
+  @Override
   public void render() {
     if (!this.noBackground) {
       Global.drawColor(this.getColor());
@@ -84,11 +102,6 @@ public class UIButton extends UIBoxCol implements IClickable {
   @Override
   public void setZ(int z){
     this.z = z;
-  }
-
-  @Override
-  public boolean getIsMousedOver() {
-    return this.isMousedOver;
   }
 
   @Override
@@ -139,6 +152,12 @@ public class UIButton extends UIBoxCol implements IClickable {
 
   @Override
   public void scrolledOver(float x, float y, float ammount) {
+    //placeholder
+    return;
+  }
+
+  @Override
+  public void mouseMoved(float x, float y) {
     //placeholder
     return;
   }

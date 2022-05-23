@@ -68,8 +68,8 @@ public class UIPopUp extends UIBoxCol {
   }
 
   private boolean willFit(String position) {
-    float maxX = Renderer.unitsWide;
-    float maxY = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
+    float maxX = Renderer.unitsWide / 2;
+    float maxY = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide) / 2;
     float checkX;
     float checkY;
     switch(position) {

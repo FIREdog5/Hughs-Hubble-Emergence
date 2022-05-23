@@ -23,6 +23,7 @@ import bin.graphics.ui.UIText;
 import bin.graphics.ui.UITextBlock;
 import bin.graphics.ui.UIButton;
 import bin.graphics.ui.complex.UIPopUp;
+import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UITestCircle;
 import bin.graphics.Shaders;
 import bin.ClientMain;
@@ -171,31 +172,35 @@ public class GraphicsTest extends Thread{
       innerBoxRow1.addChild(innerBoxCol3);
       screen.addChild(outerBoxRow);
 
-      UIPopUp popUp = new UIPopUp(screen);
-      popUp.anchor = innerBoxRow2;
-      popUp.position = "right";
-      popUp.offset = 1;
-      popUp.minWidth = 4;
-      popUp.minHeight = 1;
-      popUp.color = new Color("#0000ff");
-      popUp.outlineColor = new Color("#AAAAAA");
-      popUp.outlineWeight = .3f;
-
-      screen.addChild(popUp);
-
       UITestCircle testCircle = new UITestCircle(screen);
       testCircle.circleRadius = 2;
       testCircle.color = new Color("#0000ff");
       testCircle.mouseOverColor = new Color("#2288ff");
-      testCircle.x = 10;
-      testCircle.y = 10;
+      testCircle.x = -47;
 
       screen.addChild(testCircle);
       clickHandler.register(testCircle);
 
+      UIToolTip popUp = new UIToolTip(screen);
+      popUp.anchor = testCircle;
+      popUp.position = "top";
+      popUp.offset = .3f;
+      popUp.margin = .6f;
+      popUp.color = new Color("#0000ff");
+      popUp.outlineColor = new Color("#AAAAAA");
+      popUp.outlineWeight = .3f;
+
+      UITextBlock toolTipTextBlock = new UITextBlock(popUp, "this is a tool-tip!", .5f);
+      toolTipTextBlock.textColor = new Color("#ffffff");
+      toolTipTextBlock.maxWidth = 4f;
+
+      popUp.addChild(toolTipTextBlock);
+
+      screen.addChild(popUp);
+
       while (this.running) {
-        if (mouseIsPressed) {
-          Point currentLoc = MouseInfo.getPointerInfo().getLocation();
+        Point currentLoc = MouseInfo.getPointerInfo().getLocation();
+        if (mouseIsPressed && !this.clickHandler.isMouseOnElement()) {
           float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
           camera.adjustLocation(camera.zoomToScale((float)(startLoc.x - currentLoc.x) / Renderer.getWindowWidth() * Renderer.unitsWide), camera.zoomToScale((float)(currentLoc.y - startLoc.y) / Renderer.getWindowHeight() * unitsTall));
           startLoc = currentLoc;
@@ -355,6 +360,18 @@ public class GraphicsTest extends Thread{
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
       clickHandler.processMouseMove(unitX, unitY);
+      releaseContext();
+    }
+
+    public static void mouseDragged() {
+      if (clickHandler == null || !lockContext()) {
+        return;
+      }
+      Point location = MouseInfo.getPointerInfo().getLocation();
+      float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
+      float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
+      float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
+      clickHandler.processMouseDragged(unitX, unitY);
       releaseContext();
     }
 

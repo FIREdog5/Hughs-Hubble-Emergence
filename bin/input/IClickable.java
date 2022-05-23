@@ -11,6 +11,7 @@ public interface IClickable {
   //set z to -1 to be ignored
   public void setZ(int z);
 
+  public void mouseMoved(float x, float y);
   public void clickedOn(float x, float y);
   public void mousedOver(float x, float y);
   public void mousedOff(float x, float y);

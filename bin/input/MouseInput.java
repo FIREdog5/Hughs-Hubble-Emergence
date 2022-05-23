@@ -13,6 +13,8 @@ public class MouseInput implements MouseListener {
   }
   @Override
   public void mouseDragged(MouseEvent event) {
+    GraphicsTest.mouseDragged();
+    Editor.mouseDragged();
   }
   @Override
   public void mouseEntered(MouseEvent event) {
