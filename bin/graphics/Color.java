@@ -65,4 +65,31 @@ public class Color {
     return this.alpha;
   }
 
+  public static Color colorFromHSV(float hue, float saturation, float value) {
+
+    //from https://medium.com/@bantic/hand-coding-a-color-wheel-with-canvas-78256c9d7d43
+    //hue is range [0-2pi]
+    //s, v are range [0-1]
+
+    float chroma = value * saturation;
+    float hue1 = hue / (float)Math.PI * 3;
+    float x = chroma * (1- (float)Math.abs((hue1 % 2) - 1));
+    float[] rgb = new float[3];
+    if (hue1 >= 0 && hue1 <= 1) {
+      rgb = new float[]{chroma, x, 0f};
+    } else if (hue1 >= 1 && hue1 <= 2) {
+      rgb = new float[]{x, chroma, 0f};
+    } else if (hue1 >= 2 && hue1 <= 3) {
+      rgb = new float[]{0f, chroma, x};
+    } else if (hue1 >= 3 && hue1 <= 4) {
+      rgb = new float[]{0f, x, chroma};
+    } else if (hue1 >= 4 && hue1 <= 5) {
+      rgb = new float[]{x, 0f, chroma};
+    } else if (hue1 >= 5 && hue1 <= 6) {
+      rgb = new float[]{chroma, 0f, x};
+    }
+    float m = value - chroma;
+
+    return new Color(rgb[0] + m, rgb[1] + m, rgb[2] + m);
+  }
 }

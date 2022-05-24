@@ -14,6 +14,7 @@ import bin.graphics.objects.RoundedBox;
 import bin.graphics.objects.RoundedBoxOutline;
 import bin.graphics.objects.Text;
 import bin.graphics.objects.ReRendered;
+import bin.graphics.objects.ColorWheel;
 import bin.graphics.Color;
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxCol;
@@ -259,16 +260,20 @@ public class GraphicsTest extends Thread{
       Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(97), new Color("#ffffff"), size);
       size = camera.scaleToZoom(3f);
       Global.drawColor(new Color("#00ff00"));
-      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(67), Text.getWidth(text, size), Text.getHeight(text, size));
-      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(67), new Color("#ffffff"), size);
+      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(77), Text.getWidth(text, size), Text.getHeight(text, size));
+      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(77), new Color("#ffffff"), size);
       size = camera.scaleToZoom(30f);
       Global.drawColor(new Color("#00ff00"));
-      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(157), Text.getWidth(text, size), Text.getHeight(text, size));
-      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(157), new Color("#ffffff"), size);
+      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(147), Text.getWidth(text, size), Text.getHeight(text, size));
+      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(147), new Color("#ffffff"), size);
+
+      //draw colorwheel
+      ColorWheel.draw(camera.scaleToZoom(10f), camera.convertXToCamera(-85), camera.convertYToCamera(75));
 
       //draw UI
       screen.render();
 
+      //draw blackhole
       float bhX = 0f;
       float bhY = 0f;
       float bhSize = 10f;
