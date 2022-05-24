@@ -255,16 +255,16 @@ public class GraphicsTest extends Thread{
       float size = camera.scaleToZoom(10f);
       String text = "Hello World!";
       Global.drawColor(new Color("#00ff00"));
-      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(87), Text.getWidth(text, size), Text.getHeight(text, size));
-      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(87), new Color("#ffffff"), size);
+      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(97), Text.getWidth(text, size), Text.getHeight(text, size));
+      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(97), new Color("#ffffff"), size);
       size = camera.scaleToZoom(3f);
       Global.drawColor(new Color("#00ff00"));
       Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(67), Text.getWidth(text, size), Text.getHeight(text, size));
       Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(67), new Color("#ffffff"), size);
       size = camera.scaleToZoom(30f);
       Global.drawColor(new Color("#00ff00"));
-      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(127), Text.getWidth(text, size), Text.getHeight(text, size));
-      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(127), new Color("#ffffff"), size);
+      Rect.draw(camera.convertXToCamera(-23), camera.convertYToCamera(157), Text.getWidth(text, size), Text.getHeight(text, size));
+      Text.draw(text, camera.convertXToCamera(-23), camera.convertYToCamera(157), new Color("#ffffff"), size);
 
       //draw UI
       screen.render();

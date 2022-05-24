@@ -17,6 +17,9 @@ import bin.graphics.ui.UIBoxRow;
 import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIButton;
 import bin.graphics.ui.UIImage;
+import bin.graphics.ui.UITextBlock;
+
+import bin.graphics.ui.complex.UIToolTip;
 
 import com.jogamp.opengl.GL2;
 import java.awt.MouseInfo;
@@ -111,6 +114,36 @@ public class Editor extends Thread{
     mapIcon.minHeight = 2.5f;
     mapIcon.padding = .25f;
     mapButton.addChild(mapIcon);
+
+    UIToolTip globeToolTip = new UIToolTip(screen);
+    globeToolTip.outlineWeight = .1f;
+    globeToolTip.color = new Color("#000000");
+    globeToolTip.outlineColor = new Color("#ffffff");
+    globeToolTip.offset = .1f;
+    globeToolTip.margin = .3f;
+    globeToolTip.anchor = globeButton;
+
+    screen.addChild(globeToolTip);
+
+    UITextBlock globeToolTipText = new UITextBlock(globeToolTip, "globe view", .5f);
+    globeToolTipText.textColor = new Color("#ffffff");
+
+    globeToolTip.addChild(globeToolTipText);
+
+    UIToolTip mapToolTip = new UIToolTip(screen);
+    mapToolTip.outlineWeight = .1f;
+    mapToolTip.color = new Color("#000000");
+    mapToolTip.outlineColor = new Color("#ffffff");
+    mapToolTip.offset = .1f;
+    mapToolTip.margin = .3f;
+    mapToolTip.anchor = mapButton;
+
+    screen.addChild(mapToolTip);
+
+    UITextBlock mapToolTipText = new UITextBlock(mapToolTip, "map view", .5f);
+    mapToolTipText.textColor = new Color("#ffffff");
+
+    mapToolTip.addChild(mapToolTipText);
 
 
     world = new EditorWorld();

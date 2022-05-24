@@ -17,9 +17,9 @@ public class Text {
     textRenderer.begin3DRendering();
     Rectangle2D bounds = textRenderer.getBounds(text);
     textRenderer.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-    // 3.5f, and 3f are magic numbers that were found experimentally.
+    // 3.5f, and 10f are magic numbers that were found experimentally.
     // so is .05f.
-    textRenderer.draw3D(text, x - ((float) bounds.getWidth() + 3.5f) * .05f * size / 2, y - ((float) bounds.getHeight() - 3f) * .05f * size / 2, 0, .05f * size);
+    textRenderer.draw3D(text, x - ((float) bounds.getWidth() + 3.5f) * .05f * size / 2, y - ((float) bounds.getHeight() - 10f) * .05f * size / 2, 0, .05f * size);
     textRenderer.end3DRendering();
   }
 
@@ -27,7 +27,7 @@ public class Text {
     TextRenderer textRenderer = ClientMain.textRenderer;
     Rectangle2D bounds = textRenderer.getBounds(text);
     // .05f is a magic number that was found experimentally.
-    return (float) bounds.getHeight() * .05f * size;
+    return (float) bounds.getHeight() * .07f * size;
   }
 
   public static float getWidth(String text, float size) {
