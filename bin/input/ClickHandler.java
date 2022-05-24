@@ -1,5 +1,7 @@
 package bin.input;
 
+import bin.graphics.ui.UIElement;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
@@ -11,6 +13,7 @@ public class ClickHandler {
   private ArrayList<IClickable> mousedOver;
   private ArrayList<IClickable> mousedDown;
   private int zCounter;
+  private UIElement mask;
 
   private static final Comparator<IClickable> comparator = (IClickable o1, IClickable o2) -> o1.getZ() < 0 ? -1 : o2.getZ() < 0 ? 1 : o2.getZ() - o1.getZ();
 
@@ -19,6 +22,7 @@ public class ClickHandler {
     this.mousedOver = new ArrayList<IClickable>();
     this.mousedDown = new ArrayList<IClickable>();
     this.zCounter = 0;
+    this.mask = null;
   }
 
   public void register(IClickable clickable) {
@@ -37,8 +41,19 @@ public class ClickHandler {
     this.mousedDown.remove(clickable);
   }
 
+  public void setMask(UIElement mask) {
+    this.mask = mask;
+  }
+
+  public void clearMask() {
+    this.mask = null;
+  }
+
   public void processClick(float x, float y) {
     for(IClickable clickable : this.clickables) {
+      if (this.mask != null && !this.mask.deepContains(clickable)) {
+        continue;
+      }
       if (clickable.isMouseOver(x, y)) {
         clickable.clickedOn(x, y);
         if (clickable.getZ() >= 0) {
@@ -62,6 +77,9 @@ public class ClickHandler {
     }
     if (!offScreen){
       for(IClickable clickable : this.clickables) {
+        if (this.mask != null && !this.mask.deepContains(clickable)) {
+          continue;
+        }
         if (clickable.isMouseOver(x, y)) {
           clickable.mousedDown(x, y);
           this.mousedDown.add(clickable);
@@ -83,8 +101,10 @@ public class ClickHandler {
     }
     boolean found = false;
     for(IClickable clickable : this.clickables) {
-      clickable.mouseMoved(x, y);
-      if (!found) {
+      if ((this.mask == null || this.mask.deepContains(clickable))) {
+        clickable.mouseMoved(x, y);
+      }
+      if (!found && (this.mask == null || this.mask.deepContains(clickable))) {
         if (clickable.isMouseOver(x, y)) {
           clickable.mousedOver(x, y);
           this.mousedOver.add(clickable);
@@ -107,6 +127,9 @@ public class ClickHandler {
 
   public void processScrollOver(float x, float y, float amount) {
     for(IClickable clickable : this.clickables) {
+      if (this.mask != null && !this.mask.deepContains(clickable)) {
+        continue;
+      }
       if (clickable.isMouseOver(x, y)) {
         clickable.scrolledOver(x, y, amount);
         if (clickable.getZ() >= 0) {

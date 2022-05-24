@@ -13,6 +13,7 @@ public class UIButton extends UIBoxCol implements IClickable {
   private ClickHandler clickHandler;
   private boolean isMousedOver;
   private boolean isMouseDown;
+  private boolean isDead;
   //set z to -1 to be ignored
   private int z;
   public Color mouseOverColor;
@@ -24,6 +25,7 @@ public class UIButton extends UIBoxCol implements IClickable {
     this.mouseOverColor = null;
     this.mouseOverOutlineColor = null;
     this.z = 0;
+    this.isDead = false;
   }
 
   @Override
@@ -116,6 +118,9 @@ public class UIButton extends UIBoxCol implements IClickable {
 
   @Override
   public boolean isMouseOver(float x, float y) {
+    if (this.isDead) {
+      return false;
+    }
     return x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.getY() && y >= this.getY() - this.getHeight();
   }
 
@@ -126,44 +131,66 @@ public class UIButton extends UIBoxCol implements IClickable {
 
   @Override
   public void clickedOn(float x, float y) {
+    if (this.isDead) {
+      return;
+    }
     //placeholder
     return;
   }
 
   @Override
   public void mousedOver(float x, float y) {
+    if (this.isDead) {
+      return;
+    }
     this.isMousedOver = true;
   }
 
   @Override
   public void mousedOff(float x, float y) {
+    if (this.isDead) {
+      return;
+    }
     this.isMousedOver = false;
   }
 
   @Override
   public void mousedDown(float x, float y) {
+    if (this.isDead) {
+      return;
+    }
     this.isMouseDown = true;
   }
 
   @Override
   public void mousedUp(float x, float y) {
+    if (this.isDead) {
+      return;
+    }
     this.isMouseDown = false;
   }
 
   @Override
   public void scrolledOver(float x, float y, float ammount) {
+    if (this.isDead) {
+      return;
+    }
     //placeholder
     return;
   }
 
   @Override
   public void mouseMoved(float x, float y) {
+    if (this.isDead) {
+      return;
+    }
     //placeholder
     return;
   }
 
   @Override
   public void cleanUp() {
+    this.isDead = true;
     this.cleanFromClickHandler();
     super.cleanUp();
   }

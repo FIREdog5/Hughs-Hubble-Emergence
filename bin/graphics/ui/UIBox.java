@@ -52,12 +52,18 @@ public abstract class UIBox extends UIElement implements IColorable, IOutlineabl
 
   @Override
   public float getX() {
-    return this.parent.getChildX(parent.children.indexOf(this));
+    if (parent.children.indexOf(this) >= 0) {
+      return this.parent.getChildX(parent.children.indexOf(this));
+    }
+    return 0;
   }
 
   @Override
   public float getY() {
-    return this.parent.getChildY(parent.children.indexOf(this));
+    if (parent.children.indexOf(this) >= 0) {
+      return this.parent.getChildY(parent.children.indexOf(this));
+    }
+    return 0;
   }
 
   @Override

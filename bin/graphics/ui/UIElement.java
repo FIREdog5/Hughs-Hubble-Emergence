@@ -1,5 +1,7 @@
 package bin.graphics.ui;
 
+import bin.input.IClickable;
+
 import java.util.ArrayList;
 
 public abstract class UIElement {
@@ -30,5 +32,32 @@ public abstract class UIElement {
   public abstract void cleanUp();
   public void addChild(UIElement child) {
     this.children.add(child);
+  }
+  public boolean deepContains(UIElement target) {
+    if (this.children.contains(target)) {
+      return true;
+    } else {
+      for (UIElement child : this.children) {
+        if (child.deepContains(target)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  public boolean deepContains(IClickable target) {
+    if (!(target instanceof UIElement)) {
+      return false;
+    }
+    if (this.children.contains((UIElement)target)) {
+      return true;
+    } else {
+      for (UIElement child : this.children) {
+        if (child.deepContains((UIElement)target)) {
+          return true;
+        }
+      }
+      return false;
+    }
   }
 }

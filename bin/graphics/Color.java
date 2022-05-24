@@ -33,20 +33,33 @@ public class Color {
     this.setAlpha(a);
   }
 
-  private void setRed(float value) {
+  public void setRed(float value) {
     this.red = Math.max(0f, Math.min(1f, value));
   }
 
-  private void setGreen(float value) {
+  public void setGreen(float value) {
     this.green = Math.max(0f, Math.min(1f, value));
   }
 
-  private void setBlue(float value) {
+  public void setBlue(float value) {
     this.blue = Math.max(0f, Math.min(1f, value));
   }
 
-  private void setAlpha(float value) {
+  public void setAlpha(float value) {
     this.alpha = Math.max(0f, Math.min(1f, value));
+  }
+
+  public void setRGB(float[] rgb) {
+    this.setRed(rgb[0]);
+    this.setGreen(rgb[1]);
+    this.setBlue(rgb[2]);
+  }
+
+  public void setRGBA(float[] rgba) {
+    this.setRed(rgba[0]);
+    this.setGreen(rgba[1]);
+    this.setBlue(rgba[2]);
+    this.setAlpha(rgba[3]);
   }
 
   public float getRed() {
@@ -65,11 +78,19 @@ public class Color {
     return this.alpha;
   }
 
-  public static Color colorFromHSV(float hue, float saturation, float value) {
+  public float[] getRGB() {
+    return new float[]{this.red, this.green, this.blue};
+  }
 
-    //from https://medium.com/@bantic/hand-coding-a-color-wheel-with-canvas-78256c9d7d43
-    //hue is range [0-2pi]
-    //s, v are range [0-1]
+  public float[] getRGBA() {
+    return new float[]{this.red, this.green, this.blue, this.alpha};
+  }
+
+  public void setHSV(float hue, float saturation, float value) {
+
+    // from https://medium.com/@bantic/hand-coding-a-color-wheel-with-canvas-78256c9d7d43
+    // hue is range [0-2pi]
+    // s, v are range [0-1]
 
     float chroma = value * saturation;
     float hue1 = hue / (float)Math.PI * 3;
@@ -90,6 +111,41 @@ public class Color {
     }
     float m = value - chroma;
 
-    return new Color(rgb[0] + m, rgb[1] + m, rgb[2] + m);
+    this.setRed(rgb[0] + m);
+    this.setGreen(rgb[1] + m);
+    this.setBlue(rgb[2] + m);
+  }
+
+  public void setHSV(float[] hsv) {
+    this.setHSV(hsv[0], hsv[1], hsv[2]);
+  }
+
+  public float[] getHSV() {
+
+    // from https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
+
+    float xMax = Math.max(this.red, Math.max(this.green, this.blue));
+    float xMin = Math.min(this.red, Math.min(this.green, this.blue));
+    float v = xMax;
+    float c = Math.abs(xMax - xMin);
+    float h = 0;
+    if (c == 0) {
+      h = 0;
+    } else if (v == this.red) {
+      h = (float)(Math.PI / 3f) * (0 + (this.green - this.blue) / c);
+    } else if (v == this.green) {
+      h = (float)(Math.PI / 3f) * (2 + (this.blue - this.red) / c);
+    } else if (v == this.blue) {
+      h = (float)(Math.PI / 3f) * (4 + (this.red - this.green) / c);
+    }
+    h = h < 0? (((float)Math.PI * 2) + h) % ((float)Math.PI * 2) : h;
+    float s = v == 0 ? 0f : c / v;
+    return new float[]{h, s, v};
+  }
+
+  public static Color colorFromHSV(float hue, float saturation, float value) {
+    Color rColor = new Color("#ffffff");
+    rColor.setHSV(hue, saturation, value);
+    return rColor;
   }
 }

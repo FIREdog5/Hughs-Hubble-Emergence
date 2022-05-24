@@ -14,12 +14,14 @@ import bin.graphics.objects.Global;
 
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxRow;
+import bin.graphics.ui.UIBoxCol;
 import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIButton;
 import bin.graphics.ui.UIImage;
 import bin.graphics.ui.UITextBlock;
 
 import bin.graphics.ui.complex.UIToolTip;
+import bin.graphics.ui.complex.UIModal;
 
 import com.jogamp.opengl.GL2;
 import java.awt.MouseInfo;
@@ -49,6 +51,9 @@ public class Editor extends Thread{
 
     clickHandler = new ClickHandler();
     screen = new UIScreen();
+
+    // top bar menu in UI
+    // move to its own function..
 
     UICenter topBarCenterer = new UICenter(screen);
     topBarCenterer.centerY = false;
@@ -145,6 +150,23 @@ public class Editor extends Thread{
 
     mapToolTip.addChild(mapToolTipText);
 
+    // color modal test button
+
+    UIButton colorModalTestButton = new UIButton(screen) {
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        openColorModal(new Color("#ffffff"));
+      }
+    };
+    colorModalTestButton.minHeight = 3f;
+    colorModalTestButton.minWidth = 3f;
+    colorModalTestButton.color = new Color("#ffffff");
+    colorModalTestButton.mouseOverColor = new Color("#404040");
+
+    screen.addChild(colorModalTestButton);
+    clickHandler.register(colorModalTestButton);
+
 
     world = new EditorWorld();
     world.addWorldObject(new Planet(0, 0, Palettes.earth1));
@@ -188,6 +210,53 @@ public class Editor extends Thread{
 
     }
     screen.render();
+  }
+
+  private static void openColorModal(Color color) {
+    Color newColor = new Color("#ffffff");
+    newColor.setRGB(color.getRGB());
+    UIModal colorModal = new UIModal(screen);
+    colorModal.centerBox.color = new Color("#000000");
+    colorModal.centerBox.outlineColor = new Color("#ffffff");
+    colorModal.centerBox.outlineWeight = .1f;
+    screen.addChild(colorModal);
+    clickHandler.setMask(colorModal.centerBox);
+
+    //placeholder for content
+
+    UIBoxCol placeholder = new UIBoxCol(colorModal.centerBox);
+    placeholder.minWidth = 10f;
+    placeholder.minHeight = 15f;
+    placeholder.color = new Color("#888888");
+    placeholder.padding = .5f;
+    colorModal.addChild(placeholder);
+
+    //bottom bar with cancel and confirm buttons
+    UIBoxRow bottomBar = new UIBoxRow(colorModal.centerBox);
+    bottomBar.outlineWeight = 0;
+    bottomBar.noBackground = true;
+    colorModal.addChild(bottomBar);
+    UIButton cancelButton = new UIButton(bottomBar){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        colorModal.close();
+      }
+    };
+    cancelButton.color = new Color("#000000");
+    cancelButton.outlineColor = new Color("#ffffff");
+    cancelButton.outlineWeight = .1f;
+    cancelButton.noBackground = false;
+    cancelButton.padding = .5f;
+    cancelButton.margin = .3f;
+    cancelButton.mouseOverColor = new Color("aa0000");
+    bottomBar.addChild(cancelButton);
+    clickHandler.register(cancelButton);
+    UITextBlock cancelButtonText = new UITextBlock(cancelButton, "Cancel", .5f);
+    cancelButtonText.textColor = new Color("#ffffff");
+    cancelButtonText.noBackground = false;
+    cancelButton.addChild(cancelButtonText);
   }
 
   private static boolean lockContext() {
