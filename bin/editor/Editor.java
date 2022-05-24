@@ -219,6 +219,7 @@ public class Editor extends Thread{
     colorModal.centerBox.color = new Color("#000000");
     colorModal.centerBox.outlineColor = new Color("#ffffff");
     colorModal.centerBox.outlineWeight = .1f;
+    colorModal.centerBox.radius = .5f;
     screen.addChild(colorModal);
     clickHandler.setMask(colorModal.centerBox);
 
