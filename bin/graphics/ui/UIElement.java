@@ -3,6 +3,7 @@ package bin.graphics.ui;
 import bin.input.IClickable;
 
 import java.util.ArrayList;
+import java.lang.AssertionError;
 
 public abstract class UIElement {
   public float x;
@@ -31,6 +32,9 @@ public abstract class UIElement {
   public abstract void render();
   public abstract void cleanUp();
   public void addChild(UIElement child) {
+    if (child.parent != this) {
+      throw new AssertionError("the child being added does not have the correct parent");
+    }
     this.children.add(child);
   }
   public boolean deepContains(UIElement target) {

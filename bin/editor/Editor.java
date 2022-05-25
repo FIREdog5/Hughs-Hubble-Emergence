@@ -22,6 +22,7 @@ import bin.graphics.ui.UITextBlock;
 
 import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UIModal;
+import bin.graphics.ui.complex.UIColorWheel;
 
 import com.jogamp.opengl.GL2;
 import java.awt.MouseInfo;
@@ -152,17 +153,26 @@ public class Editor extends Thread{
 
     // color modal test button
 
+    Color pickedColor = new Color("#ffffff");
+
+    UIBoxCol colorModalTestButtonBackground = new UIBoxCol(screen);
+    colorModalTestButtonBackground.minHeight = 3f;
+    colorModalTestButtonBackground.minWidth = 3f;
+    colorModalTestButtonBackground.color = pickedColor;
+
+    screen.addChild(colorModalTestButtonBackground);
+
     UIButton colorModalTestButton = new UIButton(screen) {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        openColorModal(new Color("#ffffff"));
+        openColorModal(pickedColor);
       }
     };
     colorModalTestButton.minHeight = 3f;
     colorModalTestButton.minWidth = 3f;
-    colorModalTestButton.color = new Color("#ffffff");
-    colorModalTestButton.mouseOverColor = new Color("#404040");
+    colorModalTestButton.color = new Color("#000000", 0);
+    colorModalTestButton.mouseOverColor = new Color("#000000", .3f);
 
     screen.addChild(colorModalTestButton);
     clickHandler.register(colorModalTestButton);
@@ -212,9 +222,9 @@ public class Editor extends Thread{
     screen.render();
   }
 
-  private static void openColorModal(Color color) {
+  private static void openColorModal(Color colorPointer) {
     Color newColor = new Color("#ffffff");
-    newColor.setRGB(color.getRGB());
+    newColor.setRGB(colorPointer.getRGB());
     UIModal colorModal = new UIModal(screen);
     colorModal.centerBox.color = new Color("#000000");
     colorModal.centerBox.outlineColor = new Color("#ffffff");
@@ -225,18 +235,39 @@ public class Editor extends Thread{
 
     //placeholder for content
 
+    UICenter colorWheelCenterer = new UICenter(colorModal.centerBox);
+    colorWheelCenterer.centerY = false;
+    colorModal.addChild(colorWheelCenterer);
+
+    UIBoxRow colorWheelRow = new UIBoxRow(colorWheelCenterer);
+    colorWheelRow.outlineWeight = 0;
+    colorWheelRow.noBackground = true;
+    colorWheelCenterer.addChild(colorWheelRow);
+
+    UIColorWheel colorWheel = new UIColorWheel(colorWheelRow, newColor);
+    colorWheel.circleRadius = 2.5f;
+    colorWheel.padding = .5f;
+    colorWheelRow.addChild(colorWheel);
+    clickHandler.register(colorWheel);
+
     UIBoxCol placeholder = new UIBoxCol(colorModal.centerBox);
     placeholder.minWidth = 10f;
-    placeholder.minHeight = 15f;
-    placeholder.color = new Color("#888888");
+    placeholder.minHeight = 10f;
+    placeholder.color = newColor;
     placeholder.padding = .5f;
     colorModal.addChild(placeholder);
 
     //bottom bar with cancel and confirm buttons
-    UIBoxRow bottomBar = new UIBoxRow(colorModal.centerBox);
+
+    UICenter bottomBarCenterer = new UICenter(colorModal.centerBox);
+    bottomBarCenterer.centerY = false;
+    colorModal.addChild(bottomBarCenterer);
+
+    UIBoxRow bottomBar = new UIBoxRow(bottomBarCenterer);
     bottomBar.outlineWeight = 0;
     bottomBar.noBackground = true;
-    colorModal.addChild(bottomBar);
+    bottomBarCenterer.addChild(bottomBar);
+
     UIButton cancelButton = new UIButton(bottomBar){
       @Override
       public void mousedUp(float x, float y) {
@@ -258,6 +289,29 @@ public class Editor extends Thread{
     cancelButtonText.textColor = new Color("#ffffff");
     cancelButtonText.noBackground = false;
     cancelButton.addChild(cancelButtonText);
+
+    UIButton confirmButton = new UIButton(bottomBar){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        colorPointer.setRGB(newColor.getRGB());
+        clickHandler.clearMask();
+        colorModal.close();
+      }
+    };
+    confirmButton.color = new Color("#000000");
+    confirmButton.outlineColor = new Color("#ffffff");
+    confirmButton.outlineWeight = .1f;
+    confirmButton.noBackground = false;
+    confirmButton.padding = .5f;
+    confirmButton.margin = .3f;
+    confirmButton.mouseOverColor = new Color("00aa00");
+    bottomBar.addChild(confirmButton);
+    clickHandler.register(confirmButton);
+    UITextBlock confirmButtonText = new UITextBlock(confirmButton, "Confirm", .5f);
+    confirmButtonText.textColor = new Color("#ffffff");
+    confirmButtonText.noBackground = false;
+    confirmButton.addChild(confirmButtonText);
   }
 
   private static boolean lockContext() {

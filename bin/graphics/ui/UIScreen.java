@@ -65,6 +65,9 @@ public class UIScreen extends UIElement {
 
   @Override
   public void cleanUp() {
+    if (this.children == null) {
+      return;
+    }
     for (int i = 0; i < this.children.size(); i++) {
       UIElement child = this.children.get(i);
       child.parent = null;
