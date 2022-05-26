@@ -1,4 +1,4 @@
-package bin.graphics.ui.complex;
+package bin.graphics.ui.colorUtils;
 
 import bin.graphics.Color;
 import bin.graphics.ui.UIButton;

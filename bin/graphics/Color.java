@@ -1,10 +1,13 @@
 package bin.graphics;
 
 public class Color {
-  private float red;
-  private float green;
-  private float blue;
-  private float alpha;
+  protected float red;
+  protected float green;
+  protected float blue;
+  protected float alpha;
+
+  protected Color refColor;
+
   public Color (String hex) {
     this.setRed(Integer.parseInt(hex.substring(hex.length() - 6, hex.length() - 4), 16) / 256f);
     this.setGreen(Integer.parseInt(hex.substring(hex.length() - 4, hex.length() - 2), 16) / 256f);
@@ -31,6 +34,18 @@ public class Color {
     this.setGreen(g);
     this.setBlue(b);
     this.setAlpha(a);
+  }
+
+  public Color (Color refColor) {
+    this.refColor = refColor;
+    this.transformRef();
+  }
+
+  protected void transformRef() {
+    if (this.refColor == null) {
+      return;
+    }
+    this.setRGBA(this.refColor.getRGBA());
   }
 
   public void setRed(float value) {
@@ -63,26 +78,32 @@ public class Color {
   }
 
   public float getRed() {
+    this.transformRef();
     return this.red;
   }
 
   public float getGreen() {
+    this.transformRef();
     return this.green;
   }
 
   public float getBlue() {
+    this.transformRef();
     return this.blue;
   }
 
   public float getAlpha() {
+    this.transformRef();
     return this.alpha;
   }
 
   public float[] getRGB() {
+    this.transformRef();
     return new float[]{this.red, this.green, this.blue};
   }
 
   public float[] getRGBA() {
+    this.transformRef();
     return new float[]{this.red, this.green, this.blue, this.alpha};
   }
 
@@ -121,6 +142,7 @@ public class Color {
   }
 
   public float[] getHSV() {
+    this.transformRef();
 
     // from https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
 

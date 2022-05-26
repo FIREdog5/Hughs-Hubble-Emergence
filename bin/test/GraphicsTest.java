@@ -15,6 +15,8 @@ import bin.graphics.objects.RoundedBoxOutline;
 import bin.graphics.objects.Text;
 import bin.graphics.objects.ReRendered;
 import bin.graphics.objects.ColorWheel;
+import bin.graphics.objects.Pointer;
+import bin.graphics.objects.PointerOutline;
 import bin.graphics.Color;
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxCol;
@@ -272,6 +274,15 @@ public class GraphicsTest extends Thread{
 
       //draw UI
       screen.render();
+
+      //pointers
+      Global.drawColor(new Color("#0000ff"));
+      Pointer.draw(camera.convertXToCamera(-30), camera.convertYToCamera(70), camera.scaleToZoom(9), camera.scaleToZoom(3), "right");
+      Pointer.draw(camera.convertXToCamera(-30), camera.convertYToCamera(65), camera.scaleToZoom(9), camera.scaleToZoom(3), "left");
+
+      Global.drawColor(new Color("#ffffff"));
+      PointerOutline.draw(camera.convertXToCamera(-30), camera.convertYToCamera(70), camera.scaleToZoom(9), camera.scaleToZoom(3), "right", camera.scaleToZoom(.3f));
+      PointerOutline.draw(camera.convertXToCamera(-30), camera.convertYToCamera(65), camera.scaleToZoom(9), camera.scaleToZoom(3), "left", camera.scaleToZoom(.3f));
 
       //draw blackhole
       float bhX = 0f;
