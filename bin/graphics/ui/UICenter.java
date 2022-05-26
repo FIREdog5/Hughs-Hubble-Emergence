@@ -63,9 +63,9 @@ public class UICenter extends UIBox {
   public float getPadding() {
     if (this.children.size() > 0) {
       UIElement child = this.children.get(0);
-      return child.getPadding();
+      return child.getPadding() + this.padding;
     } else {
-      return 0;
+      return this.padding;
     }
   }
 

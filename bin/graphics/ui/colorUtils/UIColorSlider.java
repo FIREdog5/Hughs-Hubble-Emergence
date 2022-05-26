@@ -97,7 +97,15 @@ public class UIColorSlider extends UIBoxRow {
 
       @Override
       public boolean isMouseOver(float x, float y) {
-        return (x >= this.getX() + (this.getWidth() - this.getChildWidth()) && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2) || (x >= displayBar.getX() && x <= displayBar.getX() + displayBar.getWidth() && y <= displayBar.getY() && y >= displayBar.getY() - displayBar.getHeight());
+        return (x >= this.getX() + (this.getWidth() - this.getChildWidth() - this.maxWidth) && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2) || (x >= displayBar.getX() && x <= displayBar.getX() + displayBar.getWidth() && y <= displayBar.getY() && y >= displayBar.getY() - displayBar.getHeight());
+      }
+
+      @Override
+      public void mousedDown(float x, float y) {
+        super.mousedDown(x, y);
+        if ((x >= displayBar.getX() && x <= displayBar.getX() + displayBar.getWidth() && y <= displayBar.getY() && y >= displayBar.getY() - displayBar.getHeight())) {
+          this.deltaY = 0;
+        }
       }
 
     };
@@ -110,7 +118,7 @@ public class UIColorSlider extends UIBoxRow {
 
     this.slider.minHeight = .5f;
     this.slider.maxWidth = 1;
-    this.slider.minWidth = 1;
+    this.slider.minWidth = 0;
     this.slider.maxHeight = 5;
 
     this.addChild(slider);

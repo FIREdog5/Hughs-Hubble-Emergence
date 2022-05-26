@@ -19,6 +19,7 @@ import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIButton;
 import bin.graphics.ui.UIImage;
 import bin.graphics.ui.UITextBlock;
+import bin.graphics.ui.UIElement;
 
 import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UIModal;
@@ -255,17 +256,17 @@ public class Editor extends Thread{
 
     UICenter colorWheelCenterer = new UICenter(colorSettersRow);
     colorWheelCenterer.centerX = false;
+    colorWheelCenterer.padding = .5f;
     colorSettersRow.addChild(colorWheelCenterer);
 
-    UIBoxRow colorWheelRow = new UIBoxRow(colorWheelCenterer);
-    colorWheelRow.outlineWeight = 0;
-    colorWheelRow.noBackground = true;
-    colorWheelCenterer.addChild(colorWheelRow);
+    UIBoxCol colorWheelCol = new UIBoxCol(colorWheelCenterer);
+    colorWheelCol.outlineWeight = 0;
+    colorWheelCol.noBackground = true;
+    colorWheelCenterer.addChild(colorWheelCol);
 
-    UIColorWheel colorWheel = new UIColorWheel(colorWheelRow, newColor);
+    UIColorWheel colorWheel = new UIColorWheel(colorWheelCol, newColor);
     colorWheel.circleRadius = 5f;
-    colorWheel.padding = .5f;
-    colorWheelRow.addChild(colorWheel);
+    colorWheelCol.addChild(colorWheel);
     clickHandler.register(colorWheel);
 
     UIBoxCol sliderCol = new UIBoxCol(colorSettersRow);
@@ -277,71 +278,26 @@ public class Editor extends Thread{
     UIBoxRow rgbSliderRow = new UIBoxRow(sliderCol);
     rgbSliderRow.noBackground = true;
     rgbSliderRow.outlineWeight = 0;
-    rgbSliderRow.padding = .5f;
     sliderCol.addChild(rgbSliderRow);
 
-    UIColorSlider redSlider = new UIColorSlider(rgbSliderRow, newColor, clickHandler, "red");
-    redSlider.slider.color = new Color("#000000");
-    redSlider.slider.mouseOverColor = new Color("#777777");
-    redSlider.slider.outlineColor = new Color("#ffffff");
-    redSlider.slider.outlineWeight = .1f;
-    redSlider.padding = .1f;
-    rgbSliderRow.addChild(redSlider);
+    addColorSlider(rgbSliderRow, newColor, "red", "R");
+    addColorSlider(rgbSliderRow, newColor, "green", "G");
+    addColorSlider(rgbSliderRow, newColor, "blue", "B");
 
-    UIColorSlider greenSlider = new UIColorSlider(rgbSliderRow, newColor, clickHandler, "green");
-    greenSlider.slider.color = new Color("#000000");
-    greenSlider.slider.mouseOverColor = new Color("#777777");
-    greenSlider.slider.outlineColor = new Color("#ffffff");
-    greenSlider.slider.outlineWeight = .1f;
-    greenSlider.padding = .1f;
-    rgbSliderRow.addChild(greenSlider);
-
-    UIColorSlider blueSlider = new UIColorSlider(rgbSliderRow, newColor, clickHandler, "blue");
-    blueSlider.slider.color = new Color("#000000");
-    blueSlider.slider.mouseOverColor = new Color("#777777");
-    blueSlider.slider.outlineColor = new Color("#ffffff");
-    blueSlider.slider.outlineWeight = .1f;
-    blueSlider.padding = .1f;
-    rgbSliderRow.addChild(blueSlider);
+    UIBoxRow hsvSliderPadding = new UIBoxRow(sliderCol);
+    hsvSliderPadding.noBackground = true;
+    hsvSliderPadding.outlineWeight = 0;
+    hsvSliderPadding.minHeight = .5f;
+    sliderCol.addChild(hsvSliderPadding);
 
     UIBoxRow hsvSliderRow = new UIBoxRow(sliderCol);
     hsvSliderRow.noBackground = true;
     hsvSliderRow.outlineWeight = 0;
-    hsvSliderRow.padding = .5f;
     sliderCol.addChild(hsvSliderRow);
 
-    UIColorSlider hueSlider = new UIColorSlider(hsvSliderRow, newColor, clickHandler, "hue");
-    hueSlider.slider.color = new Color("#000000");
-    hueSlider.slider.mouseOverColor = new Color("#777777");
-    hueSlider.slider.outlineColor = new Color("#ffffff");
-    hueSlider.slider.outlineWeight = .1f;
-    hueSlider.padding = .1f;
-    hsvSliderRow.addChild(hueSlider);
-
-    UIColorSlider saturationSlider = new UIColorSlider(hsvSliderRow, newColor, clickHandler, "saturation");
-    saturationSlider.slider.color = new Color("#000000");
-    saturationSlider.slider.mouseOverColor = new Color("#777777");
-    saturationSlider.slider.outlineColor = new Color("#ffffff");
-    saturationSlider.slider.outlineWeight = .1f;
-    saturationSlider.padding = .1f;
-    hsvSliderRow.addChild(saturationSlider);
-
-    UIColorSlider valueSlider = new UIColorSlider(hsvSliderRow, newColor, clickHandler, "value");
-    valueSlider.slider.color = new Color("#000000");
-    valueSlider.slider.mouseOverColor = new Color("#777777");
-    valueSlider.slider.outlineColor = new Color("#ffffff");
-    valueSlider.slider.outlineWeight = .1f;
-    valueSlider.padding = .1f;
-    hsvSliderRow.addChild(valueSlider);
-
-    //placeholder for content
-
-    UIBoxCol placeholder = new UIBoxCol(colorModal.centerBox);
-    placeholder.minWidth = 10f;
-    placeholder.minHeight = 10f;
-    placeholder.color = newColor;
-    placeholder.padding = .5f;
-    colorModal.addChild(placeholder);
+    addColorSlider(hsvSliderRow, newColor, "hue", "H");
+    addColorSlider(hsvSliderRow, newColor, "saturation", "S");
+    addColorSlider(hsvSliderRow, newColor, "value", "V");
 
     //bottom bar with cancel and confirm buttons
 
@@ -398,6 +354,41 @@ public class Editor extends Thread{
     confirmButtonText.textColor = new Color("#ffffff");
     confirmButtonText.noBackground = false;
     confirmButton.addChild(confirmButtonText);
+  }
+
+  private static void addColorSlider(UIElement parent, Color newColor, String val, String name) {
+
+    UIBoxCol sliderCol = new UIBoxCol(parent);
+    sliderCol.outlineWeight = 0;
+    sliderCol.noBackground = true;
+    parent.addChild(sliderCol);
+
+    UICenter textCenterer = new UICenter(sliderCol);
+    textCenterer.centerY = false;
+    sliderCol.addChild(textCenterer);
+
+    UIBoxRow namePlateRow = new UIBoxRow(textCenterer);
+    namePlateRow.outlineWeight = 0;
+    namePlateRow.noBackground = true;
+    textCenterer.addChild(namePlateRow);
+
+    UIBoxRow manualPadding = new UIBoxRow(namePlateRow);
+    manualPadding.outlineWeight = 0;
+    manualPadding.noBackground = true;
+    manualPadding.minWidth = 1;
+    namePlateRow.addChild(manualPadding);
+
+    UITextBlock silderText = new UITextBlock(namePlateRow, name, .5f);
+    silderText.textColor = new Color("#ffffff");
+    namePlateRow.addChild(silderText);
+
+    UIColorSlider Slider = new UIColorSlider(sliderCol, newColor, clickHandler, val);
+    Slider.slider.color = new Color("#000000");
+    Slider.slider.mouseOverColor = new Color("#777777");
+    Slider.slider.outlineColor = new Color("#ffffff");
+    Slider.slider.outlineWeight = .1f;
+    Slider.padding = .3f;
+    sliderCol.addChild(Slider);
   }
 
   private static boolean lockContext() {

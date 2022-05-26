@@ -15,7 +15,7 @@ public class UIVerticalValueSlider extends UIButton {
    public float minValue;
    public String facing;
 
-   private float deltaY;
+   protected float deltaY;
 
    public UIVerticalValueSlider(UIElement parent) {
       super(parent);
@@ -76,7 +76,7 @@ public class UIVerticalValueSlider extends UIButton {
 
    @Override
    public boolean isMouseOver(float x, float y) {
-     return x >= this.getX() + (this.getWidth() - this.getChildWidth()) && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2;
+     return x >= this.getX() + (this.getWidth() - this.getChildWidth() - this.maxWidth) && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2;
    }
 
    @Override
