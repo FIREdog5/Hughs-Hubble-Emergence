@@ -47,44 +47,26 @@ public class UIColorSlider extends UIBoxRow {
         switch(val) {
           case "red":
             colorData.setRed(value);
-            hsv = colorData.getHSV();
-            if(hsv[1] == 0)
-            {
-              hsv[1] = .000001f;
-            }
-            colorData.setHSV(hsv);
             return;
           case "green":
             colorData.setGreen(value);
-            hsv = colorData.getHSV();
-            if(hsv[1] == 0)
-            {
-              hsv[1] = .000001f;
-            }
-            colorData.setHSV(hsv);
             return;
           case "blue":
             colorData.setBlue(value);
-            hsv = colorData.getHSV();
-            if(hsv[1] == 0)
-            {
-              hsv[1] = .000001f;
-            }
-            colorData.setHSV(hsv);
             return;
           case "hue":
             hsv = colorData.getHSV();
             hsv[0] = value;
             wasHigh = value > Math.PI;
+            if(hsv[1] == 0)
+            {
+              hsv[1] = .000001f;
+            }
             colorData.setHSV(hsv);
             return;
           case "saturation":
             hsv = colorData.getHSV();
             hsv[1] = value;
-            if(hsv[1] == 0)
-            {
-              hsv[1] = .000001f;
-            }
             colorData.setHSV(hsv);
             return;
           case "value":

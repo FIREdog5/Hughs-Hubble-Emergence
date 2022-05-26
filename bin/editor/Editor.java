@@ -230,10 +230,6 @@ public class Editor extends Thread{
   private static void openColorModal(Color colorPointer) {
     Color newColor = new Color("#ffffff");
     float[] hsv = colorPointer.getHSV();
-    if(hsv[1] == 0)
-    {
-      hsv[1] = .000001f;
-    }
     newColor.setHSV(hsv);
     UIModal colorModal = new UIModal(screen);
     colorModal.centerBox.color = new Color("#000000");
