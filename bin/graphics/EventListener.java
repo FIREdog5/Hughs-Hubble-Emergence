@@ -82,7 +82,7 @@ public abstract class EventListener implements GLEventListener {
     gl.glClearColor(0,0,0,1);
     gl.glEnable(GL2.GL_TEXTURE_2D);
     // TODO: graphics settings for text here
-    ClientMain.textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36), true, false, new TextRenderer.DefaultRenderDelegate(), true);
+    ClientMain.textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36));
     Shaders.init();
     ImageResources.init();
   }
