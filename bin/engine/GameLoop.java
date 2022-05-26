@@ -44,19 +44,19 @@ public class GameLoop extends Thread{
     world.renderWorld();
   }
 
-  public static void zoomWorld(float deltaZoom) {
+  public static void zoomWorld(Point location, float deltaZoom) {
     if (world == null) {
       return;
     }
     world.camera.adjustZoom(deltaZoom);
   }
 
-  public static void mousePressed() {
+  public static void mousePressed(Point location) {
     startLoc = MouseInfo.getPointerInfo().getLocation();
     mouseIsPressed = true;
   }
 
-  public static void mouseReleased() {
+  public static void mouseReleased(Point location) {
     mouseIsPressed = false;
   }
 

@@ -319,12 +319,11 @@ public class GraphicsTest extends Thread{
       }
     }
 
-    public static void mouseScrolled(float amount) {
-      zoomWorld(amount);
+    public static void mouseScrolled(Point location, float amount) {
+      zoomWorld(location, amount);
       if (clickHandler == null || !lockContext()) {
         return;
       }
-      Point location = MouseInfo.getPointerInfo().getLocation();
       float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
@@ -332,20 +331,19 @@ public class GraphicsTest extends Thread{
       releaseContext();
     }
 
-    private static void zoomWorld(float deltaZoom) {
+    private static void zoomWorld(Point location, float deltaZoom) {
       if (camera == null) {
         return;
       }
       camera.adjustZoom(deltaZoom);
     }
 
-    public static void mousePressed() {
+    public static void mousePressed(Point location) {
       startLoc = MouseInfo.getPointerInfo().getLocation();
       mouseIsPressed = true;
       if (clickHandler == null || !lockContext()) {
         return;
       }
-      Point location = MouseInfo.getPointerInfo().getLocation();
       float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
@@ -353,12 +351,11 @@ public class GraphicsTest extends Thread{
       releaseContext();
     }
 
-    public static void mouseReleased() {
+    public static void mouseReleased(Point location) {
       mouseIsPressed = false;
       if (clickHandler == null || !lockContext()) {
         return;
       }
-      Point location = MouseInfo.getPointerInfo().getLocation();
       float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
@@ -367,11 +364,10 @@ public class GraphicsTest extends Thread{
       releaseContext();
     }
 
-    public static void mouseMoved() {
+    public static void mouseMoved(Point location) {
       if (clickHandler == null || !lockContext()) {
         return;
       }
-      Point location = MouseInfo.getPointerInfo().getLocation();
       float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
@@ -379,11 +375,10 @@ public class GraphicsTest extends Thread{
       releaseContext();
     }
 
-    public static void mouseDragged() {
+    public static void mouseDragged(Point location) {
       if (clickHandler == null || !lockContext()) {
         return;
       }
-      Point location = MouseInfo.getPointerInfo().getLocation();
       float unitX = (location.x / (float) Renderer.getWindowWidth() - .5f) * (float) Renderer.unitsWide;
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
       float unitY = (location.y / (float) Renderer.getWindowHeight() - .5f) * -unitsTall;
