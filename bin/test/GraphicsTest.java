@@ -223,6 +223,10 @@ public class GraphicsTest extends Thread{
       Global.drawColor(new Color("#ffffff"));
       Image.draw(ImageResources.primordialGalaxy, camera.convertXToCamera(110), camera.convertYToCamera(50), camera.scaleToZoom(162), camera.scaleToZoom(108));
 
+      //draw test images
+      Global.drawColor(new Color("#ffffff"));
+      Image.draw(ImageResources.sphericalTest, camera.convertXToCamera(110), camera.convertYToCamera(-19), camera.scaleToZoom(93), camera.scaleToZoom(30));
+      Globe.draw(ImageResources.sphericalTest, camera.scaleToZoom(15), camera.convertXToCamera(110), camera.convertYToCamera(-49));
 
       //draw circles
       Global.drawColor(new Color("#ffffff"));

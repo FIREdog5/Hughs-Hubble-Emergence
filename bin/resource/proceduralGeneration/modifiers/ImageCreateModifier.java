@@ -15,7 +15,7 @@ public class ImageCreateModifier implements IBasicImageModifier {
   }
   @Override
   public BufferedImage resolve(BufferedImage image) {
-    return ImageGenerator.OpenSimpleNoiseTexture(this.seed, this.featureSize, image.getWidth(), image.getHeight());
+    return ImageGenerator.SphericalOpenSimplexNoise(this.seed, this.featureSize, image.getWidth());
   }
   @Override
   public Parameter[] getParameters() {

@@ -25,6 +25,7 @@ public class ImageResources{
   public static ImageResource terainShaderTest = null;
   public static ImageResource biomeShaderTest = null;
   public static ImageResource biomeGradientTest = null;
+  public static ImageResource sphericalTest = null;
 
   //resources
 
@@ -87,6 +88,8 @@ public class ImageResources{
     baseImage2.addStep(new ImageMultModifier(secondImage2));
     baseImage2.addStep(new ImageContrastModifier(1.6d, -100d));
     generationTest2 = new PolarResource(baseImage2.resolve(2400, 800), 1, 1000);
+
+    sphericalTest = new ImageResource(ImagePreprocessor.doubleImage(ImageGenerator.SphericalOpenSimplexNoise(1L, 70d, 2400)), 1, 1000);
 
 
     //resources

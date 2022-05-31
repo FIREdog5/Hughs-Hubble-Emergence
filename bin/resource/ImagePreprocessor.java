@@ -50,6 +50,27 @@ public class ImagePreprocessor {
     return newImage;
   }
 
+  public static BufferedImage doubleImage(BufferedImage originalImage) {
+    // for (int i = 0; i < originalImage.getHeight(); i++) {
+    //   int circleWidth = originalImage.getHeight() - (int) Math.sqrt(Math.pow(originalImage.getHeight() / 2f, 2) - Math.pow(i - originalImage.getHeight() / 2f, 2));
+    //   float circleRatio = (originalImage.getWidth() + 2f * circleWidth) / (float) originalImage.getWidth();
+    //   for (int j = 0; j < originalImage.getWidth(); j++) {
+    //     int color = originalImage.getRGB((int)(j / circleRatio + circleWidth / 2), i);
+    //     newImage.setRGB(j, i, color);
+    //   }
+    // }
+    // return newImage;
+    BufferedImage newImage = new BufferedImage(originalImage.getWidth() * 2, originalImage.getHeight(), originalImage.getType());
+    for (int i = 0; i < originalImage.getWidth(); i++) {
+      for (int j = 0; j < originalImage.getHeight(); j++) {
+        int color = originalImage.getRGB(i, j);
+        newImage.setRGB(i, j, color);
+        newImage.setRGB(i + originalImage.getWidth(), j, color);
+      }
+    }
+    return newImage;
+  }
+
   private static int mixColors(int color1, int color2, float mixRatio) {
     int red = (int) (mixRatio * (float) ((color1 >> 16) & 255) + (1 - mixRatio) * (float) ((color2 >> 16) & 255));
     int green = (int) (mixRatio * (float) ((color1 >> 8) & 255) + (1 - mixRatio) * (float) ((color2 >> 8) & 255));

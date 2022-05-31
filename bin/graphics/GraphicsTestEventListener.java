@@ -36,7 +36,6 @@ public class GraphicsTestEventListener extends EventListener {
     // RoundedBoxOutline.draw(0, 0, 17, 10, 2, .1f);
     // RoundedBox.draw(0, 0, 4.5f, 9, 1);
 
-
     Global.nextFrame();
     GraphicsTest.render();
   }

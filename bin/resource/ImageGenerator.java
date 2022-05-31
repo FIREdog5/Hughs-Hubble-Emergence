@@ -16,4 +16,29 @@ public class ImageGenerator {
     }
     return newImage;
   }
+
+  public static BufferedImage SphericalOpenSimplexNoise(long seed, double featureSize, int width) {
+    double radius = width / (2f * Math.PI) / featureSize;
+    double dTheta = (2f * Math.PI) / width;
+    int height = (int) (2 * radius * featureSize);
+    double dPhi = (Math.PI) / height;
+    OpenSimplexNoise noise = new OpenSimplexNoise(seed);
+    BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    int i = 0;
+    for (double theta = 0; i < width; theta += dTheta) {
+      int j = 0;
+      for (double phi = 0; j < height; phi += dPhi) {
+        double x = radius * Math.sin(phi) * Math.cos(theta);
+        double y = radius * Math.sin(phi) * Math.sin(theta);
+        double z = radius * Math.cos(phi);
+        double value = noise.eval(x, y, z);
+        int color = 0x010101 * (int)((value + 1) * 127.5);
+        newImage.setRGB(i, j, color);
+        j++;
+      }
+      i++;
+    }
+    return newImage;
+  }
+
 }
