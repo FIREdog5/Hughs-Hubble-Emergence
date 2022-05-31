@@ -40,7 +40,7 @@ public class ImageResources{
     starTest1 = new ImageResource("/assets/images/tests/startest1.png", 8, 3, true);
     primordialGalaxy = new ImageResource("/assets/images/tests/Primordial-galaxy.jpg");
     poleTest = new ImageResource("/assets/images/tests/poletest.png", 1, 60);
-    earthTest = new ImageResource("/assets/images/tests/earth.png", 1, 150);
+    earthTest = new ImageResource("/assets/images/tests/earth2.png", 1, 1000);
     transparencyTest = new ImageResource("/assets/images/tests/transparencyTest.png");
     planetTestMask = new ImageResource("/assets/images/tests/planetTestMask.png", 1, 200);
     cloudTest = new ImageResource("/assets/images/tests/cloudTest.png", 1, 800);
