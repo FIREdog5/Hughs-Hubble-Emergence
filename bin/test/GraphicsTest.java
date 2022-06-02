@@ -228,6 +228,7 @@ public class GraphicsTest extends Thread{
       Image.draw(ImageResources.sphericalTest, camera.convertXToCamera(110), camera.convertYToCamera(-19), camera.scaleToZoom(93), camera.scaleToZoom(30));
       Globe.draw(ImageResources.sphericalTest, camera.scaleToZoom(15), camera.convertXToCamera(110), camera.convertYToCamera(-49));
       Globe.draw(ImageResources.earthTest, camera.scaleToZoom(15), camera.convertXToCamera(140), camera.convertYToCamera(-49));
+      Image.drawNoAA(ImageResources.gradientTest, camera.convertXToCamera(192), camera.convertYToCamera(0), camera.scaleToZoom(1), camera.scaleToZoom(130), 0);
 
       //draw circles
       Global.drawColor(new Color("#ffffff"));

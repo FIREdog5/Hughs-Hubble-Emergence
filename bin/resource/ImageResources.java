@@ -3,6 +3,10 @@ package bin.resource;
 import bin.resource.proceduralGeneration.*;
 import bin.resource.proceduralGeneration.modifiers.*;
 
+import java.awt.image.BufferedImage;
+import bin.graphics.Color;
+
+
 public class ImageResources{
   //tests
   public static ImageResource error = null;
@@ -26,6 +30,7 @@ public class ImageResources{
   public static ImageResource biomeShaderTest = null;
   public static ImageResource biomeGradientTest = null;
   public static ImageResource sphericalTest = null;
+  public static ImageResource gradientTest = null;
 
   //resources
 
@@ -91,6 +96,10 @@ public class ImageResources{
 
     sphericalTest = new ImageResource(ImagePreprocessor.doubleImage(ImageGenerator.SphericalOpenSimplexNoise(1L, 70d, 2400)), 1, 1000);
 
+    BufferedImage gradientTestBuffer = GradientGenerator.newGradient(1);
+    // GradientGenerator.setColumn(gradientTestBuffer, 0, new ColorPosition[]{new ColorPosition(new Color("#ff0000"), 1, 20)}, new ColorPosition[]{new ColorPosition(new Color("#ffff00"), 4, 40)});
+    GradientGenerator.setColumn(gradientTestBuffer, 0, new ColorPosition[]{new ColorPosition(new Color("#ff0000"), 1, 20), new ColorPosition(new Color("#00ff00"), 1, 21), new ColorPosition(new Color("#0000ff"), 1, 30)}, new ColorPosition[]{new ColorPosition(new Color("#ffff00"), 4, 40)});
+    gradientTest = new ImageResource(gradientTestBuffer);
 
     //resources
 
