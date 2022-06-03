@@ -29,11 +29,11 @@ public class Planet implements IDrawable {
   }
   public void render(Camera camera) {
     GL2 gl = ClientMain.gl;
-    GradientHalo.draw(camera.scaleToZoom(this.size + 2), camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y), this.palette.lowerAtmosphereColor, this.palette.upperAtmosphereColor);
+    GradientHalo.draw(camera.scaleToZoom(this.size + 2), camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y), this.palette.getLowerAtmosphereColor(), this.palette.getUpperAtmosphereColor());
 
     Shaders.terrainShader.startShader(gl);
     gl.glActiveTexture(GL2.GL_TEXTURE0+1);
-    gl.glBindTexture(GL2.GL_TEXTURE_2D, this.palette.paletteSampler.getTexture().getTextureObject());
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, this.palette.getPaletteSampler().getTexture().getTextureObject());
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
     gl.glActiveTexture(GL2.GL_TEXTURE0+2);

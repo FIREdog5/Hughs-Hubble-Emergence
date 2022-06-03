@@ -2,7 +2,7 @@ package bin.graphics.ui;
 
 import java.lang.IndexOutOfBoundsException;
 
-public class UICenter extends UIBox {
+public class UICenter extends UIBox implements IPositioner{
 
   public boolean centerX;
   public boolean centerY;
@@ -11,6 +11,13 @@ public class UICenter extends UIBox {
     super(parent);
     this.centerX = true;
     this.centerY = true;
+  }
+
+  public UIElement getRealParent() {
+    if (parent instanceof IPositioner) {
+      return ((IPositioner)this.parent).getRealParent();
+    }
+    return this.parent;
   }
 
   @Override
@@ -40,7 +47,7 @@ public class UICenter extends UIBox {
     }
     UIElement child = this.children.get(0);
     if (this.centerX) {
-      return this.getX() + (this.parent.getWidth() - this.parent.getMargin() - (child.getWidth() + child.getPadding() * 2)) / 2 - child.getPadding() / 2;
+      return this.getX() + (this.getRealParent().getWidth() - this.getRealParent().getMargin() - (child.getWidth() + child.getPadding() * 2)) / 2 - child.getPadding() / 2;
     } else {
       return this.getX();
     }
@@ -53,7 +60,7 @@ public class UICenter extends UIBox {
     }
     UIElement child = this.children.get(0);
     if (this.centerY) {
-      return this.getY() - (this.parent.getHeight() - this.parent.getMargin() - (child.getHeight() + child.getPadding() * 2)) / 2 + child.getPadding() / 2;
+      return this.getY() - (this.getRealParent().getHeight() - this.getRealParent().getMargin() - (child.getHeight() + child.getPadding() * 2)) / 2 + child.getPadding() / 2;
     } else {
       return this.getY();
     }

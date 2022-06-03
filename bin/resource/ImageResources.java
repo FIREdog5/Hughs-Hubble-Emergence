@@ -37,6 +37,7 @@ public class ImageResources{
   //icons
   public static ImageResource globeIcon = null;
   public static ImageResource mapIcon = null;
+  public static ImageResource addIcon = null;
 
   public static void init() {
     //tests
@@ -106,6 +107,7 @@ public class ImageResources{
     //icons
     globeIcon = new ImageResource("/assets/images/icons/globeIcon.png");
     mapIcon = new ImageResource("/assets/images/icons/mapIcon.png");
+    addIcon = new ImageResource("/assets/images/icons/addIcon.png");
 
     System.out.println("Loaded all resources");
   }

@@ -60,6 +60,22 @@ public class UIVerticalValueSlider extends UIButton {
    }
 
    @Override
+   public float getChildX(int i) {
+     if (i >= this.children.size() || i < 0) {
+       throw new IndexOutOfBoundsException("UIVerticalValueSlider does not contain " + i + " children.");
+     }
+     return this.getX();
+   }
+
+   @Override
+   public float getChildY(int i) {
+     if (i >= this.children.size() || i < 0) {
+       throw new IndexOutOfBoundsException("UIVerticalValueSlider does not contain " + i + " children.");
+     }
+     return this.valueToY(this.getValue()) + this.getChildHeight() / 2;
+   }
+
+   @Override
    public void render() {
      if (!this.noBackground) {
        Global.drawColor(this.getColor());

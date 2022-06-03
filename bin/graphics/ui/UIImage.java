@@ -1,23 +1,36 @@
 package bin.graphics.ui;
 
 import bin.graphics.objects.Image;
+import bin.graphics.objects.Global;
+import bin.graphics.Color;
 import bin.resource.ImageResource;
 import bin.resource.ImageResources;
+import bin.Wrapper;
 
 import java.lang.UnsupportedOperationException;
 
 public class UIImage extends UIBox {
 
   public ImageResource image;
+  public Wrapper<ImageResource> imageWrapper;
+  public boolean useAA;
 
   public UIImage(UIElement parent) {
     super(parent);
     this.image = ImageResources.error;
+    this.useAA = true;
   }
 
   public UIImage(UIElement parent, ImageResource image) {
     super(parent);
     this.image = image;
+    this.useAA = true;
+  }
+
+  public UIImage(UIElement parent, Wrapper<ImageResource> imageWrapper) {
+    super(parent);
+    this.imageWrapper = imageWrapper;
+    this.useAA = true;
   }
 
   @Override
@@ -55,9 +68,22 @@ public class UIImage extends UIBox {
 
   @Override
   public void render() {
-    if (this.image == null) {
-      return;
+    if (this.image != null) {
+      Global.drawColor(new Color("#ffffff"));
+      if (this.useAA) {
+        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight());
+      } else {
+        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f);
+      }
     }
-    Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight());
+    if (imageWrapper != null) {
+      Global.drawColor(new Color("#ffffff"));
+      if (this.useAA) {
+        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight());
+      } else {
+        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f);
+      }
+    }
+
   }
 }

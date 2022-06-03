@@ -165,9 +165,22 @@ public class Color {
     return new float[]{h, s, v};
   }
 
+  public String getHex() {
+    return "#" + Integer.toHexString((int)(this.getRed() * 255)) + Integer.toHexString((int)(this.getGreen() * 255)) + Integer.toHexString((int)(this.getBlue() * 255));
+  }
+
   public static Color colorFromHSV(float hue, float saturation, float value) {
     Color rColor = new Color("#ffffff");
     rColor.setHSV(hue, saturation, value);
     return rColor;
   }
+
+  public static Color randomColor() {
+    float randHue = (float)Math.random() * (float)Math.PI * 2;
+    Color rColor = new Color("#ffffff");
+    rColor.setHSV(randHue, 1f, 1f);
+    return rColor;
+  }
+
+
 }

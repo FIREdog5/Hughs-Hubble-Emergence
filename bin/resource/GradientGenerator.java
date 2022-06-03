@@ -21,9 +21,9 @@ public class GradientGenerator {
   }
 
   private static int colorToInt(Color color) {
-    int red = (int)(color.getRed() * 256) * 0x010000;
-    int green = (int)(color.getGreen() * 256) * 0x000100;
-    int blue = (int)(color.getBlue() * 256) * 0x000001;
+    int red = (int)(color.getRed() * 255) * 0x010000;
+    int green = (int)(color.getGreen() * 255) * 0x000100;
+    int blue = (int)(color.getBlue() * 255) * 0x000001;
     return red + green + blue;
   }
 

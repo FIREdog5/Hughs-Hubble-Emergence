@@ -2,15 +2,22 @@ package bin.editor;
 
 import bin.world.Planet;
 import bin.graphics.Renderer;
-import bin.resource.Palettes;
+import bin.resource.palette.EditorPalette;
+import bin.resource.palette.Palette;
 import bin.resource.ImageResources;
 import bin.input.ClickHandler;
 import bin.graphics.Color;
 import bin.graphics.Shaders;
 import bin.ClientMain;
+import bin.Wrapper;
+import bin.resource.ImageResource;
+import bin.resource.GradientGenerator;
+import bin.resource.ColorPosition;
 
 import bin.graphics.objects.Image;
 import bin.graphics.objects.Global;
+import bin.graphics.objects.Pointer;
+import bin.graphics.objects.PointerOutline;
 
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxRow;
@@ -20,17 +27,24 @@ import bin.graphics.ui.UIButton;
 import bin.graphics.ui.UIImage;
 import bin.graphics.ui.UITextBlock;
 import bin.graphics.ui.UIElement;
+import bin.graphics.ui.UIRightPositioner;
+import bin.graphics.ui.UIBoxLayered;
 
 import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UIModal;
+import bin.graphics.ui.complex.UIVerticalValueSlider;
 import bin.graphics.ui.colorUtils.UIColorWheel;
 import bin.graphics.ui.colorUtils.UIColorSlider;
 
+import java.awt.image.BufferedImage;
 import com.jogamp.opengl.GL2;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Editor extends Thread{
 
@@ -39,6 +53,7 @@ public class Editor extends Thread{
   private static ClickHandler clickHandler;
   private static UIScreen screen;
   private static String view = "globe";
+  private static Wrapper<ImageResource> palettResourceWrapper = new Wrapper<ImageResource>();
 
   public static void init() {
     (new Editor()).start();
@@ -54,10 +69,352 @@ public class Editor extends Thread{
 
     clickHandler = new ClickHandler();
     screen = new UIScreen();
+    makeUI();
 
-    // top bar menu in UI
-    // move to its own function..
+    world = new EditorWorld();
+    Palette editorPalette = new EditorPalette(palettResourceWrapper,
+                                               new Color("#03fcf8"), //atmosphere lower
+                                               new Color("#0000ff", .3f) //atmosphere upper
+                                               );
+    world.addWorldObject(new Planet(0, 0, editorPalette));
+    world.addWorldObject(new Planet(20, 20, editorPalette));
+    world.addWorldObject(new Planet(-20, 20, editorPalette));
+    world.addWorldObject(new Planet(-20, -20, editorPalette));
+    world.addWorldObject(new Planet(20, -20, editorPalette));
 
+    System.out.println(EditorUtils.openResource());
+
+    while (this.running) {
+      Renderer.render();
+    }
+  }
+
+  public static void render() {
+    if (world == null) {
+      return;
+    }
+    if (view.equals("globe")) {
+      world.renderWorld();
+    } else if (view.equals("map")) {
+      GL2 gl = ClientMain.gl;
+
+      Shaders.terrainShader.startShader(gl);
+
+      gl.glActiveTexture(GL2.GL_TEXTURE0+1);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, palettResourceWrapper.get().getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+2);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.generationTest2.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0);
+
+      Global.drawColor(new Color("#ffffff"));
+      Image.draw(ImageResources.generationTest, 0, 0, world.camera.scaleToZoom(96), world.camera.scaleToZoom(32));
+
+      Shaders.terrainShader.stopShader(gl);
+
+    }
+    screen.render();
+  }
+
+  private static void makeUI() {
+
+    makeNavButtons();
+    makeSidePaletteBar();
+
+    // color modal test button
+
+    Color pickedColor = new Color("#ffffff");
+
+    Color pickedColorLowS = new Color(pickedColor) {
+      @Override
+      public void transformRef() {
+        super.transformRef();
+        float[] hsv = this.refColor.getHSV();
+        hsv[1] = Math.max(hsv[1] - .5f, 0f);
+        this.setHSV(hsv);
+      }
+    };
+
+    UIButton colorModalTestButton = new UIButton(screen) {
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        openColorModal(pickedColor);
+      }
+    };
+    colorModalTestButton.minHeight = 3f;
+    colorModalTestButton.minWidth = 3f;
+    colorModalTestButton.color = pickedColor;
+    colorModalTestButton.mouseOverColor = pickedColorLowS;
+
+    screen.addChild(colorModalTestButton);
+    clickHandler.register(colorModalTestButton);
+  }
+
+  private static void addDefaultGradientSliders(UIElement parent, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, BufferedImage gradientTestBuffer) {
+    ColorPosition newPosition;
+
+    newPosition = new ColorPosition(new Color("#004CFF"), 1, 255);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#00FFFF"), 1, 213);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#FFAF00"), 1, 212);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#31A500"), 1, 16);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#FFFFFF"), 1, 15);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#86FFFF"), 1, 1);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#FFFFFF"), 1, 0);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+  }
+
+  private static void addGradientSlider(UIElement parent, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, ColorPosition newPosition, BufferedImage gradientTestBuffer) {
+    UIVerticalValueSlider slider = new UIVerticalValueSlider(parent){
+
+      private int oldPos = 0;
+
+      @Override
+      public float getValue() {
+        this.oldPos = newPosition.position;
+        return newPosition.position;
+      }
+
+      @Override
+      public float getChildY(int i) {
+        if (i >= this.children.size() || i < 0) {
+          throw new IndexOutOfBoundsException("UIVerticalValueSlider does not contain " + i + " children.");
+        }
+        return this.valueToY(this.getValue()) + this.getChildHeight() / 2 - this.valueToYRelative(.5f);
+      }
+
+      protected float valueToYRelative(float value) {
+        return this.getHeight() * (value - this.minValue) / (this.maxValue - this.minValue);
+      }
+
+      @Override
+      public void render() {
+        if (!this.noBackground) {
+          Global.drawColor(this.getColor());
+          Pointer.draw(this.getX() + this.getWidth() - this.maxWidth / 2, this.valueToY(this.getValue()) - this.valueToYRelative(.5f), this.maxWidth, this.getChildHeight(), this.facing);
+        }
+        if (this.outlineWeight > 0f) {
+          Global.drawColor(this.getOutlineColor());
+          PointerOutline.draw(this.getX() + this.getWidth() - this.maxWidth / 2, this.valueToY(this.getValue()) - this.valueToYRelative(.5f), this.maxWidth, this.getChildHeight(), this.facing, this.outlineWeight);
+        }
+        for (int i = 0; i < this.children.size(); i++) {
+          this.children.get(i).render();
+        }
+      }
+
+      @Override
+      public void setValue(float value) {
+        boolean taken = false;
+        int correctedValue = (int)(Math.min(value, 255));
+        for (ColorPosition colorPos : gradientPositions) {
+          if (correctedValue == colorPos.position) {
+            taken = true;
+          }
+        }
+        if (taken) {
+          if (correctedValue == 0) {
+            Comparator<ColorPosition> comparator = (ColorPosition o1, ColorPosition o2) -> o1.position - o2.position;
+            Collections.sort(gradientPositions, comparator);
+            int pos = 0;
+            for (ColorPosition colorPos : gradientPositions) {
+              if (colorPos.equals(newPosition)) {
+                break;
+              }
+              if (colorPos.position != pos) {
+                break;
+              }
+              pos++;
+            }
+            newPosition.position = pos;
+          } else if (correctedValue == 255) {
+            Comparator<ColorPosition> comparator = (ColorPosition o1, ColorPosition o2) -> o2.position - o1.position;
+            Collections.sort(gradientPositions, comparator);
+            int pos = 255;
+            for (ColorPosition colorPos : gradientPositions) {
+              if (colorPos.equals(newPosition)) {
+                break;
+              }
+              if (colorPos.position != pos) {
+                break;
+              }
+              pos--;
+            }
+            newPosition.position = pos;
+          } else {
+            newPosition.position = (int) this.oldPos;
+          }
+        } else {
+          newPosition.position = correctedValue;
+        }
+        GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+        palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+      }
+    };
+
+    slider.minValue = 0;
+    slider.maxValue = 256;
+    slider.minHeight = .5f;
+    slider.maxWidth = 1;
+    slider.minWidth = 0;
+    slider.maxHeight = 50;
+    slider.color = new Color("#000000");
+    slider.mouseOverColor = new Color("#777777");
+    slider.outlineColor = new Color("#ffffff");
+    slider.outlineWeight = .1f;
+
+    parent.addChild(slider);
+    clickHandler.register(slider);
+
+    Color newColorLowS = new Color(newPosition.color) {
+      @Override
+      public void transformRef() {
+        super.transformRef();
+        float[] hsv = this.refColor.getHSV();
+        hsv[1] = Math.max(hsv[1] - .5f, 0f);
+        this.setHSV(hsv);
+      }
+    };
+
+    UIButton colorButton = new UIButton(slider) {
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        openColorModal(newPosition.color, () -> {
+          GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+          palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+        });
+      }
+    };
+    colorButton.minHeight = .5f;
+    colorButton.minWidth = .5f;
+    colorButton.color = newPosition.color;
+    colorButton.mouseOverColor = newColorLowS;
+
+    slider.addChild(colorButton);
+    clickHandler.register(colorButton);
+  }
+
+  private static void makeSidePaletteBar() {
+    BufferedImage gradientTestBuffer = GradientGenerator.newGradient(1);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    ArrayList<ColorPosition> gradientPositions = new ArrayList<ColorPosition>();
+    ArrayList<ColorPosition> solidPositions = new ArrayList<ColorPosition>();
+
+    UICenter rightCenterer = new UICenter(screen);
+    screen.addChild(rightCenterer);
+
+    UIRightPositioner rightPositioner = new UIRightPositioner(rightCenterer);
+    rightPositioner.x = .5f;
+    rightCenterer.addChild(rightPositioner);
+
+    UIBoxCol rightContainer = new UIBoxCol(rightPositioner);
+    rightContainer.color = new Color("#000000");
+    rightContainer.outlineColor = new Color("#ffffff");
+    rightContainer.outlineWeight = .1f;
+    rightContainer.radius = .5f;
+    rightPositioner.addChild(rightContainer);
+
+    //TODO remove these eventually
+    rightContainer.minWidth = 15f;
+    rightContainer.minHeight = 40f;
+
+    UIBoxRow buttonsRow = new UIBoxRow(rightContainer);
+    buttonsRow.outlineWeight = 0;
+    buttonsRow.noBackground = true;
+    rightContainer.addChild(buttonsRow);
+
+    UIBoxRow contentRow = new UIBoxRow(rightContainer);
+    contentRow.outlineWeight = 0;
+    contentRow.noBackground = true;
+    contentRow.padding = .5f;
+    rightContainer.addChild(contentRow);
+
+    UIBoxLayered sliderContainer = new UIBoxLayered(contentRow);
+    sliderContainer.outlineWeight = 0;
+    sliderContainer.noBackground = true;
+    sliderContainer.minWidth = 1f;
+    contentRow.addChild(sliderContainer);
+
+    UIButton addNewSliderButton = new UIButton(buttonsRow) {
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        if (gradientPositions.size() == 256) {
+          return;
+        }
+        Comparator<ColorPosition> comparator = (ColorPosition o1, ColorPosition o2) -> o1.position - o2.position;
+        Collections.sort(gradientPositions, comparator);
+        int pos = 0;
+        for (ColorPosition colorPos : gradientPositions) {
+          if (colorPos.position != pos) {
+            break;
+          }
+          pos++;
+        }
+        ColorPosition newPosition = new ColorPosition(Color.randomColor(), 1, pos);
+        gradientPositions.add(newPosition);
+        GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+        palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+
+        addGradientSlider(sliderContainer, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+      }
+    };
+    addNewSliderButton.mouseOverColor = new Color("#00aa00");
+    addNewSliderButton.outlineWeight = .2f;
+    addNewSliderButton.padding = .5f;
+    addNewSliderButton.y = .8f;
+    buttonsRow.addChild(addNewSliderButton);
+    clickHandler.register(addNewSliderButton);
+
+    addDefaultGradientSliders(sliderContainer, gradientPositions, solidPositions, gradientTestBuffer);
+
+    UIImage addIcon = new UIImage(addNewSliderButton, ImageResources.addIcon);
+    addIcon.minWidth = 1f;
+    addIcon.minHeight = 1f;
+    addIcon.padding = .25f;
+    addNewSliderButton.addChild(addIcon);
+
+    UIImage gradientPreview = new UIImage(contentRow, palettResourceWrapper);
+    gradientPreview.minWidth = 1f;
+    gradientPreview.minHeight = 50f;
+    gradientPreview.useAA = false;
+    contentRow.addChild(gradientPreview);
+
+  }
+
+  private static void makeNavButtons() {
     UICenter topBarCenterer = new UICenter(screen);
     topBarCenterer.centerY = false;
     screen.addChild(topBarCenterer);
@@ -152,82 +509,9 @@ public class Editor extends Thread{
     mapToolTipText.textColor = new Color("#ffffff");
 
     mapToolTip.addChild(mapToolTipText);
-
-    // color modal test button
-
-    Color pickedColor = new Color("#ffffff");
-
-    Color pickedColorLowS = new Color(pickedColor) {
-      @Override
-      public void transformRef() {
-        super.transformRef();
-        float[] hsv = this.refColor.getHSV();
-        hsv[1] = Math.max(hsv[1] - .5f, 0f);
-        this.setHSV(hsv);
-      }
-    };
-
-    UIButton colorModalTestButton = new UIButton(screen) {
-      @Override
-      public void mousedUp(float x, float y) {
-        super.mousedUp(x, y);
-        openColorModal(pickedColor);
-      }
-    };
-    colorModalTestButton.minHeight = 3f;
-    colorModalTestButton.minWidth = 3f;
-    colorModalTestButton.color = pickedColor;
-    colorModalTestButton.mouseOverColor = pickedColorLowS;
-
-    screen.addChild(colorModalTestButton);
-    clickHandler.register(colorModalTestButton);
-
-
-    world = new EditorWorld();
-    world.addWorldObject(new Planet(0, 0, Palettes.earth1));
-    world.addWorldObject(new Planet(20, 20, Palettes.earth1));
-    world.addWorldObject(new Planet(-20, 20, Palettes.earth1));
-    world.addWorldObject(new Planet(-20, -20, Palettes.earth1));
-    world.addWorldObject(new Planet(20, -20, Palettes.earth1));
-
-    System.out.println(EditorUtils.openResource());
-
-    while (this.running) {
-      Renderer.render();
-    }
   }
 
-  public static void render() {
-    if (world == null) {
-      return;
-    }
-    if (view.equals("globe")) {
-      world.renderWorld();
-    } else if (view.equals("map")) {
-      GL2 gl = ClientMain.gl;
-
-      Shaders.terrainShader.startShader(gl);
-
-      gl.glActiveTexture(GL2.GL_TEXTURE0+1);
-      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.biomeShaderTest.getTexture().getTextureObject());
-      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
-      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
-      gl.glActiveTexture(GL2.GL_TEXTURE0+2);
-      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.generationTest2.getTexture().getTextureObject());
-      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
-      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
-      gl.glActiveTexture(GL2.GL_TEXTURE0);
-
-      Global.drawColor(new Color("#ffffff"));
-      Image.draw(ImageResources.generationTest, 0, 0, world.camera.scaleToZoom(96), world.camera.scaleToZoom(32));
-
-      Shaders.terrainShader.stopShader(gl);
-
-    }
-    screen.render();
-  }
-
-  private static void openColorModal(Color colorPointer) {
+  private static void openColorModal(Color colorPointer, Runnable afterClose) {
     Color newColor = new Color("#ffffff");
     float[] hsv = colorPointer.getHSV();
     newColor.setHSV(hsv);
@@ -335,6 +619,7 @@ public class Editor extends Thread{
         colorPointer.setRGB(newColor.getRGB());
         clickHandler.clearMask();
         colorModal.close();
+        afterClose.run();
       }
     };
     confirmButton.color = new Color("#000000");
@@ -350,6 +635,10 @@ public class Editor extends Thread{
     confirmButtonText.textColor = new Color("#ffffff");
     confirmButtonText.noBackground = false;
     confirmButton.addChild(confirmButtonText);
+  }
+
+  private static void openColorModal(Color colorPointer) {
+    openColorModal(colorPointer, () -> {});
   }
 
   private static void addColorSlider(UIElement parent, Color newColor, String val, String name) {
@@ -378,13 +667,13 @@ public class Editor extends Thread{
     silderText.textColor = new Color("#ffffff");
     namePlateRow.addChild(silderText);
 
-    UIColorSlider Slider = new UIColorSlider(sliderCol, newColor, clickHandler, val);
-    Slider.slider.color = new Color("#000000");
-    Slider.slider.mouseOverColor = new Color("#777777");
-    Slider.slider.outlineColor = new Color("#ffffff");
-    Slider.slider.outlineWeight = .1f;
-    Slider.padding = .3f;
-    sliderCol.addChild(Slider);
+    UIColorSlider newSlider = new UIColorSlider(sliderCol, newColor, clickHandler, val);
+    newSlider.slider.color = new Color("#000000");
+    newSlider.slider.mouseOverColor = new Color("#777777");
+    newSlider.slider.outlineColor = new Color("#ffffff");
+    newSlider.slider.outlineWeight = .1f;
+    newSlider.padding = .3f;
+    sliderCol.addChild(newSlider);
   }
 
   private static boolean lockContext() {
