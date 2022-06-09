@@ -18,6 +18,7 @@ public class UIButton extends UIBoxCol implements IClickable {
   private int z;
   public Color mouseOverColor;
   public Color mouseOverOutlineColor;
+  protected boolean onTop;
 
   public UIButton(UIElement parent) {
     super(parent);
@@ -26,6 +27,7 @@ public class UIButton extends UIBoxCol implements IClickable {
     this.mouseOverOutlineColor = null;
     this.z = 0;
     this.isDead = false;
+    this.onTop = false;
   }
 
   @Override
@@ -81,7 +83,6 @@ public class UIButton extends UIBoxCol implements IClickable {
     this.isMouseDown = isMouseDown;
   }
 
-
   @Override
   public void render() {
     if (!this.noBackground) {
@@ -96,9 +97,18 @@ public class UIButton extends UIBoxCol implements IClickable {
       this.children.get(i).render();
     }
   }
+
+  public void setOnTop(boolean onTop) {
+    this.onTop = onTop;
+  }
+
   @Override
   public int getZ(){
-    return this.z;
+    if (this.onTop) {
+      return -1;
+    } else {
+      return this.z;
+    }
   }
 
   @Override

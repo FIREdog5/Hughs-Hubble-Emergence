@@ -120,38 +120,8 @@ public class Editor extends Thread{
   }
 
   private static void makeUI() {
-
     makeNavButtons();
     makeSidePaletteBar();
-
-    // color modal test button
-
-    Color pickedColor = new Color("#ffffff");
-
-    Color pickedColorLowS = new Color(pickedColor) {
-      @Override
-      public void transformRef() {
-        super.transformRef();
-        float[] hsv = this.refColor.getHSV();
-        hsv[1] = Math.max(hsv[1] - .5f, 0f);
-        this.setHSV(hsv);
-      }
-    };
-
-    UIButton colorModalTestButton = new UIButton(screen) {
-      @Override
-      public void mousedUp(float x, float y) {
-        super.mousedUp(x, y);
-        openColorModal(pickedColor);
-      }
-    };
-    colorModalTestButton.minHeight = 3f;
-    colorModalTestButton.minWidth = 3f;
-    colorModalTestButton.color = pickedColor;
-    colorModalTestButton.mouseOverColor = pickedColorLowS;
-
-    screen.addChild(colorModalTestButton);
-    clickHandler.register(colorModalTestButton);
   }
 
   private static void addDefaultGradientSliders(UIElement parent, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, BufferedImage gradientTestBuffer) {
@@ -168,6 +138,11 @@ public class Editor extends Thread{
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#FFAF00"), 1, 212);
+    gradientPositions.add(newPosition);
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+    addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+
+    newPosition = new ColorPosition(new Color("#31A500"), 1, 110);
     gradientPositions.add(newPosition);
     palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
@@ -222,15 +197,36 @@ public class Editor extends Thread{
       public void render() {
         if (!this.noBackground) {
           Global.drawColor(this.getColor());
-          Pointer.draw(this.getX() + this.getWidth() - this.maxWidth / 2, this.valueToY(this.getValue()) - this.valueToYRelative(.5f), this.maxWidth, this.getChildHeight(), this.facing);
+          Pointer.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()) - this.valueToYRelative(.5f), this.getWidth(), this.getChildHeight(), this.facing);
         }
         if (this.outlineWeight > 0f) {
           Global.drawColor(this.getOutlineColor());
-          PointerOutline.draw(this.getX() + this.getWidth() - this.maxWidth / 2, this.valueToY(this.getValue()) - this.valueToYRelative(.5f), this.maxWidth, this.getChildHeight(), this.facing, this.outlineWeight);
+          PointerOutline.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()) - this.valueToYRelative(.5f), this.getWidth(), this.getChildHeight(), this.facing, this.outlineWeight);
         }
         for (int i = 0; i < this.children.size(); i++) {
           this.children.get(i).render();
         }
+      }
+
+      @Override
+      public int getZ(){
+        if (this.onTop) {
+          return 100000;
+        } else {
+          return super.getZ();
+        }
+      }
+
+      @Override
+      public void mousedDown(float x, float y) {
+        super.mousedDown(x, y);
+        clickHandler.setMask(this);
+      }
+
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
       }
 
       @Override
@@ -282,10 +278,11 @@ public class Editor extends Thread{
       }
     };
 
+    slider.x = 2.114f;
     slider.minValue = 0;
     slider.maxValue = 256;
     slider.minHeight = .5f;
-    slider.maxWidth = 1;
+    slider.maxWidth = .3f;
     slider.minWidth = 0;
     slider.maxHeight = 50;
     slider.color = new Color("#000000");
@@ -295,6 +292,14 @@ public class Editor extends Thread{
 
     parent.addChild(slider);
     clickHandler.register(slider);
+
+    UIBoxRow sliderButtons = new UIBoxRow(slider);
+    slider.outlineColor = new Color("#ffffff");
+    sliderButtons.outlineWeight = .1f;
+    sliderButtons.noBackground = true;
+    sliderButtons.margin = .1f;
+    slider.addChild(sliderButtons);
+
 
     Color newColorLowS = new Color(newPosition.color) {
       @Override
@@ -306,7 +311,29 @@ public class Editor extends Thread{
       }
     };
 
-    UIButton colorButton = new UIButton(slider) {
+    UIButton menuButton = new UIButton(sliderButtons) {
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        openSliderOptionsModal(slider, newPosition, gradientPositions, solidPositions, gradientTestBuffer, () -> {
+          GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+          palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+        });
+      }
+    };
+    menuButton.color = new Color("#000000");
+    menuButton.mouseOverColor = new Color("#777777");
+    menuButton.setZ(1000000);
+
+    sliderButtons.addChild(menuButton);
+    clickHandler.register(menuButton);
+
+    UIImage menuIcon = new UIImage(menuButton, ImageResources.menuIcon);
+    menuIcon.minWidth = 0f;
+    menuIcon.minHeight = 0f;
+    menuButton.addChild(menuIcon);
+
+    UIButton colorButton = new UIButton(sliderButtons) {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
@@ -316,12 +343,13 @@ public class Editor extends Thread{
         });
       }
     };
-    colorButton.minHeight = .5f;
-    colorButton.minWidth = .5f;
+    colorButton.minHeight = .3f;
+    colorButton.minWidth = .3f;
     colorButton.color = newPosition.color;
     colorButton.mouseOverColor = newColorLowS;
+    colorButton.setZ(1000000);
 
-    slider.addChild(colorButton);
+    sliderButtons.addChild(colorButton);
     clickHandler.register(colorButton);
   }
 
@@ -363,8 +391,90 @@ public class Editor extends Thread{
     UIBoxLayered sliderContainer = new UIBoxLayered(contentRow);
     sliderContainer.outlineWeight = 0;
     sliderContainer.noBackground = true;
-    sliderContainer.minWidth = 1f;
+    sliderContainer.minWidth = 3.4f;
     contentRow.addChild(sliderContainer);
+
+    UIButton sliderControlArea = new UIButton(sliderContainer) {
+      @Override
+      public void mousedDown(float x, float y) {
+
+      }
+
+      @Override
+      public void mouseMoved(float x, float y) {
+        if (!this.getIsMousedOver()) {
+          return;
+        }
+        float minDist = -1;
+        UIVerticalValueSlider closest = null;
+        for (UIElement child : sliderContainer.children) {
+          if (!(child instanceof UIVerticalValueSlider)) {
+            continue;
+          }
+          UIVerticalValueSlider slider = (UIVerticalValueSlider) child;
+          float dist = Math.abs(y - slider.valueToY(slider.getValue()));
+          if (minDist == -1 || dist < minDist) {
+            minDist = dist;
+            closest = slider;
+          }
+        }
+        for (UIElement child : sliderContainer.children) {
+          if (!(child instanceof UIVerticalValueSlider)) {
+            continue;
+          }
+          UIVerticalValueSlider slider = (UIVerticalValueSlider) child;
+          if (closest.equals(slider)) {
+            continue;
+          }
+          slider.x = 2.114f;
+          slider.maxWidth = .3f;
+          slider.setOnTop(false);
+          for (UIElement sliderChild : slider.children) {
+            for (int i = 0; i < sliderChild.children.size(); i++) {
+              UIElement scc = sliderChild.children.get(i);
+              if (i == 0) {
+                scc.minWidth = 0;
+                scc.minHeight = 0;
+                for (UIElement sccc : scc.children) {
+                  sccc.minWidth = 0;
+                  sccc.minHeight = 0;
+                }
+              }
+              if (i == 1) {
+                scc.minWidth = .3f;
+                scc.minHeight = .3f;
+                for (UIElement sccc : scc.children) {
+                  sccc.minWidth = .3f;
+                  sccc.minHeight = .3f;
+                }
+              }
+            }
+          }
+        }
+        closest.maxWidth = 1f;
+        closest.x = 0f;
+        closest.setOnTop(true);
+        for (UIElement sliderChild : closest.children) {
+          for (UIElement scc : sliderChild.children) {
+            scc.minWidth = 1f;
+            scc.minHeight = 1f;
+            for (UIElement sccc : scc.children) {
+              sccc.minWidth = 1f;
+              sccc.minHeight = 1f;
+            }
+          }
+        }
+        Comparator<UIElement> comparator = (UIElement o1, UIElement o2) -> ((UIButton)o1).getZ() < 0 ? 1 : ((UIButton)o2).getZ() < 0 ? -1 : ((UIButton)o1).getZ() - ((UIButton)o2).getZ();
+        Collections.sort(sliderContainer.children, comparator);
+      }
+    };
+    sliderControlArea.outlineWeight = 0f;
+    sliderControlArea.noBackground = true;
+    sliderControlArea.minHeight = 50f;
+    sliderControlArea.minWidth = 3.4f;
+    sliderControlArea.setZ(-1);
+    sliderContainer.addChild(sliderControlArea);
+    clickHandler.register(sliderControlArea);
 
     UIButton addNewSliderButton = new UIButton(buttonsRow) {
       @Override
@@ -392,7 +502,7 @@ public class Editor extends Thread{
       }
     };
     addNewSliderButton.mouseOverColor = new Color("#00aa00");
-    addNewSliderButton.outlineWeight = .2f;
+    addNewSliderButton.outlineWeight = .1f;
     addNewSliderButton.padding = .5f;
     addNewSliderButton.y = .8f;
     buttonsRow.addChild(addNewSliderButton);
@@ -509,6 +619,139 @@ public class Editor extends Thread{
     mapToolTipText.textColor = new Color("#ffffff");
 
     mapToolTip.addChild(mapToolTipText);
+  }
+
+  private static void openSliderOptionsModal(UIVerticalValueSlider slider, ColorPosition colorPosition, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, BufferedImage gradientTestBuffer, Runnable afterClose) {
+    UIModal sliderOptionsModal = new UIModal(screen);
+    sliderOptionsModal.centerBox.color = new Color("#000000");
+    sliderOptionsModal.centerBox.outlineColor = new Color("#ffffff");
+    sliderOptionsModal.centerBox.outlineWeight = .1f;
+    sliderOptionsModal.centerBox.radius = .5f;
+    screen.addChild(sliderOptionsModal);
+    clickHandler.setMask(sliderOptionsModal.centerBox);
+
+    UICenter duplicateButtonCenterer = new UICenter(sliderOptionsModal.centerBox);
+    duplicateButtonCenterer.centerY = false;
+    duplicateButtonCenterer.padding = .3f;
+    sliderOptionsModal.addChild(duplicateButtonCenterer);
+
+    UIButton duplicateButton = new UIButton(duplicateButtonCenterer){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        sliderOptionsModal.close();
+        if (gradientPositions.size() < 256) {
+          Comparator<ColorPosition> comparator = (ColorPosition o1, ColorPosition o2) -> o1.position - o2.position;
+          Collections.sort(gradientPositions, comparator);
+          int pos = colorPosition.position;
+          for (ColorPosition colorPos : gradientPositions) {
+            if (colorPos.position < pos) {
+              continue;
+            }
+            if (colorPos.position != pos) {
+              break;
+            }
+            pos++;
+          }
+          if (pos > 255) {
+            comparator = (ColorPosition o1, ColorPosition o2) -> o2.position - o1.position;
+            Collections.sort(gradientPositions, comparator);
+            pos = colorPosition.position;
+            for (ColorPosition colorPos : gradientPositions) {
+              if (colorPos.position > pos) {
+                continue;
+              }
+              if (colorPos.position != pos) {
+                break;
+              }
+              pos--;
+            }
+          }
+          ColorPosition newPosition = new ColorPosition(colorPosition.color.clone(), 1, pos);
+          gradientPositions.add(newPosition);
+
+          addGradientSlider(slider.parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+          afterClose.run();
+        }
+      }
+    };
+    duplicateButton.color = new Color("#000000");
+    duplicateButton.outlineColor = new Color("#ffffff");
+    duplicateButton.outlineWeight = .1f;
+    duplicateButton.noBackground = false;
+    duplicateButton.padding = .5f;
+    duplicateButton.margin = .3f;
+    duplicateButton.mouseOverColor = new Color("#777777");
+    duplicateButtonCenterer.addChild(duplicateButton);
+    clickHandler.register(duplicateButton);
+    UITextBlock duplicateButtonText = new UITextBlock(duplicateButton, "Duplicate", .5f);
+    duplicateButtonText.textColor = new Color("#ffffff");
+    duplicateButtonText.noBackground = false;
+    duplicateButton.addChild(duplicateButtonText);
+
+    UICenter removeButtonCenterer = new UICenter(sliderOptionsModal.centerBox);
+    removeButtonCenterer.centerY = false;
+    removeButtonCenterer.padding = .3f;
+    sliderOptionsModal.addChild(removeButtonCenterer);
+
+    UIButton removeButton = new UIButton(removeButtonCenterer){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        sliderOptionsModal.close();
+        slider.removeFromParent();
+        if(gradientPositions.contains(colorPosition)) {
+          gradientPositions.remove(colorPosition);
+        }
+        if(solidPositions.contains(colorPosition)) {
+          solidPositions.remove(colorPosition);
+        }
+        afterClose.run();
+      }
+    };
+    removeButton.color = new Color("#000000");
+    removeButton.outlineColor = new Color("#ffffff");
+    removeButton.outlineWeight = .1f;
+    removeButton.noBackground = false;
+    removeButton.padding = .5f;
+    removeButton.margin = .3f;
+    removeButton.mouseOverColor = new Color("#777777");
+    removeButtonCenterer.addChild(removeButton);
+    clickHandler.register(removeButton);
+    UITextBlock removeButtonText = new UITextBlock(removeButton, "Remove", .5f);
+    removeButtonText.textColor = new Color("#ffffff");
+    removeButtonText.noBackground = false;
+    removeButton.addChild(removeButtonText);
+
+    UICenter closeButtonCenterer = new UICenter(sliderOptionsModal.centerBox);
+    closeButtonCenterer.centerY = false;
+    closeButtonCenterer.padding = .3f;
+    sliderOptionsModal.addChild(closeButtonCenterer);
+
+    UIButton closeButton = new UIButton(closeButtonCenterer){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        sliderOptionsModal.close();
+        afterClose.run();
+      }
+    };
+    closeButton.color = new Color("#000000");
+    closeButton.outlineColor = new Color("#ffffff");
+    closeButton.outlineWeight = .1f;
+    closeButton.noBackground = false;
+    closeButton.padding = .5f;
+    closeButton.margin = .3f;
+    closeButton.mouseOverColor = new Color("#aa0000");
+    closeButtonCenterer.addChild(closeButton);
+    clickHandler.register(closeButton);
+    UITextBlock closeButtonText = new UITextBlock(closeButton, "Close", .5f);
+    closeButtonText.textColor = new Color("#ffffff");
+    closeButtonText.noBackground = false;
+    closeButton.addChild(closeButtonText);
   }
 
   private static void openColorModal(Color colorPointer, Runnable afterClose) {

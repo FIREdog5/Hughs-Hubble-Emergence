@@ -38,6 +38,9 @@ public abstract class UIElement {
     this.children.add(child);
   }
   public boolean deepContains(UIElement target) {
+    if (this.equals(target)) {
+      return true;
+    }
     if (this.children.contains(target)) {
       return true;
     } else {
@@ -52,6 +55,9 @@ public abstract class UIElement {
   public boolean deepContains(IClickable target) {
     if (!(target instanceof UIElement)) {
       return false;
+    }
+    if (this.equals((UIElement)target)) {
+      return true;
     }
     if (this.children.contains((UIElement)target)) {
       return true;

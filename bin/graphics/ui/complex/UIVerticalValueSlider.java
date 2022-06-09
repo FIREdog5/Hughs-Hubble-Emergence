@@ -33,11 +33,11 @@ public class UIVerticalValueSlider extends UIButton {
      throw new UnsupportedOperationException();
    }
 
-   protected float valueToY(float value) {
+   public float valueToY(float value) {
      return this.getY() - this.getHeight() * (value - this.minValue) / (this.maxValue - this.minValue);
    }
 
-   protected float yToValue(float y) {
+   public float yToValue(float y) {
      return (this.getY() - y) / this.getHeight() * (this.maxValue - this.minValue) + this.minValue;
    }
 
@@ -48,7 +48,7 @@ public class UIVerticalValueSlider extends UIButton {
 
    @Override
    public float getWidth() {
-     return this.maxWidth + this.getChildWidth();
+     return this.maxWidth + this.getChildWidth() + this.getChildHeight();
    }
 
    protected float getChildHeight() {
@@ -79,11 +79,11 @@ public class UIVerticalValueSlider extends UIButton {
    public void render() {
      if (!this.noBackground) {
        Global.drawColor(this.getColor());
-       Pointer.draw(this.getX() + this.getWidth() - this.maxWidth / 2, this.valueToY(this.getValue()), this.maxWidth, this.getChildHeight(), this.facing);
+       Pointer.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing);
      }
      if (this.outlineWeight > 0f) {
        Global.drawColor(this.getOutlineColor());
-       PointerOutline.draw(this.getX() + this.getWidth() - this.maxWidth / 2, this.valueToY(this.getValue()), this.maxWidth, this.getChildHeight(), this.facing, this.outlineWeight);
+       PointerOutline.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing, this.outlineWeight);
      }
      for (int i = 0; i < this.children.size(); i++) {
        this.children.get(i).render();
@@ -92,7 +92,7 @@ public class UIVerticalValueSlider extends UIButton {
 
    @Override
    public boolean isMouseOver(float x, float y) {
-     return x >= this.getX() + (this.getWidth() - this.getChildWidth() - this.maxWidth) && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2;
+     return x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2;
    }
 
    @Override

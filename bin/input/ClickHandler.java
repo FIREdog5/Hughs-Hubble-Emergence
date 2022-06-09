@@ -65,6 +65,7 @@ public class ClickHandler {
 
   public void processClick(float x, float y) {
     clickablesLock.lock();
+    Collections.sort(this.clickables, comparator);
     try {
       for(IClickable clickable : this.clickables) {
         if (this.mask != null && !this.mask.deepContains(clickable)) {
@@ -88,6 +89,7 @@ public class ClickHandler {
 
   public void processMouseDown(float x, float y, boolean offScreen) {
     clickablesLock.lock();
+    Collections.sort(this.clickables, comparator);
     try {
       ArrayList<IClickable> mousedDownCopy = (ArrayList<IClickable>) this.mousedDown.clone();
       for(IClickable clickable : mousedDownCopy) {
@@ -117,6 +119,7 @@ public class ClickHandler {
 
   public void processMouseMove(float x, float y) {
     clickablesLock.lock();
+    Collections.sort(this.clickables, comparator);
     try {
       ArrayList<IClickable> mousedOverCopy = (ArrayList<IClickable>) this.mousedOver.clone();
       for(IClickable clickable : mousedOverCopy) {
@@ -156,6 +159,7 @@ public class ClickHandler {
 
   public void processScrollOver(float x, float y, float amount) {
     clickablesLock.lock();
+    Collections.sort(this.clickables, comparator);
     try {
       for(IClickable clickable : this.clickables) {
         if (this.mask != null && !this.mask.deepContains(clickable)) {

@@ -79,7 +79,7 @@ public class UIColorSlider extends UIBoxRow {
 
       @Override
       public boolean isMouseOver(float x, float y) {
-        return (x >= this.getX() + (this.getWidth() - this.getChildWidth() - this.maxWidth) && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2) || (x >= displayBar.getX() && x <= displayBar.getX() + displayBar.getWidth() && y <= displayBar.getY() && y >= displayBar.getY() - displayBar.getHeight());
+        return (x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2) || (x >= displayBar.getX() && x <= displayBar.getX() + displayBar.getWidth() && y <= displayBar.getY() && y >= displayBar.getY() - displayBar.getHeight());
       }
 
       @Override
@@ -99,7 +99,7 @@ public class UIColorSlider extends UIBoxRow {
     this.slider.minValue = 0;
 
     this.slider.minHeight = .5f;
-    this.slider.maxWidth = 1;
+    this.slider.maxWidth = .5f;
     this.slider.minWidth = 0;
     this.slider.maxHeight = 5;
 

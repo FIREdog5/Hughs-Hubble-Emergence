@@ -6,6 +6,7 @@ import bin.graphics.objects.RoundedBox;
 import bin.graphics.objects.RoundedBoxOutline;
 
 import java.lang.IndexOutOfBoundsException;
+import java.util.ArrayList;
 
 public abstract class UIBox extends UIElement implements IColorable, IOutlineable {
   public float radius;
@@ -103,4 +104,17 @@ public abstract class UIBox extends UIElement implements IColorable, IOutlineabl
     }
     this.children = null;
   }
+
+  public void removeChildren() {
+    for (int i = 0; i < this.children.size(); i++) {
+      this.children.get(i).cleanUp();
+    }
+    this.children = new ArrayList<UIElement>();
+  }
+
+  public void removeFromParent() {
+    this.parent.children.remove(this);
+    this.cleanUp();
+  }
+
 }

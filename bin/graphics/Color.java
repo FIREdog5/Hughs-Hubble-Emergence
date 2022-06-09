@@ -41,6 +41,10 @@ public class Color {
     this.transformRef();
   }
 
+  public Color clone() {
+    return new Color(this.getRed(), this.getGreen(), this.getBlue());
+  }
+
   protected void transformRef() {
     if (this.refColor == null) {
       return;

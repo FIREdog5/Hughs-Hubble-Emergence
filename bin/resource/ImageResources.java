@@ -38,6 +38,7 @@ public class ImageResources{
   public static ImageResource globeIcon = null;
   public static ImageResource mapIcon = null;
   public static ImageResource addIcon = null;
+  public static ImageResource menuIcon = null;
 
   public static void init() {
     //tests
@@ -82,7 +83,7 @@ public class ImageResources{
     secondImage.addStep(new ImageContrastModifier(1.3d, 70d));
     baseImage.addStep(new ImageMultModifier(secondImage));
     baseImage.addStep(new ImageContrastModifier(1.6d, -100d));
-    generationTest = new PolarResource(baseImage.resolve(2400, 800), 1, 1000);
+    generationTest = new ImageResource(ImagePreprocessor.doubleImage(baseImage.resolve(2400, 800)), 1, 1000);
 
     CompoundImage baseImage2 = new CompoundImage();
     baseImage2.addStep(new ImageCreateModifier(2L, 270d));
@@ -93,7 +94,7 @@ public class ImageResources{
     secondImage2.addStep(new ImageContrastModifier(1.3d, 70d));
     baseImage2.addStep(new ImageMultModifier(secondImage2));
     baseImage2.addStep(new ImageContrastModifier(1.6d, -100d));
-    generationTest2 = new PolarResource(baseImage2.resolve(2400, 800), 1, 1000);
+    generationTest2 = new ImageResource(ImagePreprocessor.doubleImage(baseImage2.resolve(2400, 800)), 1, 1000);
 
     sphericalTest = new ImageResource(ImagePreprocessor.doubleImage(ImageGenerator.SphericalOpenSimplexNoise(1L, 70d, 2400)), 1, 1000);
 
@@ -108,6 +109,7 @@ public class ImageResources{
     globeIcon = new ImageResource("/assets/images/icons/globeIcon.png");
     mapIcon = new ImageResource("/assets/images/icons/mapIcon.png");
     addIcon = new ImageResource("/assets/images/icons/addIcon.png");
+    menuIcon = new ImageResource("/assets/images/icons/menuIcon.png");
 
     System.out.println("Loaded all resources");
   }
