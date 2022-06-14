@@ -278,6 +278,9 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
   public void cleanUp() {
     this.isDead = true;
     this.cleanFromClickHandler();
+    if (this.fbo != -1) {
+      Renderer.framebufferController.cleanUpFrame(this.fbo);
+    }
     super.cleanUp();
   }
 
