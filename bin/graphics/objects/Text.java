@@ -11,6 +11,8 @@ import java.awt.geom.Rectangle2D;
 public class Text {
   public static void draw(String text, float x, float y, Color color, float size) {
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    
     TextRenderer textRenderer = ClientMain.textRenderer;
     float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
     float unitsWide = Renderer.unitsWide;

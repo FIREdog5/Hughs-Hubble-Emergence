@@ -8,6 +8,8 @@ import com.jogamp.opengl.GL2;
 public class GradientHalo{
   public static void draw(float outerRadius, float innerRadius, float x, float y, Color innerColor, Color outerColor) {
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    
     int numVertices = (int)(outerRadius * 2 * Math.PI * 5);
 
     double angle = 0;

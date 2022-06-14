@@ -8,6 +8,8 @@ import com.jogamp.opengl.GL2;
 public class Rect {
   public static void draw(float x, float y, float width, float height, float rotation) {
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
 
@@ -28,6 +30,8 @@ public class Rect {
   public static void draw(float x, float y, float width, float height, float rotation, Color[] colors) {
     //bottom left, bottom right, top right, top left
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
 

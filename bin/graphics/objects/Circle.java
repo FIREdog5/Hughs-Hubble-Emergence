@@ -8,6 +8,7 @@ public class Circle {
   public static void draw(float radius, float x, float y) {
     GL2 gl = ClientMain.gl;
     int numVertices = (int)(radius * 2 * Math.PI * 100);
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     gl.glBegin(GL2.GL_POLYGON);
     {
         double angle = 0;

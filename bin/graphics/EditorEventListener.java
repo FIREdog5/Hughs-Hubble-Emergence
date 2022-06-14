@@ -17,6 +17,7 @@ public class EditorEventListener extends EventListener {
   @Override
   public void display(GLAutoDrawable drawable) {
     GL2 gl = ClientMain.gl;
+    gl.glClearColor(0f, 0f, 0f, 1.0f);
     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
     //start better planets

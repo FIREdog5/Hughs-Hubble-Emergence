@@ -12,6 +12,7 @@ public class GraphicsTestEventListener extends EventListener {
   @Override
   public void display(GLAutoDrawable drawable) {
     GL2 gl = ClientMain.gl;
+    gl.glClearColor(0f, 0f, 0f, 1.0f);
     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
     // GradientHalo.draw(22, 20, 0, 0, new Color("#03fcf8"), new Color("#0000ff", .3f));

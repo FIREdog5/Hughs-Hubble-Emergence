@@ -17,6 +17,8 @@ public class Renderer {
 
   public static float unitsWide = 100;
 
+  public static FramebufferController framebufferController = new FramebufferController();
+
   public static void init(String mode) {
     GLProfile.initSingleton();
     profile = GLProfile.get(GLProfile.GL2);

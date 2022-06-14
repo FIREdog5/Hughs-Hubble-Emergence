@@ -84,7 +84,7 @@ public class ClickHandler {
   }
 
   public boolean isMouseOnElement() {
-    return this.mousedDown.size() > 0;
+    return this.mousedOver.size() + this.mousedDown.size()> 0;
   }
 
   public void processMouseDown(float x, float y, boolean offScreen) {

@@ -28,6 +28,7 @@ import bin.graphics.ui.UIButton;
 import bin.graphics.ui.complex.UIPopUp;
 import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UITestCircle;
+import bin.graphics.ui.complex.UIScrollableBox;
 import bin.graphics.Shaders;
 import bin.ClientMain;
 import bin.graphics.Renderer;
@@ -99,6 +100,29 @@ public class GraphicsTest extends Thread{
 
       outerBoxRow.addChild(innerBoxRow1);
       outerBoxRow.addChild(innerBoxRow2);
+
+      UIScrollableBox scrollBox = new UIScrollableBox(outerBoxRow);
+      scrollBox.maxHeight = 10;
+      scrollBox.scrollbarWidth = 1;
+      scrollBox.outlineColor = new Color("#444444");
+      scrollBox.color = new Color("#ffffff");
+      scrollBox.scrollbarColor = new Color("#aaaaaa");
+      scrollBox.scrollbarMouseOverColor = new Color("#eeeeee");
+      scrollBox.padding = 1;
+      scrollBox.outlineWeight = .3f;
+      outerBoxRow.addChild(scrollBox);
+      clickHandler.register(scrollBox);
+
+      for (int i = 0; i < 10; i++) {
+        UIBoxCol scrolledBox = new UIBoxCol(scrollBox);
+        scrolledBox.minWidth = 4;
+        scrolledBox.minHeight = 4;
+        scrolledBox.color = Color.randomColor();
+        scrolledBox.outlineColor = new Color("#ffffff");
+        scrolledBox.padding = 1;
+        scrolledBox.outlineWeight = .1f;
+        scrollBox.addChild(scrolledBox);
+      }
 
       UIBoxCol outerBoxCol = new UIBoxCol(innerBoxRow1);
       outerBoxCol.x = 0;
@@ -203,7 +227,7 @@ public class GraphicsTest extends Thread{
 
       while (this.running) {
         Point currentLoc = MouseInfo.getPointerInfo().getLocation();
-        if (mouseIsPressed && !this.clickHandler.isMouseOnElement()) {
+        if (mouseIsPressed && !clickHandler.isMouseOnElement()) {
           float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
           camera.adjustLocation(camera.zoomToScale((float)(startLoc.x - currentLoc.x) / Renderer.getWindowWidth() * Renderer.unitsWide), camera.zoomToScale((float)(currentLoc.y - startLoc.y) / Renderer.getWindowHeight() * unitsTall));
           startLoc = currentLoc;
@@ -278,9 +302,6 @@ public class GraphicsTest extends Thread{
       //draw colorwheel
       ColorWheel.draw(camera.scaleToZoom(10f), camera.convertXToCamera(-85), camera.convertYToCamera(75));
 
-      //draw UI
-      screen.render();
-
       //pointers
       Global.drawColor(new Color("#0000ff"));
       Pointer.draw(camera.convertXToCamera(-30), camera.convertYToCamera(70), camera.scaleToZoom(9), camera.scaleToZoom(3), "right");
@@ -302,6 +323,8 @@ public class GraphicsTest extends Thread{
       Shaders.blackHoleShader.stopShader(gl);
       ReRendered.cleanUpReRenderer();
 
+      //draw UI
+      screen.render();
     }
 
     private static boolean lockContext() {
@@ -338,7 +361,7 @@ public class GraphicsTest extends Thread{
     }
 
     private static void zoomWorld(Point location, float deltaZoom) {
-      if (camera == null) {
+      if (camera == null || clickHandler.isMouseOnElement()) {
         return;
       }
       camera.adjustZoom(deltaZoom);

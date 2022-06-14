@@ -7,9 +7,8 @@ import com.jogamp.opengl.GL2;
 
 public class ColorWheel {
   public static void draw(float radius, float x, float y) {
-
-
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     int numVertices = (int)(radius * 2 * Math.PI * 5);
 
     double angle = 0;

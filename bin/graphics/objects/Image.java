@@ -10,6 +10,7 @@ import com.jogamp.opengl.util.texture.Texture;
 public class Image {
   public static void draw(ImageResource image, float x, float y, float width, float height, float rotation) {
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
     Texture texture = null;
 
@@ -61,6 +62,7 @@ public class Image {
 
   public static void drawNoAA(ImageResource image, float x, float y, float width, float height, float rotation) {
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
     Texture texture = null;
 
@@ -114,6 +116,7 @@ public class Image {
 
   public static void draw(Texture texture, float x, float y, float width, float height, float rotation) {
     GL2 gl = ClientMain.gl;
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
     if (texture == null) {
       texture = ImageResources.error.getTexture();
