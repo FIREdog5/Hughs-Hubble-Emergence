@@ -76,4 +76,9 @@ public class UIScreen extends UIElement {
     this.children = null;
   }
 
+  @Override
+  public boolean allowChildContent(float x, float y) {
+    return true;
+  }
+
 }

@@ -92,7 +92,7 @@ public class UIVerticalValueSlider extends UIButton {
 
    @Override
    public boolean isMouseOver(float x, float y) {
-     return x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2;
+     return (x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2) && (this.parent == null || this.parent.allowChildContent(x, y));
    }
 
    @Override

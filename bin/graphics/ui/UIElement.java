@@ -70,4 +70,10 @@ public abstract class UIElement {
       return false;
     }
   }
+  public boolean allowChildContent(float x, float y) {
+    if (parent == null) {
+      return true;
+    }
+    return parent.allowChildContent(x,y);
+  }
 }

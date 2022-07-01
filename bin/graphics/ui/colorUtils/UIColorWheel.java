@@ -72,7 +72,7 @@ public class UIColorWheel extends UIButton {
 
   @Override
   public boolean isMouseOver(float x, float y) {
-    return Math.hypot(this.getX() + this.circleRadius - x, this.getY() - this.circleRadius - y) <= this.circleRadius;
+    return (Math.hypot(this.getX() + this.circleRadius - x, this.getY() - this.circleRadius - y) <= this.circleRadius) && (this.parent == null || this.parent.allowChildContent(x, y));
   }
 
   @Override

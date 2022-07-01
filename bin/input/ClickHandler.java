@@ -123,14 +123,14 @@ public class ClickHandler {
     try {
       ArrayList<IClickable> mousedOverCopy = (ArrayList<IClickable>) this.mousedOver.clone();
       for(IClickable clickable : mousedOverCopy) {
-        if (!clickable.isMouseOver(x, y)) {
+        if (!clickable.isMouseOver(x, y) || (this.mask != null && !this.mask.deepContains(clickable))) {
           clickable.mousedOff(x, y);
           this.mousedOver.remove(clickable);
         }
       }
       boolean found = false;
       for(IClickable clickable : this.clickables) {
-        if ((this.mask == null || this.mask.deepContains(clickable))) {
+        if (this.mask == null || this.mask.deepContains(clickable)) {
           clickable.mouseMoved(x, y);
         }
         if (!found && (this.mask == null || this.mask.deepContains(clickable))) {

@@ -284,4 +284,9 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     super.cleanUp();
   }
 
+  @Override
+  public boolean allowChildContent(float x, float y) {
+    return this.isMouseOver(x, y);
+  }
+
 }
