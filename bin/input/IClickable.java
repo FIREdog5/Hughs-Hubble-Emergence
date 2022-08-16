@@ -2,7 +2,7 @@ package bin.input;
 
 public interface IClickable {
 
-  public void setClickHandler(ClickHandler ClickHandler);
+  public void setClickHandler(ClickHandler clickHandler);
   public ClickHandler getClickHandler();
   public boolean isMouseOver(float x, float y);
   public boolean getIsMousedOver();

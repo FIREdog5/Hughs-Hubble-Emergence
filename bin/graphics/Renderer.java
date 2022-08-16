@@ -1,6 +1,7 @@
 package bin.graphics;
 
 import bin.input.MouseInput;
+import bin.input.KeyInput;
 
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
@@ -43,6 +44,7 @@ public class Renderer {
         break;
     }
     window.addMouseListener(new MouseInput());
+    window.addKeyListener(new KeyInput());
 
     window.setVisible(true);
     window.requestFocus();

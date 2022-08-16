@@ -14,23 +14,27 @@ public class UIImage extends UIBox {
   public ImageResource image;
   public Wrapper<ImageResource> imageWrapper;
   public boolean useAA;
+  public float rotation;
 
   public UIImage(UIElement parent) {
     super(parent);
     this.image = ImageResources.error;
     this.useAA = true;
+    this.rotation = 0;
   }
 
   public UIImage(UIElement parent, ImageResource image) {
     super(parent);
     this.image = image;
     this.useAA = true;
+    this.rotation = 0;
   }
 
   public UIImage(UIElement parent, Wrapper<ImageResource> imageWrapper) {
     super(parent);
     this.imageWrapper = imageWrapper;
     this.useAA = true;
+    this.rotation = 0;
   }
 
   @Override
@@ -71,17 +75,17 @@ public class UIImage extends UIBox {
     if (this.image != null) {
       Global.drawColor(new Color("#ffffff"));
       if (this.useAA) {
-        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight());
+        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
       } else {
-        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f);
+        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
       }
     }
     if (imageWrapper != null) {
       Global.drawColor(new Color("#ffffff"));
       if (this.useAA) {
-        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight());
+        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
       } else {
-        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f);
+        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
       }
     }
 

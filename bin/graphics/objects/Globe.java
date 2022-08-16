@@ -11,7 +11,7 @@ public class Globe {
   public static void draw(ImageResource image, float radius, float x, float y) {
     GL2 gl = ClientMain.gl;
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-    
+
     Texture texture = null;
 
     if (image != null) {

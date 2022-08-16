@@ -33,6 +33,10 @@ public abstract class UIElement {
   public abstract void cleanUp();
   public void addChild(UIElement child) {
     if (child.parent != this) {
+      System.out.println("found:");
+      System.out.println(child.parent);
+      System.out.println("which does not match:");
+      System.out.println(this);
       throw new AssertionError("the child being added does not have the correct parent");
     }
     this.children.add(child);

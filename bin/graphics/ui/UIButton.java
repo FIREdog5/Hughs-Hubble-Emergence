@@ -13,7 +13,7 @@ public class UIButton extends UIBoxCol implements IClickable {
   private ClickHandler clickHandler;
   private boolean isMousedOver;
   private boolean isMouseDown;
-  private boolean isDead;
+  protected boolean isDead;
   //set z to -1 to be ignored
   private int z;
   public Color mouseOverColor;

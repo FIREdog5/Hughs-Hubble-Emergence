@@ -1,6 +1,7 @@
 package bin.input;
 
 import bin.graphics.ui.UIElement;
+import bin.graphics.ui.UISelectable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,7 +68,7 @@ public class ClickHandler {
     clickablesLock.lock();
     Collections.sort(this.clickables, comparator);
     try {
-      for(IClickable clickable : this.clickables) {
+      for (IClickable clickable : this.clickables) {
         if (this.mask != null && !this.mask.deepContains(clickable)) {
           continue;
         }
@@ -87,19 +88,26 @@ public class ClickHandler {
     return this.mousedOver.size() + this.mousedDown.size()> 0;
   }
 
-  public void processMouseDown(float x, float y, boolean offScreen) {
+  public void processMouseDown(float x, float y, boolean released) {
     clickablesLock.lock();
     Collections.sort(this.clickables, comparator);
     try {
       ArrayList<IClickable> mousedDownCopy = (ArrayList<IClickable>) this.mousedDown.clone();
-      for(IClickable clickable : mousedDownCopy) {
-        if (!clickable.isMouseOver(x, y) || offScreen) {
+      for (IClickable clickable : mousedDownCopy) {
+        if (!clickable.isMouseOver(x, y) || released) {
           clickable.mousedUp(x, y);
           this.mousedDown.remove(clickable);
         }
       }
-      if (!offScreen){
-        for(IClickable clickable : this.clickables) {
+      if (released) {
+        for (IClickable clickable : this.clickables) {
+          if (clickable instanceof UISelectable && !clickable.isMouseOver(x, y)) {
+            ((UISelectable)clickable).deselect();
+          }
+        }
+      }
+      if (!released){
+        for (IClickable clickable : this.clickables) {
           if (this.mask != null && !this.mask.deepContains(clickable)) {
             continue;
           }
@@ -122,14 +130,14 @@ public class ClickHandler {
     Collections.sort(this.clickables, comparator);
     try {
       ArrayList<IClickable> mousedOverCopy = (ArrayList<IClickable>) this.mousedOver.clone();
-      for(IClickable clickable : mousedOverCopy) {
+      for (IClickable clickable : mousedOverCopy) {
         if (!clickable.isMouseOver(x, y) || (this.mask != null && !this.mask.deepContains(clickable))) {
           clickable.mousedOff(x, y);
           this.mousedOver.remove(clickable);
         }
       }
       boolean found = false;
-      for(IClickable clickable : this.clickables) {
+      for (IClickable clickable : this.clickables) {
         if (this.mask == null || this.mask.deepContains(clickable)) {
           clickable.mouseMoved(x, y);
         }
@@ -161,7 +169,7 @@ public class ClickHandler {
     clickablesLock.lock();
     Collections.sort(this.clickables, comparator);
     try {
-      for(IClickable clickable : this.clickables) {
+      for (IClickable clickable : this.clickables) {
         if (this.mask != null && !this.mask.deepContains(clickable)) {
           continue;
         }

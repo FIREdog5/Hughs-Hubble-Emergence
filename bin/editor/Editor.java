@@ -6,6 +6,8 @@ import bin.resource.palette.EditorPalette;
 import bin.resource.palette.Palette;
 import bin.resource.ImageResources;
 import bin.input.ClickHandler;
+import bin.input.KeyboardHandler;
+import bin.input.Key;
 import bin.graphics.Color;
 import bin.graphics.Shaders;
 import bin.ClientMain;
@@ -45,12 +47,14 @@ import com.jogamp.opengl.GLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import com.jogamp.newt.event.KeyEvent;
 
 public class Editor extends Thread{
 
   private boolean running;
   private static EditorWorld world;
   private static ClickHandler clickHandler;
+  private static KeyboardHandler keyboardHandler;
   private static UIScreen screen;
   private static String view = "globe";
   private static Wrapper<ImageResource> palettResourceWrapper = new Wrapper<ImageResource>();
@@ -68,6 +72,7 @@ public class Editor extends Thread{
     this.running = true;
 
     clickHandler = new ClickHandler();
+    keyboardHandler = new KeyboardHandler();
     screen = new UIScreen();
     makeUI();
 
@@ -1004,4 +1009,19 @@ public class Editor extends Thread{
     releaseContext();
   }
 
+  public static void keyPressed(Key key) {
+    if (keyboardHandler == null || !lockContext()) {
+      return;
+    }
+    keyboardHandler.keyPressed(key);
+    releaseContext();
+  }
+
+  public static void keyReleased(Key key) {
+    if (keyboardHandler == null || !lockContext()) {
+      return;
+    }
+    keyboardHandler.keyReleased(key);
+    releaseContext();
+  }
 }

@@ -39,6 +39,7 @@ public class ImageResources{
   public static ImageResource mapIcon = null;
   public static ImageResource addIcon = null;
   public static ImageResource menuIcon = null;
+  public static ImageResource littleArrow = null;
 
   public static void init() {
     //tests
@@ -110,6 +111,7 @@ public class ImageResources{
     mapIcon = new ImageResource("/assets/images/icons/mapIcon.png");
     addIcon = new ImageResource("/assets/images/icons/addIcon.png");
     menuIcon = new ImageResource("/assets/images/icons/menuIcon.png");
+    littleArrow = new ImageResource("/assets/images/icons/LittleArrow.png");
 
     System.out.println("Loaded all resources");
   }

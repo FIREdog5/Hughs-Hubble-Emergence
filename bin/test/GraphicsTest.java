@@ -25,6 +25,9 @@ import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIText;
 import bin.graphics.ui.UITextBlock;
 import bin.graphics.ui.UIButton;
+import bin.graphics.ui.UISelectable;
+import bin.graphics.ui.complex.UITextInput;
+import bin.graphics.ui.complex.UINumberInput;
 import bin.graphics.ui.complex.UIPopUp;
 import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UITestCircle;
@@ -33,6 +36,9 @@ import bin.graphics.Shaders;
 import bin.ClientMain;
 import bin.graphics.Renderer;
 import bin.input.ClickHandler;
+import bin.input.KeyboardHandler;
+import bin.input.Key;
+import bin.Wrapper;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -42,6 +48,7 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLException;
+import com.jogamp.newt.event.KeyEvent;
 
 public class GraphicsTest extends Thread{
 
@@ -51,6 +58,7 @@ public class GraphicsTest extends Thread{
     private static boolean mouseIsPressed = false;
     private static Point startLoc;
     private static ClickHandler clickHandler;
+    private static KeyboardHandler keyboardHandler;
 
     public static void init() {
       (new GraphicsTest()).start();
@@ -69,6 +77,7 @@ public class GraphicsTest extends Thread{
       screen = new UIScreen();
 
       clickHandler = new ClickHandler();
+      keyboardHandler = new KeyboardHandler();
 
       UIBoxRow outerBoxRow = new UIBoxRow(screen);
       outerBoxRow.x = 0;
@@ -137,13 +146,16 @@ public class GraphicsTest extends Thread{
       UICenter innerCenter = new UICenter(outerBoxCol);
       innerCenter.centerY = false;
 
-      UIBoxCol innerBoxCol1 = new UIBoxCol(innerCenter);
+      UIBoxRow innerBoxRowWrapper = new UIBoxRow(innerCenter);
+      innerBoxRowWrapper.outlineWeight = 0f;
+      innerBoxRowWrapper.noBackground = true;
+
+      UIBoxCol innerBoxCol1 = new UIBoxCol(innerBoxRowWrapper);
       innerBoxCol1.x = 0;
       innerBoxCol1.y = 0;
       innerBoxCol1.minWidth = 15;
       innerBoxCol1.minHeight = 5;
       innerBoxCol1.outlineColor = new Color("#ff0000");
-      innerBoxCol1.padding = 1;
       innerBoxCol1.margin = 1;
       innerBoxCol1.outlineWeight = .3f;
       innerBoxCol1.radius = 1;
@@ -155,7 +167,117 @@ public class GraphicsTest extends Thread{
       textBlock.textColor = new Color("#ffffff");
       textBlock.maxWidth = 15f;
 
-      innerCenter.addChild(innerBoxCol1);
+      UIBoxCol selectableCol = new UIBoxCol(innerBoxRowWrapper);
+      selectableCol.outlineWeight = 0f;
+      selectableCol.noBackground = true;
+
+      UISelectable selectable1 = new UISelectable(selectableCol);
+      selectable1.x = 0;
+      selectable1.y = 0;
+      selectable1.minWidth = 3;
+      selectable1.minHeight = 2;
+      selectable1.color = new Color("#ffffff");
+      selectable1.mouseOverColor = new Color("#aaaaaa");
+      selectable1.selectedColor = new Color("#666666");
+      selectable1.mouseOverOutlineColor = new Color("#000000");
+      selectable1.selectedOutlineColor = new Color("#0000ff");
+      selectable1.padding = 1;
+      selectable1.outlineWeight = .3f;
+
+      UISelectable selectable2 = new UISelectable(selectableCol);
+      selectable2.x = 0;
+      selectable2.y = 0;
+      selectable2.minWidth = 3;
+      selectable2.minHeight = 2;
+      selectable2.color = new Color("#ffffff");
+      selectable2.mouseOverColor = new Color("#aaaaaa");
+      selectable2.selectedColor = new Color("#666666");
+      selectable2.mouseOverOutlineColor = new Color("#000000");
+      selectable2.selectedOutlineColor = new Color("#0000ff");
+      selectable2.padding = 1;
+      selectable2.outlineWeight = .3f;
+
+      Wrapper<String> stringWrapper1 = new Wrapper<String>("");
+
+      UITextInput selectable3 = new UITextInput(selectableCol, 0.5f){
+        @Override
+        public String getValue() {
+          return stringWrapper1.get();
+        }
+
+        @Override
+        public boolean setValue(String newValue) {
+          stringWrapper1.set(newValue);
+          return true;
+        }
+      };
+      selectable3.x = 0;
+      selectable3.y = 0;
+      selectable3.minWidth = 3;
+      selectable3.minHeight = 2;
+      selectable3.color = new Color("#ffffff");
+      selectable3.mouseOverOutlineColor = new Color("#000000");
+      selectable3.selectedOutlineColor = new Color("#0000ff");
+      selectable3.padding = 1;
+      selectable3.outlineWeight = .3f;
+
+      Wrapper<String> stringWrapper2 = new Wrapper<String>("");
+
+      selectableCol.addChild(selectable1);
+      selectableCol.addChild(selectable2);
+      selectableCol.addChild(selectable3);
+
+      UINumberInput selectable4 = new UINumberInput(selectableCol, 0.5f, clickHandler){
+        @Override
+        public String getValue() {
+          return stringWrapper2.get();
+        }
+
+        @Override
+        public boolean setValue(String newValue) {
+          stringWrapper2.set(newValue);
+          return true;
+        }
+      };
+      selectable4.x = 0;
+      selectable4.y = 0;
+      selectable4.minWidth = 3;
+      selectable4.minHeight = 2;
+      selectable4.color = new Color("#ffffff");
+      selectable4.mouseOverOutlineColor = new Color("#000000");
+      selectable4.selectedOutlineColor = new Color("#0000ff");
+      selectable4.outerRow.padding = 1;
+      selectable4.outlineWeight = .3f;
+
+      selectable4.incrementButton.outlineWeight = .3f;
+      selectable4.incrementButton.mouseOverOutlineColor = new Color("#000000");
+      selectable4.incrementButton.outlineColor = new Color("#ff0000");
+      selectable4.incrementButton.color = new Color("#cccccc");
+      selectable4.incrementIcon.padding = .3f;
+      selectable4.incrementIcon.minWidth = .8f;
+      selectable4.incrementIcon.minHeight = .4f;
+
+      selectable4.decrementButton.outlineWeight = .3f;
+      selectable4.decrementButton.mouseOverOutlineColor = new Color("#000000");
+      selectable4.decrementButton.outlineColor = new Color("#ff0000");
+      selectable4.decrementButton.color = new Color("#cccccc");
+      selectable4.decrementIcon.padding = .3f;
+      selectable4.decrementIcon.minWidth = .8f;
+      selectable4.decrementIcon.minHeight = .4f;
+
+      // selectableCol.addChild(selectable4);
+
+      clickHandler.register(selectable1);
+      clickHandler.register(selectable2);
+      clickHandler.register(selectable3);
+      clickHandler.register(selectable4);
+
+      keyboardHandler.register(selectable3);
+      keyboardHandler.register(selectable4);
+
+      innerCenter.addChild(innerBoxRowWrapper);
+      innerBoxRowWrapper.addChild(innerBoxCol1);
+      innerBoxRowWrapper.addChild(selectableCol);
       innerBoxCol1.addChild(helloWorldText);
       innerBoxCol1.addChild(textBlock);
 
@@ -415,4 +537,19 @@ public class GraphicsTest extends Thread{
       releaseContext();
     }
 
+    public static void keyPressed(Key key) {
+      if (keyboardHandler == null || !lockContext()) {
+        return;
+      }
+      keyboardHandler.keyPressed(key);
+      releaseContext();
+    }
+
+    public static void keyReleased(Key key) {
+      if (keyboardHandler == null || !lockContext()) {
+        return;
+      }
+      keyboardHandler.keyReleased(key);
+      releaseContext();
+    }
 }
