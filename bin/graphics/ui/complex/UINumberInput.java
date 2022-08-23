@@ -28,7 +28,19 @@ public abstract class UINumberInput extends UITextInput{
     this.minValue = 0;
     this.precision = 1;
 
-    outerRow = new UIBoxRow(parent);
+    UINumberInput ref = this;
+
+    outerRow = new UIBoxRow(parent){
+      @Override
+      public float getPadding() {
+        return ref.padding;
+      }
+
+      @Override
+      public float getMargin() {
+        return ref.margin;
+      }
+    };
     outerRow.outlineWeight = 0;
     outerRow.noBackground = true;
 
@@ -42,8 +54,6 @@ public abstract class UINumberInput extends UITextInput{
     buttonCol.noBackground = true;
 
     outerRow.addChild(buttonCol);
-
-    UINumberInput ref = this;
 
     incrementButton = new UIButton(buttonCol) {
       @Override
@@ -60,6 +70,16 @@ public abstract class UINumberInput extends UITextInput{
         }
         val = Math.round(val * (float) Math.pow(10, ref.precision)) / (float) Math.pow(10, ref.precision);
         setUnfilteredValue(Float.toString(val));
+      }
+
+      @Override
+      public float getOutlineWeight() {
+        return ref.getOutlineWeight();
+      }
+
+      @Override
+      public boolean getNoBackground() {
+        return ref.getNoBackground();
       }
 
       @Override
@@ -106,6 +126,16 @@ public abstract class UINumberInput extends UITextInput{
       }
 
       @Override
+      public float getOutlineWeight() {
+        return ref.getOutlineWeight();
+      }
+
+      @Override
+      public boolean getNoBackground() {
+        return ref.getNoBackground();
+      }
+
+      @Override
       public Color getColor() {
         if (this.getIsMousedOver() && !this.getIsMouseDown()) {
           return super.getColor();
@@ -131,6 +161,16 @@ public abstract class UINumberInput extends UITextInput{
     decrementIcon.rotation = 180f;
     decrementButton.addChild(decrementIcon);
 
+  }
+
+  @Override
+  public float getPadding() {
+    return 0;
+  }
+
+  @Override
+  public float getMargin() {
+    return 0;
   }
 
   @Override
@@ -184,7 +224,7 @@ public abstract class UINumberInput extends UITextInput{
         setValue(Integer.toString((int)val));
       }
     } catch (Exception e) {
-      //nothing
+      setValue("0");
     }
   }
 }

@@ -28,6 +28,7 @@ import bin.graphics.ui.UIButton;
 import bin.graphics.ui.UISelectable;
 import bin.graphics.ui.complex.UITextInput;
 import bin.graphics.ui.complex.UINumberInput;
+import bin.graphics.ui.complex.UISelectionMenu;
 import bin.graphics.ui.complex.UIPopUp;
 import bin.graphics.ui.complex.UIToolTip;
 import bin.graphics.ui.complex.UITestCircle;
@@ -123,14 +124,16 @@ public class GraphicsTest extends Thread{
       clickHandler.register(scrollBox);
 
       for (int i = 0; i < 10; i++) {
-        UIBoxCol scrolledBox = new UIBoxCol(scrollBox);
+        UIButton scrolledBox = new UIButton(scrollBox);
         scrolledBox.minWidth = 4;
         scrolledBox.minHeight = 4;
         scrolledBox.color = Color.randomColor();
         scrolledBox.outlineColor = new Color("#ffffff");
         scrolledBox.padding = 1;
         scrolledBox.outlineWeight = .1f;
+        scrolledBox.mouseOverColor = new Color("#000000");
         scrollBox.addChild(scrolledBox);
+        clickHandler.register(scrolledBox);
       }
 
       UIBoxCol outerBoxCol = new UIBoxCol(innerBoxRow1);
@@ -184,11 +187,24 @@ public class GraphicsTest extends Thread{
       selectable1.padding = 1;
       selectable1.outlineWeight = .3f;
 
-      UISelectable selectable2 = new UISelectable(selectableCol);
+      Wrapper<String> stringWrapper1 = new Wrapper<String>("");
+
+      UISelectionMenu selectable2 = new UISelectionMenu(selectableCol, screen, clickHandler){
+        @Override
+        public String getValue() {
+          return stringWrapper1.get();
+        }
+
+        @Override
+        public void setValue(String newValue) {
+          stringWrapper1.set(newValue);
+        }
+      };
       selectable2.x = 0;
       selectable2.y = 0;
       selectable2.minWidth = 3;
-      selectable2.minHeight = 2;
+      selectable2.minHeight = 2f;
+      selectable2.selectionBoxHeight = 6;
       selectable2.color = new Color("#ffffff");
       selectable2.mouseOverColor = new Color("#aaaaaa");
       selectable2.selectedColor = new Color("#666666");
@@ -196,18 +212,63 @@ public class GraphicsTest extends Thread{
       selectable2.selectedOutlineColor = new Color("#0000ff");
       selectable2.padding = 1;
       selectable2.outlineWeight = .3f;
+      selectable2.margin = .3f;
 
-      Wrapper<String> stringWrapper1 = new Wrapper<String>("");
+      selectableCol.addChild(selectable1);
+      selectableCol.addChild(selectable2);
+
+      for (int i = 0; i < 20; i++) {
+        UISelectable entry = new UISelectable(selectable2.scrollableList);
+        entry.x = 0;
+        entry.y = 0;
+        entry.minWidth = 3;
+        entry.minHeight = 1.5f;
+        entry.color = new Color("#ffffff");
+        entry.mouseOverColor = new Color("#5B90C1");
+        entry.outlineWeight = 0f;
+        entry.setZ(10);
+
+        selectable2.addOption(entry, Integer.toString(i));
+        clickHandler.register(entry);
+
+        UICenter entryCenter = new UICenter(entry);
+        entryCenter.centerY = true;
+        entryCenter.centerX = false;
+
+        entry.addChild(entryCenter);
+
+        UIBoxRow entryContents = new UIBoxRow(entryCenter);
+        entryContents.noBackground = true;
+        entryContents.outlineWeight = 0f;
+
+        entryCenter.addChild(entryContents);
+
+        UIBoxRow entryPadding = new UIBoxRow(entryContents);
+        entryPadding.minWidth = .3f;
+        entryPadding.noBackground = true;
+        entryPadding.outlineWeight = 0f;
+
+        entryContents.addChild(entryPadding);
+
+        UITextBlock entryText = new UITextBlock(entryContents, Integer.toString(i), .5f);
+        entryText.textColor = new Color("#000000");
+        entryText.noBackground = true;
+        entryText.maxWidth = 2.7f;
+
+        entryContents.addChild(entryText);
+      }
+
+      Wrapper<String> stringWrapper2 = new Wrapper<String>("");
 
       UITextInput selectable3 = new UITextInput(selectableCol, 0.5f){
         @Override
         public String getValue() {
-          return stringWrapper1.get();
+          return stringWrapper2.get();
         }
 
         @Override
         public boolean setValue(String newValue) {
-          stringWrapper1.set(newValue);
+          stringWrapper2.set(newValue);
           return true;
         }
       };
@@ -221,21 +282,19 @@ public class GraphicsTest extends Thread{
       selectable3.padding = 1;
       selectable3.outlineWeight = .3f;
 
-      Wrapper<String> stringWrapper2 = new Wrapper<String>("");
-
-      selectableCol.addChild(selectable1);
-      selectableCol.addChild(selectable2);
       selectableCol.addChild(selectable3);
+
+      Wrapper<String> stringWrapper3 = new Wrapper<String>("");
 
       UINumberInput selectable4 = new UINumberInput(selectableCol, 0.5f, clickHandler){
         @Override
         public String getValue() {
-          return stringWrapper2.get();
+          return stringWrapper3.get();
         }
 
         @Override
         public boolean setValue(String newValue) {
-          stringWrapper2.set(newValue);
+          stringWrapper3.set(newValue);
           return true;
         }
       };
@@ -246,10 +305,9 @@ public class GraphicsTest extends Thread{
       selectable4.color = new Color("#ffffff");
       selectable4.mouseOverOutlineColor = new Color("#000000");
       selectable4.selectedOutlineColor = new Color("#0000ff");
-      selectable4.outerRow.padding = 1;
+      selectable4.padding = 1;
       selectable4.outlineWeight = .3f;
 
-      selectable4.incrementButton.outlineWeight = .3f;
       selectable4.incrementButton.mouseOverOutlineColor = new Color("#000000");
       selectable4.incrementButton.outlineColor = new Color("#ff0000");
       selectable4.incrementButton.color = new Color("#cccccc");
@@ -257,7 +315,6 @@ public class GraphicsTest extends Thread{
       selectable4.incrementIcon.minWidth = .8f;
       selectable4.incrementIcon.minHeight = .4f;
 
-      selectable4.decrementButton.outlineWeight = .3f;
       selectable4.decrementButton.mouseOverOutlineColor = new Color("#000000");
       selectable4.decrementButton.outlineColor = new Color("#ff0000");
       selectable4.decrementButton.color = new Color("#cccccc");
@@ -300,6 +357,7 @@ public class GraphicsTest extends Thread{
       innerButton2.color = new Color("#ffffff");
       innerButton2.mouseOverColor = new Color("#777777");
       innerButton2.padding = .5f;
+      innerButton2.setZ(10);
 
       clickHandler.register(innerButton2);
       innerButton.addChild(innerButton2);

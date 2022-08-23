@@ -61,6 +61,10 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
   public abstract String getValue();
   public abstract boolean setValue(String newValue);
 
+  public float getSize(){
+    return this.size;
+  }
+
   public boolean setUnfilteredValue(String newValue) {
     return setValue(newValue);
   }
@@ -76,7 +80,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
   }
 
   private float minTextHeight() {
-    return 2.3f * this.size;
+    return 2.3f * this.getSize();
   }
 
   @Override
@@ -88,34 +92,34 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
     String content = this.getValue();
     if (selecting) {
       int currSelection = this.getClosestIndex(this.currX);
-      float textOffset = Text.getWidth(content.substring(0, currSelection), this.size);
+      float textOffset = Text.getWidth(content.substring(0, currSelection), this.getSize());
       if (textOffset + 0.1f < this.scrollAmount) {
         this.scrollAmount -= .2f;
-      } else if (textOffset + 0.1f > this.getWidth() - this.outlineWeight * 2 + this.scrollAmount) {
+      } else if (textOffset + 0.1f > this.getWidth() - this.getOutlineWeight() * 2 + this.scrollAmount) {
         this.scrollAmount += .2f;
       }
       return;
     }
-    float textLowOffset = Text.getWidth(content.substring(0, this.selectionLow), this.size);
-    float textHighOffset = Text.getWidth(content.substring(0, this.selectionHigh), this.size);
+    float textLowOffset = Text.getWidth(content.substring(0, this.selectionLow), this.getSize());
+    float textHighOffset = Text.getWidth(content.substring(0, this.selectionHigh), this.getSize());
     if (this.selectionLow == this.selectionHigh) {
       if (textLowOffset + 0.1f < this.scrollAmount) {
         this.scrollAmount = textLowOffset;
-      } else if (textLowOffset + 0.1f > this.getWidth() - this.outlineWeight * 2 + this.scrollAmount) {
-        this.scrollAmount = textLowOffset + .2f - this.getWidth() + this.outlineWeight * 2;
+      } else if (textLowOffset + 0.1f > this.getWidth() - this.getOutlineWeight() * 2 + this.scrollAmount) {
+        this.scrollAmount = textLowOffset + .2f - this.getWidth() + this.getOutlineWeight() * 2;
       }
     } else {
       if (this.leftHanded) {
         if (textHighOffset + 0.1f < this.scrollAmount) {
           this.scrollAmount = textHighOffset;
-        } else if (textHighOffset + 0.1f > this.getWidth() - this.outlineWeight * 2 + this.scrollAmount) {
-          this.scrollAmount = textHighOffset + .2f - this.getWidth() + this.outlineWeight * 2;
+        } else if (textHighOffset + 0.1f > this.getWidth() - this.getOutlineWeight() * 2 + this.scrollAmount) {
+          this.scrollAmount = textHighOffset + .2f - this.getWidth() + this.getOutlineWeight() * 2;
         }
       } else {
         if (textLowOffset + 0.1f < this.scrollAmount) {
           this.scrollAmount = textLowOffset;
-        } else if (textLowOffset + 0.1f > this.getWidth() - this.outlineWeight * 2 + this.scrollAmount) {
-          this.scrollAmount = textLowOffset + .2f - this.getWidth() + this.outlineWeight * 2;
+        } else if (textLowOffset + 0.1f > this.getWidth() - this.getOutlineWeight() * 2 + this.scrollAmount) {
+          this.scrollAmount = textLowOffset + .2f - this.getWidth() + this.getOutlineWeight() * 2;
         }
       }
     }
@@ -129,11 +133,11 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
     this.deselectBlocked = false;
     if (!this.noBackground) {
       Global.drawColor(this.getColor());
-      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.radius);
+      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius());
     }
     if (this.outlineWeight > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.radius, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius(), this.getOutlineWeight());
     }
     //switch to fbo
     Renderer.framebufferController.switchToFrame(this.fbo);
@@ -141,9 +145,9 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
     this.selectionHigh = Math.min(selectionHigh, this.getValue().length());
     this.selectionLow = Math.min(selectionLow, this.getValue().length());
     String content = this.getValue();
-    float textLowOffset = Text.getWidth(content.substring(0, this.selectionLow), this.size);
-    float textHighOffset = Text.getWidth(content.substring(0, this.selectionHigh), this.size);
-    float textWidth = Text.getWidth(content, this.size);
+    float textLowOffset = Text.getWidth(content.substring(0, this.selectionLow), this.getSize());
+    float textHighOffset = Text.getWidth(content.substring(0, this.selectionHigh), this.getSize());
+    float textWidth = Text.getWidth(content, this.getSize());
     float textSelectionWidth = textHighOffset - textLowOffset;
     int frame = Global.getFrame();
     this.adjustScroll();
@@ -151,45 +155,45 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
       int currSelection = this.getClosestIndex(this.currX);
       int low = Math.min(this.startSelection, currSelection);
       int high = Math.max(this.startSelection, currSelection);
-      textLowOffset = Text.getWidth(content.substring(0, low), this.size);
-      textHighOffset = Text.getWidth(content.substring(0, high), this.size);
+      textLowOffset = Text.getWidth(content.substring(0, low), this.getSize());
+      textHighOffset = Text.getWidth(content.substring(0, high), this.getSize());
       textSelectionWidth = textHighOffset - textLowOffset;
       if (this.startSelection != currSelection) {
         Global.drawColor(this.selectionColor);
-        Rect.draw(this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, textSelectionWidth , this.minTextHeight());
-        Text.draw(content.substring(0, low), this.getX() - this.scrollAmount + textLowOffset / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.size);
-        Text.draw(content.substring(low, high), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.selectedTextColor, this.size);
-        Text.draw(content.substring(high), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth + (textWidth - textHighOffset) / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.size);
+        Rect.draw(this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, textSelectionWidth , this.minTextHeight());
+        Text.draw(content.substring(0, low), this.getX() - this.scrollAmount + textLowOffset / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.getSize());
+        Text.draw(content.substring(low, high), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.selectedTextColor, this.getSize());
+        Text.draw(content.substring(high), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth + (textWidth - textHighOffset) / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.getSize());
       } else {
-        Text.draw(content, this.getX() - this.scrollAmount + textWidth / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.size);
+        Text.draw(content, this.getX() - this.scrollAmount + textWidth / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.getSize());
       }
     } else if (this.selectionLow != this.selectionHigh) {
       Global.drawColor(this.selectionColor);
-      Rect.draw(this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, textSelectionWidth , this.minTextHeight());
+      Rect.draw(this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, textSelectionWidth , this.minTextHeight());
       if ((int) ((frame - this.lastFrame) / 4) % 10 < 5) {
         Global.drawColor(this.textColor);
         if (this.leftHanded) {
-          Rect.draw(this.getX() - this.scrollAmount + textHighOffset + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, .1f , this.minTextHeight());
+          Rect.draw(this.getX() - this.scrollAmount + textHighOffset + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, .1f , this.minTextHeight());
         } else {
-          Rect.draw(this.getX() - this.scrollAmount + textLowOffset + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, .1f , this.minTextHeight());
+          Rect.draw(this.getX() - this.scrollAmount + textLowOffset + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, .1f , this.minTextHeight());
         }
       }
-      Text.draw(content.substring(0, this.selectionLow), this.getX() - this.scrollAmount + textLowOffset / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.size);
-      Text.draw(content.substring(this.selectionLow, this.selectionHigh), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.selectedTextColor, this.size);
-      Text.draw(content.substring(this.selectionHigh), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth + (textWidth - textHighOffset) / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.size);
+      Text.draw(content.substring(0, this.selectionLow), this.getX() - this.scrollAmount + textLowOffset / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.getSize());
+      Text.draw(content.substring(this.selectionLow, this.selectionHigh), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.selectedTextColor, this.getSize());
+      Text.draw(content.substring(this.selectionHigh), this.getX() - this.scrollAmount + textLowOffset + textSelectionWidth + (textWidth - textHighOffset) / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.getSize());
     } else {
       if (this.isSelected()) {
         if ((int) ((frame - this.lastFrame) / 4) % 10 < 5) {
           Global.drawColor(this.textColor);
-          Rect.draw(this.getX() - this.scrollAmount + textHighOffset + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, .1f , this.minTextHeight());
+          Rect.draw(this.getX() - this.scrollAmount + textHighOffset + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, .1f , this.minTextHeight());
         }
       }
-      Text.draw(content, this.getX() - this.scrollAmount + textWidth / 2 + this.outlineWeight + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.size);
+      Text.draw(content, this.getX() - this.scrollAmount + textWidth / 2 + this.getOutlineWeight() + .1f, this.getY() - this.getHeight() / 2, this.textColor, this.getSize());
     }
     //switch back to previous (or default) fbo
     Renderer.framebufferController.popFrameAndBind();
     //draw fbo content
-    ScreenArea.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth() - 2 * this.outlineWeight, this.getHeight() - 2 * this.outlineWeight);
+    ScreenArea.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth() - 2 * this.getOutlineWeight(), this.getHeight() - 2 * this.getOutlineWeight());
   }
 
   @Override
@@ -345,9 +349,9 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
   }
 
   private int getClosestIndex(float x) {
-    float adjustedX = x - this.getX() + this.scrollAmount - this.outlineWeight - .1f;
+    float adjustedX = x - this.getX() + this.scrollAmount - this.getOutlineWeight() - .1f;
     if (x > this.getX() + this.getWidth()) {
-      adjustedX = this.getWidth() + this.scrollAmount - this.outlineWeight;
+      adjustedX = this.getWidth() + this.scrollAmount - this.getOutlineWeight();
     }
     if (adjustedX <= 0) {
       return 0;
@@ -355,7 +359,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
     float lastBreak = 0;
     int c = 0;
     for (String s : this.getValue().split("")) {
-      float currBreak = lastBreak + Text.getWidth(s, this.size);
+      float currBreak = lastBreak + Text.getWidth(s, this.getSize());
       if (adjustedX >= lastBreak && adjustedX <= currBreak) {
         //found that a 3/4 of the way down the character rather than half way as a break point feels more natural.
         //probably because we usually select from left to right...

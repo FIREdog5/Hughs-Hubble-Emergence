@@ -17,54 +17,66 @@ public class UIPopUp extends UIBoxCol {
     this.position = "top";
   }
 
+  public float getOffset() {
+    return this.offset;
+  }
+
+  public UIElement getAnchor() {
+    return this.anchor;
+  }
+
+  public String getPosition() {
+    return this.position;
+  }
+
   @Override
   public float getX() {
-    if (this.anchor == null) {
+    if (this.getAnchor() == null) {
       return 0;
     }
     switch(this.calcPosition()) {
       case "top":
       case "bottom":
-        return this.anchor.getX() + this.anchor.getWidth() / 2 - this.getWidth() / 2;
+        return this.getAnchor().getX() + this.getAnchor().getWidth() / 2 - this.getWidth() / 2;
       case "right":
-        return this.anchor.getX() + this.anchor.getWidth() + this.offset;
+        return this.getAnchor().getX() + this.getAnchor().getWidth() + this.getOffset();
       case "left":
-        return this.anchor.getX() - this.getWidth() - this.offset;
+        return this.getAnchor().getX() - this.getWidth() - this.getOffset();
     }
     return 0;
   }
 
   @Override
   public float getY() {
-    if (this.anchor == null) {
+    if (this.getAnchor() == null) {
       return 0;
     }
     switch(this.calcPosition()) {
       case "top":
-        return this.anchor.getY() + this.getHeight() + this.offset;
+        return this.getAnchor().getY() + this.getHeight() + this.getOffset();
       case "bottom":
-        return this.anchor.getY() - this.anchor.getHeight() - this.offset;
+        return this.getAnchor().getY() - this.getAnchor().getHeight() - this.getOffset();
       case "left":
       case "right":
-        return this.anchor.getY() - this.anchor.getHeight() / 2 + this.getHeight() / 2;
+        return this.getAnchor().getY() - this.getAnchor().getHeight() / 2 + this.getHeight() / 2;
     }
     return 0;
   }
 
   private String calcPosition() {
     String[] order = {"top", "bottom", "right", "left"};
-    if (this.willFit(this.position)) {
-      return this.position;
+    if (this.willFit(this.getPosition())) {
+      return this.getPosition();
     }
     for (String pos : order) {
-      if (pos.equals(this.position)) {
+      if (pos.equals(this.getPosition())) {
         continue;
       }
       if (this.willFit(pos)) {
         return pos;
       }
     }
-    return this.position;
+    return this.getPosition();
   }
 
   private boolean willFit(String position) {

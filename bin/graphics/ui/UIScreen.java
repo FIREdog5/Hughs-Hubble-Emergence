@@ -1,10 +1,19 @@
 package bin.graphics.ui;
 
 import bin.graphics.Renderer;
+import bin.input.IClickable;
 
+import java.util.Comparator;
+import java.util.Collections;
 import java.lang.IndexOutOfBoundsException;
 
 public class UIScreen extends UIElement {
+
+  private static final Comparator<UIElement> comparator = (UIElement o1, UIElement o2) -> (o1 instanceof IClickable && o2 instanceof IClickable) ?
+                                                          (((IClickable)o1).getZ() < 0 ? -1 : ((IClickable)o2).getZ() < 0 ? 1 : ((IClickable)o2).getZ() - ((IClickable)o1).getZ()) :
+                                                          (o1 instanceof IClickable && ((IClickable)o1).getZ() != 0) ? 1 :
+                                                          (o2 instanceof IClickable && ((IClickable)o2).getZ() != 0) ? -1 : 0;
+
   public UIScreen() {
     super();
     this.minWidth = (float)Renderer.unitsWide;
@@ -79,6 +88,12 @@ public class UIScreen extends UIElement {
   @Override
   public boolean allowChildContent(float x, float y) {
     return true;
+  }
+
+  @Override
+  public void addChild(UIElement child) {
+    super.addChild(child);
+    Collections.sort(this.children, comparator);
   }
 
 }

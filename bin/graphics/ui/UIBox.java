@@ -29,6 +29,18 @@ public abstract class UIBox extends UIElement implements IColorable, IOutlineabl
     this.outlineWeight = 0;
   }
 
+  public float getRadius() {
+    return radius;
+  }
+
+  public float getOutlineWeight() {
+    return outlineWeight;
+  }
+
+  public boolean getNoBackground() {
+    return noBackground;
+  }
+
   @Override
   public Color getColor() {
     if (this.color != null) {
@@ -79,13 +91,13 @@ public abstract class UIBox extends UIElement implements IColorable, IOutlineabl
 
   @Override
   public void render() {
-    if (!this.noBackground) {
+    if (!this.getNoBackground()) {
       Global.drawColor(this.getColor());
-      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.radius);
+      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRadius());
     }
-    if (this.outlineWeight > 0f) {
+    if (this.getOutlineWeight() > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.radius, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRadius(), this.getOutlineWeight());
     }
     for (int i = 0; i < this.children.size(); i++) {
       this.children.get(i).render();

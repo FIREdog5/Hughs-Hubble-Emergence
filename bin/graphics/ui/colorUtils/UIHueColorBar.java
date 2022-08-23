@@ -17,12 +17,12 @@ public class UIHueColorBar extends UIBoxCol {
 
   @Override
   public void render() {
-    if (!this.noBackground) {
+    if (!this.getNoBackground()) {
       HueRect.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f);
     }
-    if (this.outlineWeight > 0f) {
+    if (this.getOutlineWeight() > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f, this.getOutlineWeight());
     }
     for (int i = 0; i < this.children.size(); i++) {
       this.children.get(i).render();

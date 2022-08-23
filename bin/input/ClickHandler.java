@@ -19,7 +19,7 @@ public class ClickHandler {
   private int zCounter;
   private UIElement mask;
 
-  private static final Comparator<IClickable> comparator = (IClickable o1, IClickable o2) -> o1.getZ() < 0 ? -1 : o2.getZ() < 0 ? 1 : o2.getZ() - o1.getZ();
+  private static final Comparator<IClickable> comparator = (IClickable o1, IClickable o2) -> o1.getZ() < 0 ? -1 : o2.getZ() < 0 ? 1 : o1.getZ() - o2.getZ();
 
   public ClickHandler() {
     this.clickablesLock = new ReentrantLock();

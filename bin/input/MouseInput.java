@@ -58,5 +58,7 @@ public class MouseInput implements MouseListener {
     GameLoop.zoomWorld(location, event.getRotation()[1] + event.getRotation()[0]);
     Editor.mouseScrolled(location, event.getRotation()[1] + event.getRotation()[0]);
     GraphicsTest.mouseScrolled(location, event.getRotation()[1] + event.getRotation()[0]);
+    GraphicsTest.mouseMoved(location);
+    Editor.mouseMoved(location);
   }
 }

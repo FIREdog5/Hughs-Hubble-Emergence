@@ -71,7 +71,7 @@ public class UIButton extends UIBoxCol implements IClickable {
     return this.isMousedOver;
   }
 
-  protected void setIsMousedOver(boolean isMousedOver){
+  public void setIsMousedOver(boolean isMousedOver){
     this.isMousedOver = isMousedOver;
   }
 
@@ -85,13 +85,13 @@ public class UIButton extends UIBoxCol implements IClickable {
 
   @Override
   public void render() {
-    if (!this.noBackground) {
+    if (!this.getNoBackground()) {
       Global.drawColor(this.getColor());
-      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.isMouseDown ? .2f : 0)), (this.getHeight() + (this.isMouseDown ? .2f : 0)), this.radius);
+      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius());
     }
-    if (this.outlineWeight > 0f) {
+    if (this.getOutlineWeight() > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.isMouseDown ? .2f : 0)), (this.getHeight() + (this.isMouseDown ? .2f : 0)), this.radius, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius(), this.getOutlineWeight());
     }
     for (int i = 0; i < this.children.size(); i++) {
       this.children.get(i).render();

@@ -46,7 +46,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
 
   @Override
   public float getWidth() {
-    return super.getWidth() + this.scrollbarWidth + this.outlineWeight * 2;
+    return super.getWidth() + this.scrollbarWidth + this.getOutlineWeight() * 2;
   }
 
   @Override
@@ -55,7 +55,32 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
   }
 
   private float getScrollBarMaxHeight() {
-    return this.maxHeight - this.outlineWeight * 2;
+    return this.maxHeight - this.getOutlineWeight() * 2;
+  }
+
+  public float getScroll() {
+    return this.scroll;
+  }
+
+  public void setScroll(float scroll) {
+    this.scroll = scroll;
+    this.capScroll();
+  }
+
+  public Color getScrollbarColor() {
+    if (this.scrollbarColor == null) {
+      return new Color("#ffffff");
+    }
+    return this.scrollbarColor;
+  }
+  public Color getScrollbarMouseOverColor() {
+    if (this.scrollbarMouseOverColor == null) {
+      return new Color("#ffffff");
+    }
+    return this.scrollbarMouseOverColor;
+  }
+  public float getScrollbarWidth() {
+    return this.scrollbarWidth;
   }
 
   public float getChildHeight() {
@@ -64,7 +89,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
       return minimum;
     }
 
-    float sum = this.margin;
+    float sum = this.getMargin();
     UIElement child = null;
     for (int index = 0; index < this.children.size(); index++) {
       UIElement newChild = this.children.get(index);
@@ -77,7 +102,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
       sum = Math.max(child.y, sum);
     }
 
-    minimum = Math.max(minimum, sum + child.getPadding() + this.margin + child.getHeight());
+    minimum = Math.max(minimum, sum + child.getPadding() + this.getMargin() + child.getHeight());
     return minimum;
   }
 
@@ -86,7 +111,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     return this.isMousedOver;
   }
 
-  protected void setIsMousedOver(boolean isMousedOver){
+  public void setIsMousedOver(boolean isMousedOver){
     this.isMousedOver = isMousedOver;
   }
 
@@ -108,19 +133,21 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
       this.fbo = Renderer.framebufferController.createNewFrame();
     }
     this.capScroll();
-    if (!this.noBackground) {
+    if (!this.getNoBackground()) {
       Global.drawColor(this.getColor());
       RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f);
     }
-    if (this.outlineWeight > 0f) {
+    if (this.getOutlineWeight() > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), 0f, this.getOutlineWeight());
     }
     //draw scroll bar
-    Global.drawColor(this.getOutlineColor());
-    Rect.draw(this.getX() + this.getWidth() - this.scrollbarWidth - this.outlineWeight, this.getY() - this.getHeight() / 2, .03f, this.getHeight() - this.outlineWeight * 2);
-    Global.drawColor(this.getIsMousedOver() ? this.scrollbarMouseOverColor : this.scrollbarColor);
-    Rect.draw(this.getX() + this.getWidth() - this.scrollbarWidth / 2 - this.outlineWeight, this.getY() - Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 - (this.scroll / this.getChildHeight()) * this.getScrollBarMaxHeight() - this.outlineWeight, this.scrollbarWidth, Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight());
+    if (this.getScrollbarWidth() > 0) {
+      Global.drawColor(this.getOutlineColor());
+      Rect.draw(this.getX() + this.getWidth() - this.getScrollbarWidth() - this.getOutlineWeight(), this.getY() - this.getHeight() / 2, .03f, this.getHeight() - this.getOutlineWeight() * 2);
+      Global.drawColor(this.getIsMousedOver() ? this.getScrollbarMouseOverColor() : this.getScrollbarColor());
+      Rect.draw(this.getX() + this.getWidth() - this.getScrollbarWidth() / 2 - this.getOutlineWeight(), this.getY() - Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 - (this.scroll / this.getChildHeight()) * this.getScrollBarMaxHeight() - this.getOutlineWeight(), this.getScrollbarWidth(), Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight());
+    }
 
     //switch to fbo
     Renderer.framebufferController.switchToFrame(this.fbo);
@@ -131,12 +158,12 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     //switch back to previous (or default) fbo
     Renderer.framebufferController.popFrameAndBind();
     //draw fbo content
-    ScreenArea.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth() - 2 * this.outlineWeight, this.getHeight() - 2 * this.outlineWeight);
+    ScreenArea.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth() - 2 * this.getOutlineWeight(), this.getHeight() - 2 * this.getOutlineWeight());
   }
 
   @Override
   public float getChildX(int i) {
-    return super.getChildX(i) + this.outlineWeight;
+    return super.getChildX(i) + this.getOutlineWeight();
   }
 
   @Override
@@ -144,7 +171,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     if (i >= this.children.size() || i < 0) {
       throw new IndexOutOfBoundsException("UIBoxCol does not contain " + i + " children.");
     }
-    float sum = this.margin;
+    float sum = this.getMargin();
     UIElement child = null;
     for (int index = 0; index <= i; index++) {
       UIElement newChild = this.children.get(index);
@@ -156,7 +183,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
       child = newChild;
       sum = Math.max(child.y, sum);
     }
-    return this.getY() - sum + (this.scroll / this.getChildHeight() * (this.getChildHeight() + this.outlineWeight * 3f)) - this.outlineWeight;
+    return this.getY() - sum + ((this.getChildHeight() != 0 ? this.scroll / this.getChildHeight() : 0) * (this.getChildHeight() + this.getOutlineWeight() * 3f)) - this.getOutlineWeight();
   }
 
   @Override
@@ -185,14 +212,14 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     if (this.isDead) {
       return false;
     }
-    return x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.getY() && y >= this.getY() - this.getHeight();
+    return x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.getY() && y >= this.getY() - this.getHeight() && (this.parent == null || this.parent.allowChildContent(x, y));
   }
 
   public boolean isMouseOverScrollbar(float x, float y) {
     if (this.isDead || this.scrollbarWidth == 0f) {
       return false;
     }
-    return x >= this.getX() + this.getWidth() - this.outlineWeight - this.scrollbarWidth && x <= this.getX() + this.getWidth() - this.outlineWeight && y <= this.getY() - this.outlineWeight && y >= this.getY() - this.getHeight() + this.outlineWeight;
+    return x >= this.getX() + this.getWidth() - this.getOutlineWeight() - this.scrollbarWidth && x <= this.getX() + this.getWidth() - this.getOutlineWeight() && y <= this.getY() - this.getOutlineWeight() && y >= this.getY() - this.getHeight() + this.getOutlineWeight();
   }
 
   @Override
@@ -231,14 +258,14 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     }
     if (this.isMouseOverScrollbar(x, y)) {
       this.isMouseDown = true;
-      this.deltaY = y - this.getY() + Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 + (this.scroll / this.getChildHeight()) * this.getScrollBarMaxHeight() + this.outlineWeight;
+      this.deltaY = y - this.getY() + Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 + (this.scroll / this.getChildHeight()) * this.getScrollBarMaxHeight() + this.getOutlineWeight();
       if (this.deltaY > Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2) {
         this.deltaY = Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2;
       }
       if (this.deltaY < -Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2) {
         this.deltaY = -Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2;
       }
-      this.scroll = -(y + this.outlineWeight + Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 - this.getY() - this.deltaY) * this.getChildHeight() / this.getScrollBarMaxHeight();
+      this.scroll = -(y + this.getOutlineWeight() + Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 - this.getY() - this.deltaY) * this.getChildHeight() / this.getScrollBarMaxHeight();
     }
   }
 
@@ -270,7 +297,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
       this.isMousedOver = false;
     }
     if (this.getIsMouseDown()) {
-      this.scroll = -(y + this.outlineWeight + Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 - this.getY() - this.deltaY) * this.getChildHeight() / this.getScrollBarMaxHeight();
+      this.scroll = -(y + this.getOutlineWeight() + Math.min(this.getHeight() / this.getChildHeight(), 1f) * this.getScrollBarMaxHeight() / 2 - this.getY() - this.deltaY) * this.getChildHeight() / this.getScrollBarMaxHeight();
     }
   }
 

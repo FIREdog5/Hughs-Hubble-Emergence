@@ -37,6 +37,10 @@ public class UIImage extends UIBox {
     this.rotation = 0;
   }
 
+  public float getRotation() {
+    return this.rotation;
+  }
+
   @Override
   public float getWidth() {
     float minimum = Math.max(this.minWidth, this.margin * 2);
@@ -75,17 +79,17 @@ public class UIImage extends UIBox {
     if (this.image != null) {
       Global.drawColor(new Color("#ffffff"));
       if (this.useAA) {
-        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
+        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
       } else {
-        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
+        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
       }
     }
     if (imageWrapper != null) {
       Global.drawColor(new Color("#ffffff"));
       if (this.useAA) {
-        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
+        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
       } else {
-        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.rotation);
+        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
       }
     }
 

@@ -77,13 +77,13 @@ public class UIVerticalValueSlider extends UIButton {
 
    @Override
    public void render() {
-     if (!this.noBackground) {
+     if (!this.getNoBackground()) {
        Global.drawColor(this.getColor());
        Pointer.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing);
      }
-     if (this.outlineWeight > 0f) {
+     if (this.getOutlineWeight() > 0f) {
        Global.drawColor(this.getOutlineColor());
-       PointerOutline.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing, this.outlineWeight);
+       PointerOutline.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing, this.getOutlineWeight());
      }
      for (int i = 0; i < this.children.size(); i++) {
        this.children.get(i).render();

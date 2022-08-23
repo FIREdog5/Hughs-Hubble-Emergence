@@ -12,7 +12,7 @@ public class UIToolTip extends UIPopUp{
 
   @Override
   public void render() {
-    if (this.anchor instanceof IClickable && ((IClickable)this.anchor).getIsMousedOver()) {
+    if (this.getAnchor() instanceof IClickable && ((IClickable)this.getAnchor()).getIsMousedOver()) {
       super.render();
     }
   }

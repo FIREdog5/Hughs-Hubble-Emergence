@@ -924,6 +924,23 @@ public class Editor extends Thread{
     sliderCol.addChild(newSlider);
   }
 
+  private static void openNoiseModal() {
+    openNoiseModal(() -> {});
+  }
+
+  private static void openNoiseModal(Runnable afterClose) {
+    UIModal noiseModal = new UIModal(screen);
+    noiseModal.centerBox.color = new Color("#000000");
+    noiseModal.centerBox.outlineColor = new Color("#ffffff");
+    noiseModal.centerBox.outlineWeight = .1f;
+    noiseModal.centerBox.radius = .5f;
+    screen.addChild(noiseModal);
+    clickHandler.setMask(noiseModal.centerBox);
+
+
+
+  }
+
   private static boolean lockContext() {
     if (Renderer.getWindow().getContext() == null) {
       return false;

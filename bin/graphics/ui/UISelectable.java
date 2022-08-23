@@ -25,7 +25,7 @@ public class UISelectable extends UIButton {
 
   @Override
   public Color getColor() {
-    if (this.isActive && this.selectedColor != null) {
+    if (this.isSelected() && this.selectedColor != null) {
       return this.selectedColor;
     } else if (this.getIsMousedOver() && this.mouseOverColor != null) {
       return this.mouseOverColor;
@@ -40,7 +40,7 @@ public class UISelectable extends UIButton {
 
   @Override
   public Color getOutlineColor() {
-    if (this.isActive && this.selectedOutlineColor != null) {
+    if (this.isSelected() && this.selectedOutlineColor != null) {
       return this.selectedOutlineColor;
     } else if (this.getIsMousedOver() && this.mouseOverOutlineColor != null) {
       return this.mouseOverOutlineColor;
@@ -56,13 +56,13 @@ public class UISelectable extends UIButton {
   @Override
   public void render() {
     this.deselectBlocked = false;
-    if (!this.noBackground) {
+    if (!this.getNoBackground()) {
       Global.drawColor(this.getColor());
-      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.radius);
+      RoundedBox.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius());
     }
-    if (this.outlineWeight > 0f) {
+    if (this.getOutlineWeight() > 0f) {
       Global.drawColor(this.getOutlineColor());
-      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.radius, this.outlineWeight);
+      RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius(), this.getOutlineWeight());
     }
     for (int i = 0; i < this.children.size(); i++) {
       this.children.get(i).render();

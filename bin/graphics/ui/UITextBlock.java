@@ -48,7 +48,7 @@ public class UITextBlock extends UIBoxCol {
     this.textPeices = new ArrayList<String>();
     String[] lines = this.text.split("\n");
     // I think W is usually the widest character
-    if (this.maxWidth == -1 || this.maxWidth < Text.getWidth("WW", this.size)) {
+    if (this.maxWidth == -1 || this.maxWidth < Text.getWidth("WW", this.getSize())) {
       for (int i = 0; i < lines.length; i++) {
         String line = lines[i].strip();
         if (line.length() == 0) {
@@ -64,18 +64,18 @@ public class UITextBlock extends UIBoxCol {
         String createdLine = "";
         for(int j = 0; j < words.length; j++) {
           String word = words[j].strip();
-          if(Text.getWidth(createdLine + " " + word, this.size) <= this.maxWidth) {
+          if(Text.getWidth(createdLine + " " + word, this.getSize()) <= this.maxWidth) {
             createdLine += (createdLine.length() == 0 ? "" : " ") + word;
           } else {
             this.textPeices.add(createdLine);
             createdLine = "";
-            if (Text.getWidth(word, this.size) <= this.maxWidth) {
+            if (Text.getWidth(word, this.getSize()) <= this.maxWidth) {
               createdLine = word;
             } else {
               String[] characters = ((createdLine.length() == 0 ? "" : " ") + word).split("");
               for (int k = 0; k < characters.length; k++) {
                 String character = characters[k];
-                if(Text.getWidth(createdLine + character, this.size) <= this.maxWidth) {
+                if(Text.getWidth(createdLine + character, this.getSize()) <= this.maxWidth) {
                   createdLine += character;
                 } else {
                   this.textPeices.add(createdLine);
@@ -103,10 +103,10 @@ public class UITextBlock extends UIBoxCol {
       String textPiece = this.textPeices.get(i);
       if (textPiece.equals("$$break$$")) {
         UIBoxCol line = new UIBoxCol(this);
-        line.minHeight = Text.getHeight("WW", this.size);
+        line.minHeight = Text.getHeight("WW", this.getSize());
         this.addChild(line);
       } else {
-        UIText line = new UIText(this, this.textPeices.get(i), this.size);
+        UIText line = new UIText(this, this.textPeices.get(i), this.getSize());
         line.color = this.textColor;
         line.noBackground = true;
         line.outlineWeight = 0f;
