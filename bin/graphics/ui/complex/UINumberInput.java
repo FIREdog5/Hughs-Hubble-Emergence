@@ -69,7 +69,11 @@ public abstract class UINumberInput extends UITextInput{
           val = ref.incrementAmount;
         }
         val = Math.round(val * (float) Math.pow(10, ref.precision)) / (float) Math.pow(10, ref.precision);
-        setUnfilteredValue(Float.toString(val));
+        if (ref.precision == 0) {
+          setUnfilteredValue(Integer.toString((int)val));
+        } else {
+          setUnfilteredValue(Float.toString(val));
+        }
       }
 
       @Override
@@ -122,7 +126,11 @@ public abstract class UINumberInput extends UITextInput{
           val = -1 * ref.incrementAmount;
         }
         val = Math.round(val * (float) Math.pow(10, ref.precision)) / (float) Math.pow(10, ref.precision);
-        setUnfilteredValue(Float.toString(val));
+        if (ref.precision == 0) {
+          setUnfilteredValue(Integer.toString((int)val));
+        } else {
+          setUnfilteredValue(Float.toString(val));
+        }
       }
 
       @Override
@@ -201,7 +209,7 @@ public abstract class UINumberInput extends UITextInput{
           return false;
         }
       }
-      if (newValue.contains(".")) {
+      if (newValue.contains(".") && newValue.split("\\.").length > 1 && newValue.split("\\.")[1].length() > 0 && this.precision != 0) {
         return setValue(prefix + Float.toString(val));
       } else {
         return setValue(prefix + Integer.toString((int)val));
@@ -218,7 +226,7 @@ public abstract class UINumberInput extends UITextInput{
     try {
       float val = Float.parseFloat(content);
       val = Math.max(Math.min(this.maxValue, val), this.minValue);
-      if (content.contains(".")) {
+      if (content.contains(".") && content.split("\\.").length > 1 && content.split("\\.")[1].length() > 0 && this.precision != 0) {
         setValue(Float.toString(val));
       } else {
         setValue(Integer.toString((int)val));

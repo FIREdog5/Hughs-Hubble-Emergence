@@ -17,6 +17,7 @@ import bin.graphics.objects.ReRendered;
 import bin.graphics.objects.ColorWheel;
 import bin.graphics.objects.Pointer;
 import bin.graphics.objects.PointerOutline;
+import bin.graphics.objects.ScreenArea;
 import bin.graphics.Color;
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxCol;
@@ -60,6 +61,8 @@ public class GraphicsTest extends Thread{
     private static Point startLoc;
     private static ClickHandler clickHandler;
     private static KeyboardHandler keyboardHandler;
+
+    private static int blackholeFBO = -1;
 
     public static void init() {
       (new GraphicsTest()).start();
@@ -421,6 +424,12 @@ public class GraphicsTest extends Thread{
         return;
       }
 
+      if (blackholeFBO == -1) {
+        blackholeFBO = Renderer.framebufferController.createNewFrame();
+      }
+
+      Renderer.framebufferController.switchToFrame(blackholeFBO, false);
+
       GL2 gl = ClientMain.gl;
 
       //draw stary test field
@@ -496,12 +505,14 @@ public class GraphicsTest extends Thread{
       float bhY = 0f;
       float bhSize = 10f;
 
-      ReRendered.initReRenderer();
+      Renderer.framebufferController.popFrameAndBind();
+      float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
+      ScreenArea.draw(0, 0, Renderer.unitsWide, unitsTall);
+
       Shaders.blackHoleShader.startShader(gl);
       gl.glUniform4f(gl.glGetUniformLocation(Shaders.blackHoleShader.getProgramId(), "params"), bhX, bhY, bhSize, Renderer.unitsWide);
-      ReRendered.drawSquare(bhX, bhY, bhSize, bhSize);
+      ScreenArea.draw(bhX, bhY, bhSize, bhSize);
       Shaders.blackHoleShader.stopShader(gl);
-      ReRendered.cleanUpReRenderer();
 
       //draw UI
       screen.render();

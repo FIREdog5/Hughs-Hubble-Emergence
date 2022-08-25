@@ -86,10 +86,14 @@ public class FramebufferController {
     return 0;
   }
 
-  public void switchToFrame(int framebuffer) {
+  public void switchToFrame(int framebuffer, boolean transparent) {
     GL2 gl = ClientMain.gl;
     gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, framebuffer);
-    gl.glClearColor(0.1f, 0.1f, 0.1f, 0f);
+    if (transparent) {
+      gl.glClearColor(0f, 0f, 0f, 0f);
+    } else {
+      gl.glClearColor(0f, 0f, 0f, 1.0f);
+    }
     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     gl.glClearColor(0f, 0f, 0f, 1.0f);
     this.frameHistory.push(currentFramebuffer);

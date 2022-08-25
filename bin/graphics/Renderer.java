@@ -39,7 +39,7 @@ public class Renderer {
       case "graphicsTest":
         window.addGLEventListener(new GraphicsTestEventListener());
         break;
-      default:
+      case "":
         window.addGLEventListener(new GameEventListener());
         break;
     }

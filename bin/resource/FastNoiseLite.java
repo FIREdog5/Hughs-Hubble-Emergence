@@ -1,4 +1,4 @@
-package bin.recource;
+package bin.resource;
 
 // MIT License
 //

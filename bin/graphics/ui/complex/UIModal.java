@@ -59,8 +59,7 @@ public class UIModal extends UIBox {
   }
 
   public void close() {
-    this.parent.children.remove(this);
-    this.cleanUp();
+    this.removeFromParent();
   }
 
   @Override

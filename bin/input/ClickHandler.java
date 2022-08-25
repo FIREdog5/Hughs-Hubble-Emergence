@@ -64,6 +64,10 @@ public class ClickHandler {
     this.mask = null;
   }
 
+  public boolean hasMask() {
+    return this.mask != null;
+  }
+
   public void processClick(float x, float y) {
     clickablesLock.lock();
     Collections.sort(this.clickables, comparator);

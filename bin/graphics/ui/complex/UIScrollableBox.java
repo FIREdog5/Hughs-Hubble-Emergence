@@ -150,7 +150,7 @@ public class UIScrollableBox extends UIBoxCol implements IClickable {
     }
 
     //switch to fbo
-    Renderer.framebufferController.switchToFrame(this.fbo);
+    Renderer.framebufferController.switchToFrame(this.fbo, true);
     //draw children
     for (int i = 0; i < this.children.size(); i++) {
       this.children.get(i).render();

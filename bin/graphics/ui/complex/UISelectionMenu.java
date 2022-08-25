@@ -1,5 +1,6 @@
 package bin.graphics.ui.complex;
 
+import bin.input.IClickable;
 import bin.graphics.ui.UISelectable;
 import bin.graphics.ui.UIElement;
 import bin.graphics.Color;
@@ -92,7 +93,7 @@ public abstract class UISelectionMenu extends UISelectable {
 
       @Override
       public float getHeight() {
-        return ref.selectionBoxHeight;
+        return Math.min(this.getChildHeight(), ref.selectionBoxHeight);
       }
 
       @Override
@@ -171,7 +172,7 @@ public abstract class UISelectionMenu extends UISelectable {
 
     if (!(this.getValue() == null || this.getValue().equals("") || this.options.indexOf(this.getValue()) == -1)){
       //switch to fbo
-      Renderer.framebufferController.switchToFrame(this.fbo);
+      Renderer.framebufferController.switchToFrame(this.fbo, true);
       //draw selected child
       int i = this.options.indexOf(this.getValue());
       boolean tempMousedOver = ((UISelectable)this.scrollableList.children.get(i)).getIsMousedOver();
@@ -192,6 +193,49 @@ public abstract class UISelectionMenu extends UISelectable {
   }
 
   @Override
+  public boolean deepContains(UIElement target) {
+    if (scrollableList.deepContains(target)) {
+      return true;
+    }
+    if (this.equals(target)) {
+      return true;
+    }
+    if (this.children.contains(target)) {
+      return true;
+    } else {
+      for (UIElement child : this.children) {
+        if (child.deepContains(target)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+
+  @Override
+  public boolean deepContains(IClickable target) {
+    if (scrollableList.deepContains(target)) {
+      return true;
+    }
+    if (!(target instanceof UIElement)) {
+      return false;
+    }
+    if (this.equals((UIElement)target)) {
+      return true;
+    }
+    if (this.children.contains((UIElement)target)) {
+      return true;
+    } else {
+      for (UIElement child : this.children) {
+        if (child.deepContains((UIElement)target)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+
+  @Override
   public boolean allowChildContent(float x, float y) {
     return this.isSelected() && super.allowChildContent(x, y);
   }
@@ -204,6 +248,18 @@ public abstract class UISelectionMenu extends UISelectable {
   @Override
   public void addChild(UIElement child) {
     throw(new UnsupportedOperationException());
+  }
+
+  @Override
+  public void cleanUp() {
+    if (this.children != null) {
+      this.removeChildren();
+      this.children = null;
+    }
+    if (this.scrollableList != null) {
+      this.scrollableList.removeFromParent();
+      this.scrollableList = null;
+    }
   }
 
 }

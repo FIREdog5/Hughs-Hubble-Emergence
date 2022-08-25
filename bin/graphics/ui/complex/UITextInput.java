@@ -140,7 +140,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
       RoundedBoxOutline.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, (this.getWidth() + (this.getIsMouseDown() ? .2f : 0)), (this.getHeight() + (this.getIsMouseDown() ? .2f : 0)), this.getRadius(), this.getOutlineWeight());
     }
     //switch to fbo
-    Renderer.framebufferController.switchToFrame(this.fbo);
+    Renderer.framebufferController.switchToFrame(this.fbo, true);
     //draw text
     this.selectionHigh = Math.min(selectionHigh, this.getValue().length());
     this.selectionLow = Math.min(selectionLow, this.getValue().length());
