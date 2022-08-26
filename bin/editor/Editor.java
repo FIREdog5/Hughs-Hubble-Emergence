@@ -14,6 +14,7 @@ import bin.ClientMain;
 import bin.Wrapper;
 import bin.resource.ImageResource;
 import bin.resource.GradientGenerator;
+import bin.resource.ImageGenerator;
 import bin.resource.ColorPosition;
 import bin.resource.FastNoiseLite;
 
@@ -62,6 +63,7 @@ public class Editor extends Thread{
   private static UIScreen screen;
   private static String view = "globe";
   private static Wrapper<ImageResource> palettResourceWrapper = new Wrapper<ImageResource>();
+  private static Wrapper<ImageResource> noisePreviewWrapper = new Wrapper<ImageResource>();
 
   public static void init() {
     (new Editor()).start();
@@ -1097,6 +1099,8 @@ public class Editor extends Thread{
 
     FastNoiseLite fnl = new FastNoiseLite();
 
+    noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+
     UIModal noiseModal = new UIModal(screen);
     // noiseModal.centerBox.minWidth = 20f;
     // noiseModal.centerBox.minHeight = 20f;
@@ -1146,6 +1150,10 @@ public class Editor extends Thread{
 
       @Override
       public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
         switch (val) {
           case "OpenSimplex2":
             fnl.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
@@ -1166,6 +1174,7 @@ public class Editor extends Thread{
             fnl.SetNoiseType(FastNoiseLite.NoiseType.Value);
             break;
         }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
       }
     };
 
@@ -1196,6 +1205,10 @@ public class Editor extends Thread{
 
       @Override
       public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
         switch (val) {
           case "None":
             fnl.SetRotationType3D(FastNoiseLite.RotationType3D.None);
@@ -1207,6 +1220,7 @@ public class Editor extends Thread{
             fnl.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXZPlanes);
             break;
         }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
       }
     };
 
@@ -1226,7 +1240,12 @@ public class Editor extends Thread{
         super.onDeselect();
         try {
           String val = this.getValue();
+          Float oldVal = fnl.GetFrequency();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
           fnl.SetFrequency(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
         } catch (Exception e) {
           return;
         }
@@ -1239,6 +1258,10 @@ public class Editor extends Thread{
 
       @Override
       public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
         frequencyStringWrapper.set(val);
         return true;
       }
@@ -1274,6 +1297,10 @@ public class Editor extends Thread{
 
       @Override
       public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
         switch (val) {
           case "None":
             fnl.SetFractalType(FastNoiseLite.FractalType.None);
@@ -1288,6 +1315,7 @@ public class Editor extends Thread{
             fnl.SetFractalType(FastNoiseLite.FractalType.PingPong);
             break;
         }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
       }
     };
 
@@ -1308,7 +1336,12 @@ public class Editor extends Thread{
         super.onDeselect();
         try {
           String val = this.getValue();
+          int oldVal = fnl.GetFractalOctaves();
+          if (oldVal == Integer.parseInt(val)) {
+            return;
+          }
           fnl.SetFractalOctaves(Integer.parseInt(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
         } catch (Exception e) {
           return;
         }
@@ -1321,6 +1354,10 @@ public class Editor extends Thread{
 
       @Override
       public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
         fractalOctavesStringWrapper.set(val);
         return true;
       }
@@ -1340,7 +1377,12 @@ public class Editor extends Thread{
         super.onDeselect();
         try {
           String val = this.getValue();
-          fnl.SetFractalLacunarity(Integer.parseInt(val));
+          Float oldVal = fnl.GetFractalLacunarity();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          fnl.SetFractalLacunarity(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
         } catch (Exception e) {
           return;
         }
@@ -1353,6 +1395,10 @@ public class Editor extends Thread{
 
       @Override
       public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
         fractalLacunarityStringWrapper.set(val);
         return true;
       }
@@ -1372,7 +1418,12 @@ public class Editor extends Thread{
         super.onDeselect();
         try {
           String val = this.getValue();
-          fnl.SetFractalGain(Integer.parseInt(val));
+          Float oldVal = fnl.GetFractalGain();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          fnl.SetFractalGain(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
         } catch (Exception e) {
           return;
         }
@@ -1385,6 +1436,10 @@ public class Editor extends Thread{
 
       @Override
       public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
         fractalGainStringWrapper.set(val);
         return true;
       }
@@ -1404,7 +1459,12 @@ public class Editor extends Thread{
         super.onDeselect();
         try {
           String val = this.getValue();
-          fnl.SetFractalWeightedStrength(Integer.parseInt(val));
+          Float oldVal = fnl.GetFractalWeightedStrength();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          fnl.SetFractalWeightedStrength(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
         } catch (Exception e) {
           return;
         }
@@ -1417,6 +1477,10 @@ public class Editor extends Thread{
 
       @Override
       public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
         fractalWeightedStrengthStringWrapper.set(val);
         return true;
       }
@@ -1436,7 +1500,12 @@ public class Editor extends Thread{
         super.onDeselect();
         try {
           String val = this.getValue();
-          fnl.SetFractalPingPongStrength(Integer.parseInt(val));
+          Float oldVal = fnl.GetFractalPingPongStrength();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          fnl.SetFractalPingPongStrength(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
         } catch (Exception e) {
           return;
         }
@@ -1449,6 +1518,10 @@ public class Editor extends Thread{
 
       @Override
       public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
         fractalPingPongStrengthStringWrapper.set(val);
         return true;
       }
@@ -1484,6 +1557,10 @@ public class Editor extends Thread{
 
       @Override
       public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
         switch (val) {
           case "Euclidean":
             fnl.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Euclidean);
@@ -1498,6 +1575,7 @@ public class Editor extends Thread{
             fnl.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Hybrid);
             break;
         }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
       }
     };
 
@@ -1534,6 +1612,10 @@ public class Editor extends Thread{
 
       @Override
       public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
         switch (val) {
           case "CellValue":
             fnl.SetCellularReturnType(FastNoiseLite.CellularReturnType.CellValue);
@@ -1557,6 +1639,7 @@ public class Editor extends Thread{
             fnl.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Div);
             break;
         }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
       }
     };
 
@@ -1572,37 +1655,102 @@ public class Editor extends Thread{
 
     constructDropdown(controls, cellularReturnTypeField, cellularReturnTypeFieldOptions, "Return Type");
 
-        Wrapper<String> cellularJitterStringWrapper = new Wrapper<String>(Float.toString(fnl.GetCellularJitter()));
-        UIBoxRow cellularJitterFieldRow = new UIBoxRow(null);
-        UINumberInput cellularJitterField = new UINumberInput(cellularJitterFieldRow, .5f, clickHandler){
-          @Override
-          public void onDeselect() {
-            super.onDeselect();
-            try {
-              String val = this.getValue();
-              fnl.SetCellularJitter(Integer.parseInt(val));
-            } catch (Exception e) {
-              return;
-            }
+    Wrapper<String> cellularJitterStringWrapper = new Wrapper<String>(Float.toString(fnl.GetCellularJitter()));
+    UIBoxRow cellularJitterFieldRow = new UIBoxRow(null);
+    UINumberInput cellularJitterField = new UINumberInput(cellularJitterFieldRow, .5f, clickHandler){
+      @Override
+      public void onDeselect() {
+        super.onDeselect();
+        try {
+          String val = this.getValue();
+          Float oldVal = fnl.GetCellularJitter();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
           }
+          fnl.SetCellularJitter(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        } catch (Exception e) {
+          return;
+        }
+      }
 
-          @Override
-          public String getValue() {
-            return cellularJitterStringWrapper.get();
-          }
+      @Override
+      public String getValue() {
+        return cellularJitterStringWrapper.get();
+      }
 
-          @Override
-          public boolean setValue(String val) {
-            cellularJitterStringWrapper.set(val);
-            return true;
-          }
-        };
-        cellularJitterField.minValue = -10;
-        cellularJitterField.maxValue = 10;
-        cellularJitterField.incrementAmount = .1f;
-        cellularJitterField.precision = 2;
+      @Override
+      public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
+        cellularJitterStringWrapper.set(val);
+        return true;
+      }
+    };
+    cellularJitterField.minValue = -10;
+    cellularJitterField.maxValue = 10;
+    cellularJitterField.incrementAmount = .1f;
+    cellularJitterField.precision = 2;
 
-        constructNumField(controls, cellularJitterFieldRow, cellularJitterField, "Jitter");
+    constructNumField(controls, cellularJitterFieldRow, cellularJitterField, "Jitter");
+
+    UITextBlock domainWarpText = new UITextBlock(controls, "Domain Warp", .5f);
+    domainWarpText.textColor = new Color("#ffffff");
+    domainWarpText.noBackground = true;
+    domainWarpText.maxWidth = 10f;
+    controls.addChild(domainWarpText);
+
+    UISelectionMenu domainWarpTypeField = new UISelectionMenu(controls, screen, clickHandler){
+      @Override
+      public String getValue() {
+        switch (fnl.GetDomainWarpType()) {
+          case OpenSimplex2:
+            return "OpenSimplex2";
+          case OpenSimplex2Reduced:
+            return "OpenSimplex2Reduced";
+          case BasicGrid:
+            return "BasicGrid";
+        }
+        return "";
+      }
+
+      @Override
+      public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
+        switch (val) {
+          case "OpenSimplex2":
+            fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
+            break;
+          case "OpenSimplex2Reduced":
+            fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2Reduced);
+            break;
+          case "BasicGrid":
+            fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
+            break;
+        }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+      }
+    };
+
+    String[] domainWarpTypeFieldOptions = {
+      "OpenSimplex2",
+      "OpenSimplex2Reduced",
+      "BasicGrid"
+    };
+
+    constructDropdown(controls, domainWarpTypeField, domainWarpTypeFieldOptions, "Type");
+
+    UIImage noisePreview = new UIImage(modalContentRow, noisePreviewWrapper);
+    noisePreview.minWidth = 31.4f;
+    noisePreview.minHeight = 15.7f;
+    // noisePreview.useAA = false;
+    modalContentRow.addChild(noisePreview);
+
   }
 
   private static boolean lockContext() {

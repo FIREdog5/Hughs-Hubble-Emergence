@@ -38,6 +38,6 @@ public class ScreenArea {
     gl.glEnd();
     gl.glFlush();
 
-    gl.glTranslatef(-newX, -newY, 0);
+    gl.glTranslatef(-1f * newX, -1f * newY, 0);
   }
 }
