@@ -8,7 +8,8 @@ public class RoundedBox {
   public static void draw(float x, float y, float width, float height, float radius) {
     GL2 gl = ClientMain.gl;
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-
+    
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
 
     gl.glBegin(GL2.GL_POLYGON);
@@ -74,5 +75,6 @@ public class RoundedBox {
     gl.glFlush();
 
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 }

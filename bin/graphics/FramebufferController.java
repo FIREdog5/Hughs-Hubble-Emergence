@@ -13,6 +13,7 @@ public class FramebufferController {
   private Stack<Integer> frameHistory;
   private int currentFramebuffer;
   private HashMap<Integer, Integer> texData;
+  private HashMap<Integer, Integer> altTexData;
   private HashMap<Integer, Integer> rboData;
   private HashSet<Integer> deadFbos;
 
@@ -20,6 +21,7 @@ public class FramebufferController {
     this.frameHistory = new Stack<Integer>();
     this.currentFramebuffer = 0;
     this.texData = new HashMap<Integer,Integer>();
+    this.altTexData = new HashMap<Integer,Integer>();
     this.rboData = new HashMap<Integer,Integer>();
     this.deadFbos = new HashSet<Integer>();
   }
@@ -53,9 +55,20 @@ public class FramebufferController {
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
+    //make an alternate texture
+    int[] alternateTextureColorbufferWrapper = new int[1];
+    gl.glGenTextures(1, alternateTextureColorbufferWrapper, 0);
+    int alternateTextureColorbuffer = alternateTextureColorbufferWrapper[0];
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, alternateTextureColorbuffer);
+    gl.glTexImage2D(GL2.GL_TEXTURE_2D, 0, GL2.GL_RGBA, Renderer.getWindowWidth(), Renderer.getWindowHeight(), 0, GL2.GL_RGBA, GL2.GL_FLOAT, null);
+    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+
     // attach it to currently bound framebuffer object
     gl.glFramebufferTexture2D(GL2.GL_FRAMEBUFFER, GL2.GL_COLOR_ATTACHMENT0, GL2.GL_TEXTURE_2D, textureColorbuffer, 0);
     this.texData.put(framebuffer, textureColorbuffer);
+    this.altTexData.put(framebuffer, alternateTextureColorbuffer);
 
     //make an rbo
     int[] rboWrapper = new int[1];
@@ -89,12 +102,13 @@ public class FramebufferController {
   public void switchToFrame(int framebuffer, boolean transparent) {
     GL2 gl = ClientMain.gl;
     gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, framebuffer);
+    gl.glViewport(0, 0, Renderer.getWindowWidth(), Renderer.getWindowHeight());
     if (transparent) {
       gl.glClearColor(0f, 0f, 0f, 0f);
     } else {
       gl.glClearColor(0f, 0f, 0f, 1.0f);
     }
-    gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+    gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
     gl.glClearColor(0f, 0f, 0f, 1.0f);
     this.frameHistory.push(currentFramebuffer);
     this.currentFramebuffer = framebuffer;
@@ -110,8 +124,15 @@ public class FramebufferController {
       popFrameAndBind();
       return;
     }
+
+    int currTex = this.texData.get(this.currentFramebuffer);
+    int altTex = this.altTexData.get(this.currentFramebuffer);
+    this.texData.put(this.currentFramebuffer, altTex);
+    this.altTexData.put(this.currentFramebuffer, currTex);
+    gl.glBindTexture(GL2.GL_TEXTURE_2D, currTex);
+    gl.glFramebufferTexture2D(GL2.GL_FRAMEBUFFER, GL2.GL_COLOR_ATTACHMENT0, GL2.GL_TEXTURE_2D, altTex, 0);
     gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, oldBuffer);
-    gl.glBindTexture(GL2.GL_TEXTURE_2D, this.texData.get(this.currentFramebuffer));
+    gl.glViewport(0, 0, Renderer.getWindowWidth(), Renderer.getWindowHeight());
     this.currentFramebuffer = oldBuffer;
   }
 
@@ -122,6 +143,7 @@ public class FramebufferController {
     gl.glDeleteRenderbuffers(1, new int[]{rboData.get(framebuffer)}, 0);
     deadFbos.add(framebuffer);
     texData.remove(framebuffer);
+    altTexData.remove(framebuffer);
     rboData.remove(framebuffer);
   }
 }

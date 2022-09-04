@@ -9,6 +9,7 @@ public class HueRect {
   public static void draw(float x, float y, float width, float height, float rotation) {
     GL2 gl = ClientMain.gl;
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
 
@@ -31,5 +32,6 @@ public class HueRect {
 
     gl.glRotatef(-rotation, 0, 0, 1);
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 }

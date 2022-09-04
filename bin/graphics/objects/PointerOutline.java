@@ -9,6 +9,7 @@ public class PointerOutline {
     GL2 gl = ClientMain.gl;
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
     gl.glBegin(GL2.GL_QUAD_STRIP);
     {
@@ -47,6 +48,7 @@ public class PointerOutline {
     gl.glFlush();
 
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 
   private static float triangeHeight(float a) {

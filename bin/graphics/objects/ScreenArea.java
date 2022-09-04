@@ -21,7 +21,8 @@ public class ScreenArea {
     float highU = (x + unitsWide / 2f + width / 2f) / unitsWide;
     float lowV = (y + unitsTall / 2f - height / 2f) / unitsTall;
     float highV = (y + unitsTall / 2f + height / 2f) / unitsTall;
-
+    
+    gl.glPushMatrix();
     gl.glTranslatef(newX, newY, 0);
 
     gl.glBegin(GL2.GL_QUADS);
@@ -38,6 +39,7 @@ public class ScreenArea {
     gl.glEnd();
     gl.glFlush();
 
-    gl.glTranslatef(-1f * newX, -1f * newY, 0);
+    gl.glTranslatef(-newX, -newY, 0);
+    gl.glPopMatrix();
   }
 }

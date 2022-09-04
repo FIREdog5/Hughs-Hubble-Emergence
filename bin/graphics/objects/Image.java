@@ -24,6 +24,7 @@ public class Image {
 
     gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
 
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
 
@@ -58,6 +59,7 @@ public class Image {
 
     gl.glRotatef(-rotation, 0, 0, 1);
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 
   public static void drawNoAA(ImageResource image, float x, float y, float width, float height, float rotation) {
@@ -78,6 +80,7 @@ public class Image {
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
 
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
 
@@ -112,6 +115,7 @@ public class Image {
 
     gl.glRotatef(-rotation, 0, 0, 1);
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 
   public static void draw(Texture texture, float x, float y, float width, float height, float rotation) {
@@ -123,7 +127,8 @@ public class Image {
     }
 
     gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
-
+    
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
     gl.glRotatef(rotation, 0, 0, 1);
 
@@ -145,6 +150,7 @@ public class Image {
 
     gl.glRotatef(-rotation, 0, 0, 1);
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 
   public static void draw(ImageResource image, float x, float y, float width, float height) {

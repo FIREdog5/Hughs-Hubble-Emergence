@@ -62,6 +62,7 @@ public class ReRendered {
     float lowV = (y + unitsTall / 2 - height / 2) / unitsTall;
     float highV = (y + unitsTall / 2 + height / 2) / unitsTall;
 
+    gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
 
     gl.glBegin(GL2.GL_QUADS);
@@ -79,6 +80,7 @@ public class ReRendered {
     gl.glFlush();
 
     gl.glTranslatef(-x, -y, 0);
+    gl.glPopMatrix();
   }
 
 
