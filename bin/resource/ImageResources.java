@@ -73,7 +73,7 @@ public class ImageResources{
             ImageGenerator.OpenSimpleNoiseTexture(1L, 20d, 2400, 800)),
               1.3f,
               70f)),
-        1.6f, -100f));
+        1.6f, -100f), 1, 1000);
 
     CompoundImage baseImage = new CompoundImage();
     baseImage.addStep(new ImageCreateModifier(1L, 70d));
@@ -84,7 +84,7 @@ public class ImageResources{
     secondImage.addStep(new ImageContrastModifier(1.3d, 70d));
     baseImage.addStep(new ImageMultModifier(secondImage));
     baseImage.addStep(new ImageContrastModifier(1.6d, -100d));
-    generationTest = new ImageResource(ImagePreprocessor.doubleImage(baseImage.resolve(2400, 800)), 1, 1000);
+    generationTest = new ImageResource(baseImage.resolve(2400, 800), 1, 1000);
 
     CompoundImage baseImage2 = new CompoundImage();
     baseImage2.addStep(new ImageCreateModifier(2L, 270d));
@@ -95,9 +95,9 @@ public class ImageResources{
     secondImage2.addStep(new ImageContrastModifier(1.3d, 70d));
     baseImage2.addStep(new ImageMultModifier(secondImage2));
     baseImage2.addStep(new ImageContrastModifier(1.6d, -100d));
-    generationTest2 = new ImageResource(ImagePreprocessor.doubleImage(baseImage2.resolve(2400, 800)), 1, 1000);
+    generationTest2 = new ImageResource(baseImage2.resolve(2400, 800), 1, 1000);
 
-    sphericalTest = new ImageResource(ImagePreprocessor.doubleImage(ImageGenerator.SphericalOpenSimplexNoise(1L, 70d, 2400)), 1, 1000);
+    sphericalTest = new ImageResource(ImageGenerator.SphericalOpenSimplexNoise(1L, 70d, 2400), 1, 1000);
 
     BufferedImage gradientTestBuffer = GradientGenerator.newGradient(1);
     // GradientGenerator.setColumn(gradientTestBuffer, 0, new ColorPosition[]{new ColorPosition(new Color("#ff0000"), 1, 20)}, new ColorPosition[]{new ColorPosition(new Color("#ffff00"), 4, 40)});

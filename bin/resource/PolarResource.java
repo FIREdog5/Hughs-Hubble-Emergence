@@ -14,7 +14,7 @@ public class PolarResource extends ImageResource{
   public PolarResource(String path, int frames, int frameDelay, boolean loops) {
     super(path, frames, frameDelay, loops);
 
-    this.image = ImagePreprocessor.wrapPoles(this.image);
+    // this.image = ImagePreprocessor.wrapPoles(this.image);
 
     //fix memory leak
     if (this.image != null) {
@@ -25,7 +25,7 @@ public class PolarResource extends ImageResource{
   public PolarResource(BufferedImage image, int frames, int frameDelay, boolean loops) {
     super(image, frames, frameDelay, loops);
 
-    this.image = ImagePreprocessor.wrapPoles(this.image);
+    // this.image = ImagePreprocessor.wrapPoles(this.image);
 
     //fix memory leak
     if (this.image != null) {

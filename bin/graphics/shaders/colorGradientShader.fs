@@ -14,5 +14,5 @@ void main(void)
 
   vec4 color1 = texture2D(paletteSampler, gradientCoord1);
   vec4 color2 = texture2D(paletteSampler, gradientCoord2);
-  gl_FragColor = color1 * ratio + color2 * (1-ratio);
+  gl_FragColor = mix(color1, color2, ratio);
 }

@@ -42,6 +42,7 @@ import bin.graphics.ui.complex.UISelectionMenu;
 import bin.graphics.ui.complex.UINumberInput;
 import bin.graphics.ui.colorUtils.UIColorWheel;
 import bin.graphics.ui.colorUtils.UIColorSlider;
+import bin.graphics.ui.colorUtils.UIGlobeDisplay;
 
 import java.awt.image.BufferedImage;
 import com.jogamp.opengl.GL2;
@@ -64,6 +65,7 @@ public class Editor extends Thread{
   private static String view = "globe";
   private static Wrapper<ImageResource> palettResourceWrapper = new Wrapper<ImageResource>();
   private static Wrapper<ImageResource> noisePreviewWrapper = new Wrapper<ImageResource>();
+  private static Palette editorPalette;
 
   public static void init() {
     (new Editor()).start();
@@ -83,15 +85,15 @@ public class Editor extends Thread{
     makeUI();
 
     world = new EditorWorld();
-    Palette editorPalette = new EditorPalette(palettResourceWrapper,
+    editorPalette = new EditorPalette(palettResourceWrapper,
                                                new Color("#03fcf8"), //atmosphere lower
                                                new Color("#0000ff", .3f) //atmosphere upper
                                                );
-    world.addWorldObject(new Planet(0, 0, editorPalette));
-    world.addWorldObject(new Planet(20, 20, editorPalette));
-    world.addWorldObject(new Planet(-20, 20, editorPalette));
-    world.addWorldObject(new Planet(-20, -20, editorPalette));
-    world.addWorldObject(new Planet(20, -20, editorPalette));
+    world.addWorldObject(new Planet(0, 0, editorPalette, ImageResources.generationTest));
+    world.addWorldObject(new Planet(20, 20, editorPalette, ImageResources.generationTest));
+    world.addWorldObject(new Planet(-20, 20, editorPalette, ImageResources.generationTest));
+    world.addWorldObject(new Planet(-20, -20, editorPalette, ImageResources.generationTest));
+    world.addWorldObject(new Planet(20, -20, editorPalette, ImageResources.generationTest));
 
     System.out.println(EditorUtils.openResource());
 
@@ -122,7 +124,7 @@ public class Editor extends Thread{
       gl.glActiveTexture(GL2.GL_TEXTURE0);
 
       Global.drawColor(new Color("#ffffff"));
-      Image.draw(ImageResources.generationTest, 0, 0, world.camera.scaleToZoom(96), world.camera.scaleToZoom(32));
+      Image.draw(ImageResources.generationTest, 0, 0, world.camera.scaleToZoom(64), world.camera.scaleToZoom(32));
 
       Shaders.terrainShader.stopShader(gl);
 
@@ -239,7 +241,7 @@ public class Editor extends Thread{
         if (this.onTop) {
           return 100000;
         } else {
-          return super.getZ();
+          return 110000;
         }
       }
 
@@ -315,6 +317,7 @@ public class Editor extends Thread{
     slider.mouseOverColor = new Color("#777777");
     slider.outlineColor = new Color("#ffffff");
     slider.outlineWeight = .1f;
+    // slider.setZ(9);
 
     parent.addChild(slider);
     clickHandler.register(slider);
@@ -349,7 +352,7 @@ public class Editor extends Thread{
     };
     menuButton.color = new Color("#000000");
     menuButton.mouseOverColor = new Color("#777777");
-    menuButton.setZ(1000000);
+    menuButton.setZ(10);
 
     sliderButtons.addChild(menuButton);
     clickHandler.register(menuButton);
@@ -373,7 +376,7 @@ public class Editor extends Thread{
     colorButton.minWidth = .3f;
     colorButton.color = newPosition.color;
     colorButton.mouseOverColor = newColorLowS;
-    colorButton.setZ(1000000);
+    colorButton.setZ(10);
 
     sliderButtons.addChild(colorButton);
     clickHandler.register(colorButton);
@@ -490,7 +493,7 @@ public class Editor extends Thread{
             }
           }
         }
-        Comparator<UIElement> comparator = (UIElement o1, UIElement o2) -> ((UIButton)o1).getZ() < 0 ? 1 : ((UIButton)o2).getZ() < 0 ? -1 : ((UIButton)o1).getZ() - ((UIButton)o2).getZ();
+        Comparator<UIElement> comparator = (UIElement o1, UIElement o2) -> ((UIButton)o1).getZ() < 0 ? 1 : ((UIButton)o2).getZ() < 0 ? -1 : ((UIButton)o2).getZ() - ((UIButton)o1).getZ();
         Collections.sort(sliderContainer.children, comparator);
       }
     };
@@ -1099,7 +1102,7 @@ public class Editor extends Thread{
 
     FastNoiseLite fnl = new FastNoiseLite();
 
-    noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+    noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
 
     UIModal noiseModal = new UIModal(screen);
     // noiseModal.centerBox.minWidth = 20f;
@@ -1174,7 +1177,7 @@ public class Editor extends Thread{
             fnl.SetNoiseType(FastNoiseLite.NoiseType.Value);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
       }
     };
 
@@ -1220,7 +1223,7 @@ public class Editor extends Thread{
             fnl.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXZPlanes);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
       }
     };
 
@@ -1245,7 +1248,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetFrequency(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1315,7 +1318,7 @@ public class Editor extends Thread{
             fnl.SetFractalType(FastNoiseLite.FractalType.PingPong);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
       }
     };
 
@@ -1341,7 +1344,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetFractalOctaves(Integer.parseInt(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1382,7 +1385,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetFractalLacunarity(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1423,7 +1426,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetFractalGain(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1464,7 +1467,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetFractalWeightedStrength(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1505,7 +1508,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetFractalPingPongStrength(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1575,7 +1578,7 @@ public class Editor extends Thread{
             fnl.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Hybrid);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
       }
     };
 
@@ -1639,7 +1642,7 @@ public class Editor extends Thread{
             fnl.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Div);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
       }
     };
 
@@ -1668,7 +1671,7 @@ public class Editor extends Thread{
             return;
           }
           fnl.SetCellularJitter(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -1733,7 +1736,7 @@ public class Editor extends Thread{
             fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800)));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 800), 1, 1000));
       }
     };
 
@@ -1745,11 +1748,34 @@ public class Editor extends Thread{
 
     constructDropdown(controls, domainWarpTypeField, domainWarpTypeFieldOptions, "Type");
 
-    UIImage noisePreview = new UIImage(modalContentRow, noisePreviewWrapper);
+    UIBoxCol previewCol = new UIBoxCol(modalContentRow);
+    previewCol.outlineWeight = 0;
+    previewCol.noBackground = true;
+    modalContentRow.addChild(previewCol);
+
+    UIImage noisePreview = new UIImage(previewCol, noisePreviewWrapper);
     noisePreview.minWidth = 31.4f;
     noisePreview.minHeight = 15.7f;
-    // noisePreview.useAA = false;
-    modalContentRow.addChild(noisePreview);
+    previewCol.addChild(noisePreview);
+
+    UICenter globeCenter = new UICenter(previewCol);
+    globeCenter.centerY = false;
+    previewCol.addChild(globeCenter);
+
+    UIBoxRow globeRow = new UIBoxRow(globeCenter);
+    globeRow.outlineWeight = 0;
+    globeRow.noBackground = true;
+    globeCenter.addChild(globeRow);
+
+    UIGlobeDisplay grayGlobe = new UIGlobeDisplay(globeRow, noisePreviewWrapper, null);
+    grayGlobe.setRadius(12);
+    grayGlobe.padding = 1f;
+    globeRow.addChild(grayGlobe);
+
+    UIGlobeDisplay shadedGlobe = new UIGlobeDisplay(globeRow, noisePreviewWrapper, editorPalette);
+    shadedGlobe.setRadius(12);
+    shadedGlobe.padding = 1f;
+    globeRow.addChild(shadedGlobe);
 
   }
 

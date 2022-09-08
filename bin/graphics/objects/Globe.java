@@ -23,6 +23,7 @@ public class Globe {
     }
 
     gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
+    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
 
     int frame = Global.getFrame();
 
@@ -39,8 +40,8 @@ public class Globe {
 
     float textureDim = frameTop - frameBase;
 
-    float rotBase = (frame % image.getFrameDelay()) / (float)image.getFrameDelay() * 0.5f;
-    float rotTop = 0.25f;
+    float rotBase = (frame % image.getFrameDelay()) / (float)image.getFrameDelay();
+    float rotTop = 0.5f;
 
     // color flipping for debugging
     // int colorFlipper = 0;
@@ -141,5 +142,6 @@ public class Globe {
     gl.glEnd();
     gl.glFlush();
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
   }
 }
