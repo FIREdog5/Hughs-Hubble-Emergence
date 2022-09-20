@@ -16,10 +16,22 @@ public abstract class UIElement {
   public float margin;
   public float padding;
   public ArrayList<UIElement> children;
+  public String defInfo;
   public UIElement() {
     this.children = new ArrayList<UIElement>();
     maxWidth = -1f;
     maxHeight = -1f;
+    try {
+      StackTraceElement[] stackTrace = (new Exception("temp")).getStackTrace();
+      for (int i = 0; i < stackTrace.length; i++) {
+        if (!stackTrace[i].getClassName().contains("bin.graphics.ui") && !stackTrace[i].getClassName().contains("$")) {
+          this.defInfo = stackTrace[i].toString().split("\\(")[1].split("\\)")[0];
+          break;
+        }
+      }
+    } catch (Exception e) {
+      this.defInfo = "unknown";
+    }
   }
   public abstract float getX();
   public abstract float getY();

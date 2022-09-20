@@ -86,7 +86,7 @@ public class FramebufferController {
     if(gl.glCheckFramebufferStatus(GL2.GL_FRAMEBUFFER) != GL2.GL_FRAMEBUFFER_COMPLETE){
     	System.out.println("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
     } else {
-      System.out.println("created framebuffer: " + framebuffer);
+      System.out.println("[+] created framebuffer: " + framebuffer + " [" + texData.size() + "]");
     }
     gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, this.peakHistory());
     return framebuffer;
@@ -145,5 +145,6 @@ public class FramebufferController {
     texData.remove(framebuffer);
     altTexData.remove(framebuffer);
     rboData.remove(framebuffer);
+    System.out.println("[-] removed framebuffer: " + framebuffer + " [" + texData.size() + "]");
   }
 }

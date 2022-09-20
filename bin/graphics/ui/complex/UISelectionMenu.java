@@ -252,6 +252,7 @@ public abstract class UISelectionMenu extends UISelectable {
 
   @Override
   public void cleanUp() {
+    this.isDead = true;
     if (this.children != null) {
       this.removeChildren();
       this.children = null;
@@ -259,6 +260,9 @@ public abstract class UISelectionMenu extends UISelectable {
     if (this.scrollableList != null) {
       this.scrollableList.removeFromParent();
       this.scrollableList = null;
+    }
+    if (this.fbo != -1) {
+      Renderer.framebufferController.cleanUpFrame(this.fbo);
     }
   }
 

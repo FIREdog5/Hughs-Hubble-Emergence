@@ -430,6 +430,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
 
   @Override
   public void cleanUp() {
+    this.isDead = true;
     this.cleanFromKeyboardHandler();
     if (this.fbo != -1) {
       Renderer.framebufferController.cleanUpFrame(this.fbo);

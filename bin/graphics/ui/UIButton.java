@@ -131,7 +131,12 @@ public class UIButton extends UIBoxCol implements IClickable {
     if (this.isDead) {
       return false;
     }
-    return (x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.getY() && y >= this.getY() - this.getHeight()) && (this.parent == null || this.parent.allowChildContent(x, y));
+    try {
+      return (x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.getY() && y >= this.getY() - this.getHeight()) && (this.parent == null || this.parent.allowChildContent(x, y));
+    } catch(Exception e) {
+      System.out.println("Object that caused error defined(" + this.defInfo + ")");
+      throw(e);
+    }
   }
 
   @Override

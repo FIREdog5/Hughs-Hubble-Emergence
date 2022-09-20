@@ -980,8 +980,7 @@ public class Editor extends Thread{
     UIBoxRow fieldRowPadding = new UIBoxRow(fieldRow);
     fieldRowPadding.minWidth = .3f;
     fieldRowPadding.outlineWeight = 0;
-    fieldRowPadding.noBackground = true
-    ;
+    fieldRowPadding.noBackground = true;
     fieldRow.addChild(fieldRowPadding);
 
     field.parent = fieldRow;
@@ -1776,6 +1775,37 @@ public class Editor extends Thread{
     shadedGlobe.setRadius(12);
     shadedGlobe.padding = 1f;
     globeRow.addChild(shadedGlobe);
+
+    UICenter modalButtonRowCenterer = new UICenter(noiseModal.centerBox);
+    modalButtonRowCenterer.centerY = false;
+    noiseModal.addChild(modalButtonRowCenterer);
+
+    UIBoxRow modalButtonRow = new UIBoxRow(modalButtonRowCenterer);
+    modalButtonRow.outlineWeight = 0;
+    modalButtonRow.noBackground = true;
+    modalButtonRowCenterer.addChild(modalButtonRow);
+
+    UIButton cancelButton = new UIButton(modalButtonRow){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        noiseModal.close();
+      }
+    };
+    cancelButton.color = new Color("#000000");
+    cancelButton.outlineColor = new Color("#ffffff");
+    cancelButton.outlineWeight = .1f;
+    cancelButton.noBackground = false;
+    cancelButton.padding = .5f;
+    cancelButton.margin = .3f;
+    cancelButton.mouseOverColor = new Color("aa0000");
+    modalButtonRow.addChild(cancelButton);
+    clickHandler.register(cancelButton);
+    UITextBlock cancelButtonText = new UITextBlock(cancelButton, "Cancel", .5f);
+    cancelButtonText.textColor = new Color("#ffffff");
+    cancelButtonText.noBackground = false;
+    cancelButton.addChild(cancelButtonText);
 
   }
 
