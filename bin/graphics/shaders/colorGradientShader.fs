@@ -11,7 +11,7 @@ void main(void)
   vec2 textureSize2d = textureSize(heightSampler, 0);
 
   float locX = gl_TexCoord[0].s;
-  float locY = gl_TexCoord[0].y;
+  float locY = gl_TexCoord[0].t;
   vec2 ratio = vec2(locX * textureSize2d.x - floor(locX * textureSize2d.x), locY * textureSize2d.y - floor(locY * textureSize2d.y));
 
   vec2 lowerLeftPos = vec2(floor(locX * textureSize2d.x), floor(locY * textureSize2d.y)) / textureSize2d;
