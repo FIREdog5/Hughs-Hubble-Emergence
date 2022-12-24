@@ -45,10 +45,8 @@ public class Planet implements IDrawable {
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
     gl.glActiveTexture(GL2.GL_TEXTURE0);
-    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
-    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
     Global.drawColor(new Color("#ffffff"));
-    Globe.draw(heightMap, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    Globe.draw(heightMap, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y), false);
     Shaders.terrainShader.stopShader(gl);
 
     Globe.draw(ImageResources.capTest, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
