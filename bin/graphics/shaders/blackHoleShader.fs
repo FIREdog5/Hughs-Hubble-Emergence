@@ -1,3 +1,4 @@
+#version 140
 //texture
 uniform sampler2D buffer_in;
 // x, y, size, Renderer.unitsWide

@@ -1,3 +1,4 @@
+#version 140
 uniform sampler2D heightSampler;
 uniform sampler2D paletteSampler;
 uniform sampler2D biomeSampler;
