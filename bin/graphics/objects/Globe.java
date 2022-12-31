@@ -37,7 +37,7 @@ public class Globe {
     }
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
 
-    int frame = Global.getFrame();
+    float frame = Global.getFrame();
 
     int currentFrame = (int) (frame / image.getFrameDelay()) % image.getFrames();
 

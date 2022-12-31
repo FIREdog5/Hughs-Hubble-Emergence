@@ -32,7 +32,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
   private boolean leftHanded;
   private KeyboardHandler keyboardHandler;
   private int fbo;
-  private int lastFrame;
+  private float lastFrame;
   private float scrollAmount;
   private int startSelection;
   private float currX;
@@ -149,7 +149,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
     float textHighOffset = Text.getWidth(content.substring(0, this.selectionHigh), this.getSize());
     float textWidth = Text.getWidth(content, this.getSize());
     float textSelectionWidth = textHighOffset - textLowOffset;
-    int frame = Global.getFrame();
+    float frame = Global.getFrame();
     this.adjustScroll();
     if (this.selecting && this.isSelected()) {
       int currSelection = this.getClosestIndex(this.currX);
