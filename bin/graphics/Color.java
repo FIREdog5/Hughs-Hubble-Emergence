@@ -29,6 +29,26 @@ public class Color {
     this.setAlpha(1);
   }
 
+  public Color (int hex) {
+    if (hex >= 0 && hex <= 0xFFFFFF) {
+      this.setRed((float)((hex & 0xFF000000) >> 6) / 0xFFf);
+      this.setGreen((float)((hex & 0x00FF00) >> 2) / 0xFFf);
+      this.setBlue((float)(hex & 0x0000FF) / 0xFFf);
+      this.setAlpha(1);
+    } else if (hex > 0xFFFFFF && hex <= 0xFFFFFFFF) {
+      this.setRed((float)((hex & 0xFF000000) >> 6) / 0xFFf);
+      this.setGreen((float)((hex & 0x00FF0000) >> 4) / 0xFFf);
+      this.setBlue((float)((hex & 0x0000FF00) >> 2) / 0xFFf);
+      this.setAlpha((float)(hex & 0x000000FF) / 0xFFf);
+    }
+    else {
+      this.setRed(0);
+      this.setGreen(0);
+      this.setBlue(0);
+      this.setAlpha(1);
+    }
+  }
+
   public Color (float r, float g, float b, float a) {
     this.setRed(r);
     this.setGreen(g);
@@ -171,6 +191,10 @@ public class Color {
 
   public String getHex() {
     return "#" + Integer.toHexString((int)(this.getRed() * 255)) + Integer.toHexString((int)(this.getGreen() * 255)) + Integer.toHexString((int)(this.getBlue() * 255));
+  }
+
+  public String getHexA() {
+    return "#" + Integer.toHexString((int)(this.getRed() * 255)) + Integer.toHexString((int)(this.getGreen() * 255)) + Integer.toHexString((int)(this.getBlue() * 255)) + Integer.toHexString((int)(this.getAlpha() * 255));
   }
 
   public static Color colorFromHSV(float hue, float saturation, float value) {

@@ -10,6 +10,7 @@ import bin.graphics.objects.Globe;
 import bin.graphics.Shaders;
 import bin.ClientMain;
 import bin.resource.ImageResource;
+import bin.Wrapper;
 
 import com.jogamp.opengl.GL2;
 
@@ -20,6 +21,15 @@ public class Planet implements IDrawable {
   private float size;
   private Palette palette;
   private ImageResource heightMap;
+  private Wrapper<ImageResource> heightMapWrapper;
+
+  public Planet (float x, float y, Palette palette, Wrapper<ImageResource> heightMapWrapper) {
+    this.x = x;
+    this.y = y;
+    this.size = 10;
+    this.palette = palette;
+    this.heightMapWrapper = heightMapWrapper;
+  }
   public Planet (float x, float y, Palette palette, ImageResource heightMap) {
     this.x = x;
     this.y = y;
@@ -48,7 +58,11 @@ public class Planet implements IDrawable {
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
     Global.drawColor(new Color("#ffffff"));
-    Globe.draw(heightMap, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    if (heightMapWrapper != null && heightMapWrapper.get() != null) {
+      Globe.draw(heightMapWrapper.get(), camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    } else {
+      Globe.draw(heightMap, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));
+    }
     Shaders.terrainShader.stopShader(gl);
 
     Globe.draw(ImageResources.capTest, camera.scaleToZoom(this.size), camera.convertXToCamera(this.x), camera.convertYToCamera(this.y));

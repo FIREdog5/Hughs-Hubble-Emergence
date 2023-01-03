@@ -84,4 +84,8 @@ public class ImageResource {
     return this.loops;
   }
 
+  public BufferedImage getBufferedImage() {
+    return this.image;
+  }
+
 }

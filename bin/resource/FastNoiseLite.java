@@ -153,6 +153,30 @@ public class FastNoiseLite
         SetSeed(seed);
     }
 
+    public FastNoiseLite(FastNoiseLite fnl)
+    {
+        Set(fnl);
+    }
+
+    public void Set(FastNoiseLite fnl) {
+      SetSeed(fnl.GetSeed());
+      SetFrequency(fnl.GetFrequency());
+      SetNoiseType(fnl.GetNoiseType());
+      SetRotationType3D(fnl.GetRotationType3D());
+      SetFractalType(fnl.GetFractalType());
+      SetFractalOctaves(fnl.GetFractalOctaves());
+      SetFractalLacunarity(fnl.GetFractalLacunarity());
+      SetFractalGain(fnl.GetFractalGain());
+      SetFractalWeightedStrength(fnl.GetFractalWeightedStrength());
+      SetFractalPingPongStrength(fnl.GetFractalPingPongStrength());
+      SetCellularDistanceFunction(fnl.GetCellularDistanceFunction());
+      SetCellularReturnType(fnl.GetCellularReturnType());
+      SetCellularJitter(fnl.GetCellularJitter());
+      SetDomainWarpType(fnl.GetDomainWarpType());
+      SetDomainWarpAmp(fnl.GetDomainWarpAmp());
+
+    }
+
     /// <summary>
     /// Sets seed used for all noise types
     /// </summary>

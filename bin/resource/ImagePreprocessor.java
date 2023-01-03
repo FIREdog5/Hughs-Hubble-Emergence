@@ -186,4 +186,31 @@ public class ImagePreprocessor {
     return newImage;
   }
 
+  public static BufferedImage normalize(BufferedImage image) {
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    float minStrength = colorStrength(image.getRGB(0, 0));
+    float maxStrength = colorStrength(image.getRGB(0, 0));
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        float currStrength = colorStrength(color1);
+        if (currStrength > maxStrength) {
+          maxStrength = currStrength;
+        }
+        if (currStrength < minStrength) {
+          minStrength = currStrength;
+        }
+      }
+    }
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        float currStrength = colorStrength(color1);
+        float adjustedStrength = (currStrength - minStrength) / (maxStrength - minStrength) * 255f;
+        newImage.setRGB(i, j, clampColor(strengthToColor(adjustedStrength)));
+      }
+    }
+    return newImage;
+  }
+
 }

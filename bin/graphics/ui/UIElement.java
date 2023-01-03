@@ -5,16 +5,29 @@ import bin.input.IClickable;
 import java.util.ArrayList;
 import java.lang.AssertionError;
 
+import java.lang.annotation.*;
+import java.lang.reflect.Field;
+
 public abstract class UIElement {
+  @CacheSensitive
   public float x;
+  @CacheSensitive
   public float y;
+  @CacheSensitive
   public float minWidth;
+  @CacheSensitive
   public float maxWidth;
+  @CacheSensitive
   public float minHeight;
+  @CacheSensitive
   public float maxHeight;
+  @CacheSensitive
   public UIElement parent;
+  @CacheSensitive
   public float margin;
+  @CacheSensitive
   public float padding;
+  @CacheSensitive
   public ArrayList<UIElement> children;
   public String defInfo;
   public UIElement() {
@@ -46,12 +59,24 @@ public abstract class UIElement {
   public void addChild(UIElement child) {
     if (child.parent != this) {
       System.out.println("found:");
-      System.out.println(child.parent);
+      System.out.println(child.parent + " (" + child.parent.defInfo + ")");
       System.out.println("which does not match:");
-      System.out.println(this);
+      System.out.println(this + " (" + this.defInfo + ")");
       throw new AssertionError("the child being added does not have the correct parent");
     }
     this.children.add(child);
+    // try{
+    //   Field[] fields = UIElement.class.getFields();
+    //   for (int i = 0; i < fields.length; i++) {
+    //     CacheSensitive cacheSensitive = fields[i].getAnnotation(CacheSensitive.class);
+    //     if (cacheSensitive != null) {
+    //       System.out.println(fields[i].getName());
+    //     }
+    //   }
+    // } catch (Exception e) {
+    //   System.out.println("oops");
+    // }
+
   }
   public boolean deepContains(UIElement target) {
     if (this.equals(target)) {
@@ -92,4 +117,8 @@ public abstract class UIElement {
     }
     return parent.allowChildContent(x,y);
   }
+
+  @Target({ ElementType.FIELD })
+  @Retention(RetentionPolicy.RUNTIME)
+  protected @interface CacheSensitive {}
 }

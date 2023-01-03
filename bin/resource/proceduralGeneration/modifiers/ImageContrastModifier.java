@@ -19,7 +19,7 @@ public class ImageContrastModifier implements IBasicImageModifier {
   }
   @Override
   public Parameter[] getParameters() {
-    Parameter[] parameters = {new Parameter("Scale aka contrast", 0d, 10d), new Parameter("Offset aka brightness", -255d, 255d)};
+    Parameter[] parameters = {new Parameter("Scale (Contrast)", 0d, 10d), new Parameter("Offset (Brightness)", -255d, 255d)};
     return parameters;
   }
 }
