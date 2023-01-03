@@ -8,7 +8,12 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 
 public class Globe {
+
   public static void draw(ImageResource image, float radius, float x, float y) {
+    draw(image, radius, x, y, true);
+  }
+
+  public static void draw(ImageResource image, float radius, float x, float y, boolean aa) {
     GL2 gl = ClientMain.gl;
     gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
@@ -23,9 +28,16 @@ public class Globe {
     }
 
     gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
+    if (aa) {
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
+    } else {
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+    }
     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
 
-    int frame = Global.getFrame();
+    float frame = Global.getFrame();
 
     int currentFrame = (int) (frame / image.getFrameDelay()) % image.getFrames();
 

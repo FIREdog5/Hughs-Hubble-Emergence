@@ -5,8 +5,8 @@ import bin.graphics.Renderer;
 public class Camera {
 
   public static float zoomRatio = 100;
-  public static float minZoom = 1;
-  public static float maxZoom = 40;
+  public float minZoom = 1;
+  public float maxZoom = 40;
   public static float minLocation = -10000;
   public static float maxLocation = 10000;
 
