@@ -27,18 +27,21 @@ public class UIGlobeDisplay extends UIBox {
   public UIGlobeDisplay(UIElement parent) {
     super(parent);
     this.image = ImageResources.error;
+    this.color = new Color("#ffffff");
   }
 
   public UIGlobeDisplay(UIElement parent, ImageResource image, Palette palette) {
     super(parent);
     this.image = image;
     this.palette = palette;
+    this.color = new Color("#ffffff");
   }
 
   public UIGlobeDisplay(UIElement parent, Wrapper<ImageResource> imageWrapper, Palette palette) {
     super(parent);
     this.imageWrapper = imageWrapper;
     this.palette = palette;
+    this.color = new Color("#ffffff");
   }
 
   public void setRadius(float r) {
@@ -99,7 +102,7 @@ public class UIGlobeDisplay extends UIBox {
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
         gl.glActiveTexture(GL2.GL_TEXTURE0);
       }
-      Global.drawColor(new Color("#ffffff"));
+      Global.drawColor(this.getColor());
       Globe.draw(this.image, this.getRadius(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2);
       if (this.palette != null) {
         Shaders.terrainShader.stopShader(gl);
@@ -118,7 +121,7 @@ public class UIGlobeDisplay extends UIBox {
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
         gl.glActiveTexture(GL2.GL_TEXTURE0);
       }
-      Global.drawColor(new Color("#ffffff"));
+      Global.drawColor(this.getColor());
       Globe.draw(this.imageWrapper.get(), this.getRadius(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2);
       if (this.palette != null) {
         Shaders.terrainShader.stopShader(gl);

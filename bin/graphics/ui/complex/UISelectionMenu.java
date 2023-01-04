@@ -185,6 +185,7 @@ public abstract class UISelectionMenu extends UISelectable {
       //switch back to previous (or default) fbo
       Renderer.framebufferController.popFrameAndBind();
       //draw fbo content displaced
+      Global.drawColor(new Color("#ffffff"));
       ScreenArea.draw(this.scrollableList.children.get(i).getX() + this.getWidth() / 2f, this.scrollableList.children.get(i).getY() - this.getHeight() / 2f, this.getX() + this.getWidth() / 2f + this.getMargin(), this.getY() - this.getHeight() / 2f - this.getMargin(), this.getWidth(), this.getHeight());
       ((UISelectable)this.scrollableList.children.get(i)).setIsMousedOver(tempMousedOver);
       ((UISelectable)this.scrollableList.children.get(i)).noBackground = tempNoBackground;

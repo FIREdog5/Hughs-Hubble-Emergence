@@ -507,6 +507,7 @@ public class GraphicsTest extends Thread{
 
       Renderer.framebufferController.popFrameAndBind();
       float unitsTall = Renderer.getWindowHeight() / (Renderer.getWindowWidth() / Renderer.unitsWide);
+      Global.drawColor(new Color("#ffffff"));
       ScreenArea.draw(0, 0, Renderer.unitsWide, unitsTall);
 
       Shaders.blackHoleShader.startShader(gl);

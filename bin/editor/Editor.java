@@ -233,15 +233,27 @@ public class Editor extends Thread{
                                                                                                   });
       }
     };
-    noisePreviewButton.mouseOverColor = new Color("#ffffff");
-    noisePreviewButton.color = new Color("#ffffff");
+    noisePreviewButton.mouseOverOutlineColor = new Color("#ffffff");
+    noisePreviewButton.outlineColor = new Color("#ffffff");
+    noisePreviewButton.noBackground = true;
+    noisePreviewButton.outlineWeight = .1f;
     noisePreviewButton.minWidth = 6f;
     noisePreviewButton.minHeight = 6f;
     noisePreviewButton.radius = 3f;
     stepRow.addChild(noisePreviewButton);
     clickHandler.register(noisePreviewButton);
 
-    UIGlobeDisplay grayGlobe = new UIGlobeDisplay(noisePreviewButton, noiseStepData.noisePreviewWrapper, null);
+    UIGlobeDisplay grayGlobe = new UIGlobeDisplay(noisePreviewButton, noiseStepData.noisePreviewWrapper, null) {
+      @Override
+      public Color getColor() {
+        if (noisePreviewButton.getIsMousedOver()) {
+          return new Color("#bbbbbb");
+        }
+        else {
+          return super.getColor();
+        }
+      }
+    };
     grayGlobe.setRadius(5.8f);
     grayGlobe.padding = .1f;
     noisePreviewButton.addChild(grayGlobe);

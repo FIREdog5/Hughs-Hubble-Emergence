@@ -193,6 +193,7 @@ public abstract class UITextInput extends UISelectable implements IKeyConsumer{
     //switch back to previous (or default) fbo
     Renderer.framebufferController.popFrameAndBind();
     //draw fbo content
+    Global.drawColor(new Color("#ffffff"));
     ScreenArea.draw(this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth() - 2 * this.getOutlineWeight(), this.getHeight() - 2 * this.getOutlineWeight());
   }
 
