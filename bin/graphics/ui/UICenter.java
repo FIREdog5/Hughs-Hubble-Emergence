@@ -93,4 +93,9 @@ public class UICenter extends UIBox implements IPositioner{
     }
   }
 
+  @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
+
 }

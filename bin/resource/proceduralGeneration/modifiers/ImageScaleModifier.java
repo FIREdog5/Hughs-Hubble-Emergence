@@ -4,7 +4,6 @@ import bin.input.ClickHandler;
 import bin.input.KeyboardHandler;
 import bin.Wrapper;
 import bin.graphics.ui.UIBoxCol;
-import bin.resource.ImageResource;
 
 import java.awt.image.BufferedImage;
 
@@ -12,6 +11,7 @@ import bin.resource.FastNoiseLite;
 import bin.resource.proceduralGeneration.IImageModifier;
 import bin.resource.proceduralGeneration.Parameter;
 import bin.resource.ImagePreprocessor;
+import bin.resource.ImageResource;
 
 import bin.graphics.ui.UIBoxRow;
 import bin.graphics.ui.UIBoxCol;
@@ -19,27 +19,28 @@ import bin.graphics.ui.complex.UINumberInput;
 
 import bin.editor.EditorUtils;
 
-public class ImageContrastModifier implements IImageModifier {
-  private float scale;
-  private float offset;
-  public ImageContrastModifier(double scale, double offset) {
-    this.scale = (float)scale;
-    this.offset = (float)offset;
+public class ImageScaleModifier implements IImageModifier {
+  private float minScaleValue;
+  private float maxScaleValue;
+  public ImageScaleModifier(double minScaleValue, double maxScaleValue) {
+    this.minScaleValue = (float)minScaleValue;
+    this.maxScaleValue = (float)maxScaleValue;
   }
 
   @Override
   public IImageModifier copy() {
-    return new ImageContrastModifier(this.scale, this.offset);
+    return new ImageScaleModifier(this.minScaleValue, this.maxScaleValue);
   }
 
   @Override
   public BufferedImage resolve(BufferedImage image) {
-    return ImagePreprocessor.adjustContrast(image, this.scale, this.offset);
+    return ImagePreprocessor.normalizeWithBounds(image, this.minScaleValue, this.maxScaleValue);
+
   }
 
   // @Override
   // public Parameter[] getParameters() {
-  //   Parameter[] parameters = {new Parameter("Scale (Contrast)", 0d, 10d), new Parameter("Offset (Brightness)", -255d, 255d)};
+  //   Parameter[] parameters = {new Parameter("Min value", 0d, 255d), new Parameter("Max value", 0d, 255d)};
   //   return parameters;
   // }
 
@@ -50,19 +51,22 @@ public class ImageContrastModifier implements IImageModifier {
 
   @Override
   public Runnable constructParameterFields(UIBoxCol container, ClickHandler clickHandler, KeyboardHandler keyboardHandler, BufferedImage imageIn, Wrapper<ImageResource> imageWrapper) {
-    Wrapper<String> scaleStringWrapper = new Wrapper<String>(Float.toString(scale));
-    UIBoxRow scaleFieldRow = new UIBoxRow(null);
-    UINumberInput scaleField = new UINumberInput(scaleFieldRow, .5f, clickHandler){
+    Wrapper<String> minScaleValueStringWrapper = new Wrapper<String>(Float.toString(minScaleValue));
+    UIBoxRow minScaleValueFieldRow = new UIBoxRow(null);
+    UINumberInput minScaleValueField = new UINumberInput(minScaleValueFieldRow, .5f, clickHandler){
       @Override
       public void onDeselect() {
         super.onDeselect();
         try {
           String val = this.getValue();
-          Float oldVal = scale;
+          Float oldVal = minScaleValue;
           if (oldVal == Float.parseFloat(val)) {
             return;
           }
-          scale = Float.parseFloat(val);
+          minScaleValue = Float.parseFloat(val);
+          if (minScaleValue > maxScaleValue) {
+            minScaleValue = maxScaleValue;
+          }
           imageWrapper.set(new ImageResource(resolve(imageIn), 1, 1000));
         } catch (Exception e) {
           return;
@@ -71,7 +75,7 @@ public class ImageContrastModifier implements IImageModifier {
 
       @Override
       public String getValue() {
-        return scaleStringWrapper.get();
+        return minScaleValueStringWrapper.get();
       }
 
       @Override
@@ -80,30 +84,33 @@ public class ImageContrastModifier implements IImageModifier {
         if (oldVal.equals(val)) {
           return false;
         }
-        scaleStringWrapper.set(val);
+        minScaleValueStringWrapper.set(val);
         return true;
       }
     };
-    scaleField.minValue = 0f;
-    scaleField.maxValue = 10f;
-    scaleField.incrementAmount = .01f;
-    scaleField.precision = 2;
+    minScaleValueField.minValue = 0f;
+    minScaleValueField.maxValue = 255f;
+    minScaleValueField.incrementAmount = 1f;
+    minScaleValueField.precision = 0;
 
-    EditorUtils.constructNumField(container, scaleFieldRow, scaleField, "Contrast [0 - 10]");
+    EditorUtils.constructNumField(container, minScaleValueFieldRow, minScaleValueField, "Lower Bound");
 
-    Wrapper<String> offsetStringWrapper = new Wrapper<String>(Float.toString(offset));
-    UIBoxRow offsetFieldRow = new UIBoxRow(null);
-    UINumberInput offsetField = new UINumberInput(offsetFieldRow, .5f, clickHandler){
+    Wrapper<String> maxScaleValueStringWrapper = new Wrapper<String>(Float.toString(maxScaleValue));
+    UIBoxRow maxScaleValueFieldRow = new UIBoxRow(null);
+    UINumberInput maxScaleValueField = new UINumberInput(maxScaleValueFieldRow, .5f, clickHandler){
       @Override
       public void onDeselect() {
         super.onDeselect();
         try {
           String val = this.getValue();
-          Float oldVal = offset;
+          Float oldVal = maxScaleValue;
           if (oldVal == Float.parseFloat(val)) {
             return;
           }
-          offset = Float.parseFloat(val);
+          maxScaleValue = Float.parseFloat(val);
+          if (maxScaleValue < minScaleValue) {
+            maxScaleValue = minScaleValue;
+          }
           imageWrapper.set(new ImageResource(resolve(imageIn), 1, 1000));
         } catch (Exception e) {
           return;
@@ -112,7 +119,7 @@ public class ImageContrastModifier implements IImageModifier {
 
       @Override
       public String getValue() {
-        return offsetStringWrapper.get();
+        return maxScaleValueStringWrapper.get();
       }
 
       @Override
@@ -121,16 +128,16 @@ public class ImageContrastModifier implements IImageModifier {
         if (oldVal.equals(val)) {
           return false;
         }
-        offsetStringWrapper.set(val);
+        maxScaleValueStringWrapper.set(val);
         return true;
       }
     };
-    offsetField.minValue = -255f;
-    offsetField.maxValue = 255f;
-    offsetField.incrementAmount = 1f;
-    offsetField.precision = 0;
+    maxScaleValueField.minValue = 0f;
+    maxScaleValueField.maxValue = 255f;
+    maxScaleValueField.incrementAmount = 1f;
+    maxScaleValueField.precision = 0;
 
-    EditorUtils.constructNumField(container, offsetFieldRow, offsetField, "Brightness [-255 - 255]");
+    EditorUtils.constructNumField(container, maxScaleValueFieldRow, maxScaleValueField, "Upper Bound");
 
     return null;
   }

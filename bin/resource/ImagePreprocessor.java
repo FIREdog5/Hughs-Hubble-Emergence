@@ -81,13 +81,11 @@ public class ImagePreprocessor {
   }
 
   private static int clampColor(int color) {
-    int red = (color >> 16) & 255;
-    int green = (color >> 8) & 255;
-    int blue = color & 255;
-    red = Math.min(255, Math.max(0, red)) << 16;
-    green = Math.min(255, Math.max(0, green)) << 8;
-    blue = Math.min(255, Math.max(0, blue));
-    return (red + green + blue);
+    return Math.min(0xffffff, Math.max(color, 0x0));
+  }
+
+  private static float clampStrength(float strength) {
+    return Math.min(1.0f, Math.max(strength, 0f));
   }
 
   public static BufferedImage mask(BufferedImage originalImage, float threshold) {
@@ -206,7 +204,37 @@ public class ImagePreprocessor {
       for (int j = 0; j < image.getHeight(); j++) {
         int color1 = image.getRGB(i, j);
         float currStrength = colorStrength(color1);
-        float adjustedStrength = (currStrength - minStrength) / (maxStrength - minStrength) * 255f;
+        float adjustedStrength = (currStrength - minStrength) / (maxStrength - minStrength);
+        newImage.setRGB(i, j, clampColor(strengthToColor(adjustedStrength)));
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage normalizeWithBounds(BufferedImage image, float minValue, float maxValue) {
+    if (minValue < 0d || minValue > 255d || maxValue < 0d || maxValue > 255d || minValue > maxValue) {
+      return image;
+    }
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    float minStrength = colorStrength(image.getRGB(0, 0));
+    float maxStrength = colorStrength(image.getRGB(0, 0));
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        float currStrength = colorStrength(color1);
+        if (currStrength > maxStrength) {
+          maxStrength = currStrength;
+        }
+        if (currStrength < minStrength) {
+          minStrength = currStrength;
+        }
+      }
+    }
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        float currStrength = colorStrength(color1);
+        float adjustedStrength = (currStrength - minStrength) / (maxStrength - minStrength) * (maxValue / 255f - minValue / 255f) + minValue / 255f;
         newImage.setRGB(i, j, clampColor(strengthToColor(adjustedStrength)));
       }
     }

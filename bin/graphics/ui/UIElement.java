@@ -56,7 +56,12 @@ public abstract class UIElement {
   public abstract float getMargin();
   public abstract void render();
   public abstract void cleanUp();
+
   public void addChild(UIElement child) {
+    this.addChild(child, -1);
+  }
+
+  public void addChild(UIElement child, int index) {
     if (child.parent != this) {
       System.out.println("found:");
       System.out.println(child.parent + " (" + child.parent.defInfo + ")");
@@ -64,20 +69,13 @@ public abstract class UIElement {
       System.out.println(this + " (" + this.defInfo + ")");
       throw new AssertionError("the child being added does not have the correct parent");
     }
-    this.children.add(child);
-    // try{
-    //   Field[] fields = UIElement.class.getFields();
-    //   for (int i = 0; i < fields.length; i++) {
-    //     CacheSensitive cacheSensitive = fields[i].getAnnotation(CacheSensitive.class);
-    //     if (cacheSensitive != null) {
-    //       System.out.println(fields[i].getName());
-    //     }
-    //   }
-    // } catch (Exception e) {
-    //   System.out.println("oops");
-    // }
-
+    if (index >= 0 && index < this.children.size()) {
+      this.children.add(index, child);
+    } else {
+      this.children.add(child);
+    }
   }
+
   public boolean deepContains(UIElement target) {
     if (this.equals(target)) {
       return true;

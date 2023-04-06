@@ -92,7 +92,12 @@ public class UIScreen extends UIElement {
 
   @Override
   public void addChild(UIElement child) {
-    super.addChild(child);
+    this.addChild(child, -1);
+  }
+
+  @Override
+  public void addChild(UIElement child, int index) {
+    super.addChild(child, index);
     Collections.sort(this.children, comparator);
   }
 

@@ -87,6 +87,11 @@ public class UIGlobeDisplay extends UIBox {
   }
 
   @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void render() {
     GL2 gl = ClientMain.gl;
     if (this.image != null) {

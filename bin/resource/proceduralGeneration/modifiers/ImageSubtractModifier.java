@@ -2,18 +2,26 @@ package bin.resource.proceduralGeneration.modifiers;
 
 import java.awt.image.BufferedImage;
 
+import bin.resource.FastNoiseLite;
+import bin.resource.proceduralGeneration.IImageModifier;
 import bin.resource.proceduralGeneration.ImageCombineModifier;
 import bin.resource.proceduralGeneration.Parameter;
-import bin.resource.proceduralGeneration.SimpleImage;
+import bin.resource.ImageGenerator;
 import bin.resource.ImagePreprocessor;
 
 public class ImageSubtractModifier extends ImageCombineModifier {
-  public ImageSubtractModifier (SimpleImage simpleImage) {
-    super(simpleImage);
+  public ImageSubtractModifier(FastNoiseLite fnl) {
+    super(fnl);
   }
+
+  @Override
+  public IImageModifier copy() {
+    return new ImageSubtractModifier(new FastNoiseLite(this.fnl));
+  }
+
   @Override
   public BufferedImage resolve(BufferedImage image1) {
-    BufferedImage image2 = this.simpleImage.resolve(image1.getWidth(), image1.getHeight());
+    BufferedImage image2 = ImageGenerator.SphericalFNL(this.fnl, image1.getWidth());
     return ImagePreprocessor.combineImagesSubtract(image1, image2);
   }
 }

@@ -252,6 +252,11 @@ public abstract class UISelectionMenu extends UISelectable {
   }
 
   @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void cleanUp() {
     this.isDead = true;
     if (this.children != null) {

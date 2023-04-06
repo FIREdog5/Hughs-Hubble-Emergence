@@ -17,7 +17,9 @@ import bin.resource.GradientGenerator;
 import bin.resource.ImageGenerator;
 import bin.resource.ColorPosition;
 import bin.resource.FastNoiseLite;
-import bin.resource.proceduralGeneration.modifiers.ImageCreateModifier;
+import bin.resource.proceduralGeneration.modifiers.*;
+import bin.resource.proceduralGeneration.ImageCombineModifier;
+import bin.resource.proceduralGeneration.IImageModifier;
 
 import bin.graphics.objects.Image;
 import bin.graphics.objects.Global;
@@ -127,7 +129,7 @@ public class Editor extends Thread{
       gl.glActiveTexture(GL2.GL_TEXTURE0);
 
       Global.drawColor(new Color("#ffffff"));
-      Image.draw(ImageResources.generationTest, 0, 0, world.camera.scaleToZoom(64), world.camera.scaleToZoom(32));
+      Image.draw(heightMapWrapper.get(), 0, 0, world.camera.scaleToZoom(64), world.camera.scaleToZoom(32));
 
       Shaders.terrainShader.stopShader(gl);
 
@@ -136,6 +138,7 @@ public class Editor extends Thread{
   }
 
   private static void makeUI() {
+    EditorUtils.init(clickHandler, keyboardHandler, screen);
     PaletteBar.init(clickHandler, keyboardHandler, screen, palettResourceWrapper);
     ColorModal.init(clickHandler, keyboardHandler, screen, palettResourceWrapper);
     NoiseModal.init(clickHandler, keyboardHandler, screen, palettResourceWrapper);
@@ -161,7 +164,8 @@ public class Editor extends Thread{
 
     NoiseStepData noiseStepData = new NoiseStepData();
     noiseStepData.fnl = new FastNoiseLite();
-    noiseStepData.modifier = new ImageCreateModifier(1L ,noiseStepData.fnl);
+    noiseStepData.fnl.SetSeed(1);
+    noiseStepData.modifier = new ImageCreateModifier(noiseStepData.fnl);
 
     noiseStepList.add(noiseStepData);
 
@@ -262,12 +266,23 @@ public class Editor extends Thread{
   }
 
   private static void addNoiseStep(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList) {
-
     NoiseStepData noiseStepData = new NoiseStepData();
-    noiseStepData.fnl = new FastNoiseLite();
-    noiseStepData.modifier = new ImageCreateModifier(1L ,noiseStepData.fnl);
+    addNoiseStep(scrollBox, noiseStepList, noiseStepData, -1);
+  }
 
-    noiseStepList.add(noiseStepData);
+  private static void addNoiseStep(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList, NoiseStepData noiseStepData, int index) {
+    if(noiseStepData.init == false) {
+      noiseStepData.fnl = new FastNoiseLite();
+      noiseStepData.fnl.SetSeed(1);
+      noiseStepData.modifier = new ImageAddModifier(noiseStepData.fnl);
+      noiseStepData.init = true;
+    }
+
+    if (index >= 0 && index < noiseStepList.size()) {
+      noiseStepList.add(index, noiseStepData);
+    } else {
+      noiseStepList.add(noiseStepData);
+    }
 
     recalculateNoise(noiseStepList);
 
@@ -280,12 +295,109 @@ public class Editor extends Thread{
     stepRow.outlineWeight = .1f;
 
     UIBoxCol orderCol = new UIBoxCol(stepRow);
+    orderCol.margin = .2f;
     orderCol.outlineWeight = .1f;
     orderCol.color = new Color("#000000");
     orderCol.outlineColor = new Color("#ffffff");
     orderCol.minWidth = 2f;
     orderCol.minHeight = 6f;
     stepRow.addChild(orderCol);
+
+    UIButton upButton = new UIButton(orderCol){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x,y);
+        int index = noiseStepList.indexOf(noiseStepData);
+        if (index > 1) {
+          Collections.swap(noiseStepList, index, index - 1);
+          index = scrollBox.children.indexOf(stepRow);
+          Collections.swap(scrollBox.children, index, index - 1);
+          recalculateNoise(noiseStepList);
+        }
+      }
+    };
+    upButton.outlineWeight = .1f;
+    upButton.color = new Color("#000000");
+    upButton.outlineColor = new Color("#ffffff");
+    upButton.minWidth = 1.6f;
+    upButton.minHeight = 1.6f;
+    upButton.mouseOverColor = new Color("#444444");
+    orderCol.addChild(upButton);
+    clickHandler.register(upButton);
+
+    UIImage upIcon = new UIImage(upButton, ImageResources.littleArrow);
+    upIcon.color = new Color("#ffffff");
+    upIcon.minWidth = 1f;
+    upIcon.minHeight = 1f;
+    upIcon.padding = .3f;
+    upButton.addChild(upIcon);
+
+    UIBoxCol padding1 = new UIButton(orderCol);
+    padding1.noBackground = true;
+    padding1.outlineWeight = 0f;
+    padding1.minHeight = .4f;
+    orderCol.addChild(padding1);
+
+    UIButton menuButton = new UIButton(orderCol){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        openNoiseStepOptionsModal(scrollBox, noiseStepList, noiseStepData, stepRow, () -> {
+          recalculateNoise(noiseStepList);
+        });
+      }
+    };
+    menuButton.outlineWeight = .1f;
+    menuButton.color = new Color("#000000");
+    menuButton.outlineColor = new Color("#ffffff");
+    menuButton.minWidth = 1.6f;
+    menuButton.minHeight = 1.6f;
+    menuButton.mouseOverColor = new Color("#444444");
+    orderCol.addChild(menuButton);
+    clickHandler.register(menuButton);
+
+    UIImage menuIcon = new UIImage(menuButton, ImageResources.menuIcon);
+    menuIcon.color = new Color("#ffffff");
+    menuIcon.minWidth = 1.4f;
+    menuIcon.minHeight = 1.4f;
+    menuIcon.padding = .1f;
+    menuButton.addChild(menuIcon);
+
+    UIBoxCol padding2 = new UIButton(orderCol);
+    padding2.noBackground = true;
+    padding2.outlineWeight = 0f;
+    padding2.minHeight = .4f;
+    orderCol.addChild(padding2);
+
+    UIButton downButton = new UIButton(orderCol){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x,y);
+        int index = noiseStepList.indexOf(noiseStepData);
+        if (index < noiseStepList.size() - 1) {
+          Collections.swap(noiseStepList, index, index + 1);
+          index = scrollBox.children.indexOf(stepRow);
+          Collections.swap(scrollBox.children, index, index + 1);
+          recalculateNoise(noiseStepList);
+        }
+      }
+    };
+    downButton.outlineWeight = .1f;
+    downButton.color = new Color("#000000");
+    downButton.outlineColor = new Color("#ffffff");
+    downButton.minWidth = 1.6f;
+    downButton.minHeight = 1.6f;
+    downButton.mouseOverColor = new Color("#444444");
+    orderCol.addChild(downButton);
+    clickHandler.register(downButton);
+
+    UIImage downIcon = new UIImage(downButton, ImageResources.littleArrow);
+    downIcon.color = new Color("#ffffff");
+    downIcon.minWidth = 1f;
+    downIcon.minHeight = 1f;
+    downIcon.padding = .3f;
+    downIcon.rotation = 180f;
+    downButton.addChild(downIcon);
 
     UIBoxCol infoCol = new UIBoxCol(stepRow);
     infoCol.outlineWeight = 0;
@@ -298,38 +410,120 @@ public class Editor extends Thread{
     infoColPadding.minHeight = .1f;
     infoCol.addChild(infoColPadding);
 
-    UIBoxCol nameBox = new UIBoxCol(infoCol);
-    nameBox.outlineWeight = .1f;
-    nameBox.padding = .5f;
-    nameBox.minWidth = 10;
-    nameBox.minHeight = 1.5f;
-    nameBox.margin = .1f;
-    infoCol.addChild(nameBox);
+    UISelectionMenu modifierTypeField = new UISelectionMenu(null, screen, clickHandler){
+      @Override
+      public String getValue() {
+        switch (noiseStepData.modifier.getClass().getSimpleName()) {
+          case "ImageAddModifier":
+            return "Add Noise";
+          case "ImageContrastModifier":
+            return "Contrast";
+          case "ImageInvertModifier":
+            return "Invert";
+          case "ImageMultModifier":
+            return "Multiply Noise";
+          case "ImageSubtractModifier":
+            return "Subtract Noise";
+          case "ImageScaleModifier":
+            return "Scale";
+        }
+        return "";
+      }
 
-    UICenter nameCenter = new UICenter(nameBox);
-    nameCenter.centerY = true;
-    nameCenter.centerX = false;
-    nameBox.addChild(nameCenter);
+      @Override
+      public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
+        switch (val) {
+          case "Add Noise":
+            noiseStepData.modifier = new ImageAddModifier(noiseStepData.fnl);
+            break;
+          case "Contrast":
+          noiseStepData.modifier = new ImageContrastModifier(1d, 0d);
+            break;
+          case "Invert":
+          noiseStepData.modifier = new ImageInvertModifier();
+            break;
+          case "Multiply Noise":
+          noiseStepData.modifier = new ImageMultModifier(noiseStepData.fnl);
+            break;
+          case "Subtract Noise":
+          noiseStepData.modifier = new ImageSubtractModifier(noiseStepData.fnl);
+            break;
+          case "Scale":
+          noiseStepData.modifier = new ImageScaleModifier(0d, 255d);
+            break;
+        }
+        recalculateNoise(noiseStepList);
+      }
+    };
 
-    UIBoxRow nameContents = new UIBoxRow(nameCenter);
-    nameContents.noBackground = true;
-    nameContents.outlineWeight = 0f;
-    nameCenter.addChild(nameContents);
+    String[] modifierTypeFieldOptions = {
+      "Add Noise",
+      "Contrast",
+      "Invert",
+      "Multiply Noise",
+      "Subtract Noise",
+      "Scale"
+    };
 
-    UIBoxRow namePadding = new UIBoxRow(nameContents);
-    namePadding.minWidth = .1f;
-    namePadding.noBackground = true;
-    namePadding.outlineWeight = 0f;
-    nameContents.addChild(namePadding);
+    modifierTypeField.padding = .2f;
+    modifierTypeField.minWidth = 9.8f;
 
-    UITextBlock name = new UITextBlock(nameContents, "Base Noise", .5f);
-    name.textColor = new Color("#ffffff");
-    name.noBackground = false;
-    nameContents.addChild(name);
+    EditorUtils.constructDropdown(infoCol, modifierTypeField, modifierTypeFieldOptions, null);
+
+    UIButton settingsButton = new UIButton(infoCol){
+      @Override
+      public void mousedUp(float x, float y) {
+        if(!noiseStepData.modifier.hasParameter()) {
+          return;
+        }
+        super.mousedUp(x, y);
+        openNoiseStepSettingsModal(scrollBox, noiseStepList, noiseStepData, stepRow, (IImageModifier newModifier) -> {
+                                                                                                                  noiseStepData.modifier = newModifier;
+                                                                                                                  recalculateNoise(noiseStepList);
+                                                                                                                });
+      }
+      @Override
+      public void render() {
+        if(noiseStepData.modifier.hasParameter()) {
+          super.render();
+        }
+      }
+    };
+    settingsButton.minWidth = 2f;
+    settingsButton.minHeight = 2f;
+    settingsButton.color = new Color("000000");
+    settingsButton.padding = .5f;
+    settingsButton.outlineColor = new Color("#ffffff");
+    settingsButton.outlineWeight = .1f;
+    settingsButton.mouseOverColor = new Color("#444444");
+
+    infoCol.addChild(settingsButton);
+    clickHandler.register(settingsButton);
+
+    UIImage settingsIcon = new UIImage(settingsButton, ImageResources.settingsIcon);
+    settingsIcon.color = new Color("#ffffff");
+    settingsIcon.minWidth = 1.5f;
+    settingsIcon.minHeight = 1.5f;
+    settingsIcon.padding = .25f;
+    settingsButton.addChild(settingsIcon);
 
     UIButton noisePreviewButton = new UIButton(stepRow) {
       @Override
+      public boolean isMouseOver(float x, float y) {
+        if (!(noiseStepData.modifier instanceof ImageCombineModifier)) {
+          return false;
+        }
+        return super.isMouseOver(x, y);
+      }
+      @Override
       public void mousedUp(float x, float y) {
+        if (!(noiseStepData.modifier instanceof ImageCombineModifier)) {
+          return;
+        }
         super.mousedUp(x, y);
         NoiseModal.openNoiseModal(new FastNoiseLite(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
                                                                                                    noiseStepData.fnl.Set(newFnl);
@@ -337,20 +531,238 @@ public class Editor extends Thread{
                                                                                                   });
       }
     };
-    noisePreviewButton.mouseOverColor = new Color("#ffffff");
-    noisePreviewButton.color = new Color("#ffffff");
+    noisePreviewButton.mouseOverOutlineColor = new Color("#ffffff");
+    noisePreviewButton.outlineColor = new Color("#ffffff");
+    noisePreviewButton.noBackground = true;
+    noisePreviewButton.outlineWeight = .1f;
     noisePreviewButton.minWidth = 6f;
     noisePreviewButton.minHeight = 6f;
     noisePreviewButton.radius = 3f;
     stepRow.addChild(noisePreviewButton);
     clickHandler.register(noisePreviewButton);
 
-    UIGlobeDisplay grayGlobe = new UIGlobeDisplay(noisePreviewButton, noiseStepData.noisePreviewWrapper, null);
+    UIGlobeDisplay grayGlobe = new UIGlobeDisplay(noisePreviewButton, noiseStepData.noisePreviewWrapper, null) {
+      @Override
+      public Color getColor() {
+        if (noisePreviewButton.getIsMousedOver()) {
+          return new Color("#bbbbbb");
+        }
+        else {
+          return super.getColor();
+        }
+      }
+    };
     grayGlobe.setRadius(5.8f);
     grayGlobe.padding = .1f;
     noisePreviewButton.addChild(grayGlobe);
 
-    scrollBox.addChild(stepRow);
+    if (index >= 0 && index < scrollBox.children.size()) {
+      scrollBox.addChild(stepRow, index);
+    } else {
+      scrollBox.addChild(stepRow);
+    }
+
+    recalculateNoise(noiseStepList);
+  }
+
+  private static void openNoiseStepSettingsModal(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList, NoiseStepData noiseStepData, UIBoxRow stepRow, Consumer<IImageModifier> afterClose) {
+    if(!noiseStepData.modifier.hasParameter()) {
+      return;
+    }
+
+    UIModal noiseStepSettingsModal = new UIModal(screen);
+    noiseStepSettingsModal.centerBox.color = new Color("#000000");
+    noiseStepSettingsModal.centerBox.outlineColor = new Color("#ffffff");
+    noiseStepSettingsModal.centerBox.outlineWeight = .1f;
+    noiseStepSettingsModal.centerBox.radius = .5f;
+    screen.addChild(noiseStepSettingsModal);
+    clickHandler.setMask(noiseStepSettingsModal.centerBox);
+
+    UIBoxCol contentBox = new UIBoxCol(noiseStepSettingsModal.centerBox);
+    contentBox.noBackground = true;
+    contentBox.outlineWeight = 0f;
+    contentBox.minWidth = 5f;
+    contentBox.minHeight = 5f;
+    noiseStepSettingsModal.centerBox.addChild(contentBox);
+
+    int index = noiseStepList.indexOf(noiseStepData);
+
+    Wrapper<ImageResource> settingsPreviewWrapper = new Wrapper<ImageResource>();
+    settingsPreviewWrapper.set(new ImageResource(noiseStepData.modifier.resolve(noiseStepList.get(index - 1).noisePreviewWrapper.get().getBufferedImage()), 1, 1000));
+
+    UIBoxRow globeRow = new UIBoxRow(contentBox);
+    globeRow.outlineWeight = 0;
+    globeRow.noBackground = true;
+    contentBox.addChild(globeRow);
+
+    UIGlobeDisplay grayGlobe = new UIGlobeDisplay(globeRow, settingsPreviewWrapper, null);
+    grayGlobe.setRadius(12);
+    grayGlobe.padding = 1f;
+    globeRow.addChild(grayGlobe);
+
+    UIGlobeDisplay shadedGlobe = new UIGlobeDisplay(globeRow, settingsPreviewWrapper, editorPalette);
+    shadedGlobe.setRadius(12);
+    shadedGlobe.padding = 1f;
+    globeRow.addChild(shadedGlobe);
+
+    IImageModifier newNoiseStepModifier = noiseStepData.modifier.copy();
+    newNoiseStepModifier.constructParameterFields(contentBox, clickHandler, keyboardHandler, noiseStepList.get(index - 1).noisePreviewWrapper.get().getBufferedImage(), settingsPreviewWrapper);
+
+    UICenter modalButtonRowCenterer = new UICenter(contentBox);
+    modalButtonRowCenterer.centerY = false;
+    contentBox.addChild(modalButtonRowCenterer);
+
+    UIBoxRow modalButtonRow = new UIBoxRow(modalButtonRowCenterer);
+    modalButtonRow.outlineWeight = 0;
+    modalButtonRow.noBackground = true;
+    modalButtonRowCenterer.addChild(modalButtonRow);
+
+    UIButton confirmButton = new UIButton(modalButtonRow){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        noiseStepSettingsModal.close();
+        afterClose.accept(newNoiseStepModifier);
+      }
+    };
+    confirmButton.color = new Color("#000000");
+    confirmButton.outlineColor = new Color("#ffffff");
+    confirmButton.outlineWeight = .1f;
+    confirmButton.noBackground = false;
+    confirmButton.padding = .5f;
+    confirmButton.margin = .3f;
+    confirmButton.mouseOverColor = new Color("00aa00");
+    modalButtonRow.addChild(confirmButton);
+    clickHandler.register(confirmButton);
+    UITextBlock confirmButtonText = new UITextBlock(confirmButton, "Confirm", .5f);
+    confirmButtonText.textColor = new Color("#ffffff");
+    confirmButtonText.noBackground = false;
+    confirmButton.addChild(confirmButtonText);
+
+    UIButton cancelButton = new UIButton(modalButtonRow){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        noiseStepSettingsModal.close();
+      }
+    };
+    cancelButton.color = new Color("#000000");
+    cancelButton.outlineColor = new Color("#ffffff");
+    cancelButton.outlineWeight = .1f;
+    cancelButton.noBackground = false;
+    cancelButton.padding = .5f;
+    cancelButton.margin = .3f;
+    cancelButton.mouseOverColor = new Color("aa0000");
+    modalButtonRow.addChild(cancelButton);
+    clickHandler.register(cancelButton);
+    UITextBlock cancelButtonText = new UITextBlock(cancelButton, "Cancel", .5f);
+    cancelButtonText.textColor = new Color("#ffffff");
+    cancelButtonText.noBackground = false;
+    cancelButton.addChild(cancelButtonText);
+
+  }
+
+  private static void openNoiseStepOptionsModal(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList, NoiseStepData noiseStepData, UIBoxRow stepRow, Runnable afterClose) {
+    UIModal noiseStepOptionsModal = new UIModal(screen);
+    noiseStepOptionsModal.centerBox.color = new Color("#000000");
+    noiseStepOptionsModal.centerBox.outlineColor = new Color("#ffffff");
+    noiseStepOptionsModal.centerBox.outlineWeight = .1f;
+    noiseStepOptionsModal.centerBox.radius = .5f;
+    screen.addChild(noiseStepOptionsModal);
+    clickHandler.setMask(noiseStepOptionsModal.centerBox);
+
+    UICenter duplicateButtonCenterer = new UICenter(noiseStepOptionsModal.centerBox);
+    duplicateButtonCenterer.centerY = false;
+    duplicateButtonCenterer.padding = .3f;
+    noiseStepOptionsModal.addChild(duplicateButtonCenterer);
+
+    UIButton duplicateButton = new UIButton(duplicateButtonCenterer){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        noiseStepOptionsModal.close();
+        NoiseStepData newNoiseStepData = new NoiseStepData(noiseStepData);
+        int index = noiseStepList.indexOf(noiseStepData);
+        addNoiseStep(scrollBox, noiseStepList, newNoiseStepData, index + 1);
+        afterClose.run();
+      }
+    };
+    duplicateButton.color = new Color("#000000");
+    duplicateButton.outlineColor = new Color("#ffffff");
+    duplicateButton.outlineWeight = .1f;
+    duplicateButton.noBackground = false;
+    duplicateButton.padding = .5f;
+    duplicateButton.margin = .3f;
+    duplicateButton.mouseOverColor = new Color("#777777");
+    duplicateButtonCenterer.addChild(duplicateButton);
+    clickHandler.register(duplicateButton);
+    UITextBlock duplicateButtonText = new UITextBlock(duplicateButton, "Duplicate", .5f);
+    duplicateButtonText.textColor = new Color("#ffffff");
+    duplicateButtonText.noBackground = false;
+    duplicateButton.addChild(duplicateButtonText);
+
+    UICenter removeButtonCenterer = new UICenter(noiseStepOptionsModal.centerBox);
+    removeButtonCenterer.centerY = false;
+    removeButtonCenterer.padding = .3f;
+    noiseStepOptionsModal.addChild(removeButtonCenterer);
+
+    UIButton removeButton = new UIButton(removeButtonCenterer){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        noiseStepOptionsModal.close();
+        int index = noiseStepList.indexOf(noiseStepData);
+        noiseStepList.remove(index);
+        index = scrollBox.children.indexOf(stepRow);
+        scrollBox.children.remove(index);
+        afterClose.run();
+      }
+    };
+    removeButton.color = new Color("#000000");
+    removeButton.outlineColor = new Color("#ffffff");
+    removeButton.outlineWeight = .1f;
+    removeButton.noBackground = false;
+    removeButton.padding = .5f;
+    removeButton.margin = .3f;
+    removeButton.mouseOverColor = new Color("#777777");
+    removeButtonCenterer.addChild(removeButton);
+    clickHandler.register(removeButton);
+    UITextBlock removeButtonText = new UITextBlock(removeButton, "Remove", .5f);
+    removeButtonText.textColor = new Color("#ffffff");
+    removeButtonText.noBackground = false;
+    removeButton.addChild(removeButtonText);
+
+    UICenter closeButtonCenterer = new UICenter(noiseStepOptionsModal.centerBox);
+    closeButtonCenterer.centerY = false;
+    closeButtonCenterer.padding = .3f;
+    noiseStepOptionsModal.addChild(closeButtonCenterer);
+
+    UIButton closeButton = new UIButton(closeButtonCenterer){
+      @Override
+      public void mousedUp(float x, float y) {
+        super.mousedUp(x, y);
+        clickHandler.clearMask();
+        noiseStepOptionsModal.close();
+        afterClose.run();
+      }
+    };
+    closeButton.color = new Color("#000000");
+    closeButton.outlineColor = new Color("#ffffff");
+    closeButton.outlineWeight = .1f;
+    closeButton.noBackground = false;
+    closeButton.padding = .5f;
+    closeButton.margin = .3f;
+    closeButton.mouseOverColor = new Color("#aa0000");
+    closeButtonCenterer.addChild(closeButton);
+    clickHandler.register(closeButton);
+    UITextBlock closeButtonText = new UITextBlock(closeButton, "Close", .5f);
+    closeButtonText.textColor = new Color("#ffffff");
+    closeButtonText.noBackground = false;
+    closeButton.addChild(closeButtonText);
   }
 
   public static void makeSideNoiseBar() {
@@ -393,6 +805,7 @@ public class Editor extends Thread{
     UIButton addNewNoiseStepButton = new UIButton(buttonsRow) {
       @Override
       public void mousedUp(float x, float y) {
+        addNoiseStep(scrollableContent, noiseStepList);
         super.mousedUp(x, y);
       }
     };

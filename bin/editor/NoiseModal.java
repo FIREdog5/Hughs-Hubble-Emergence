@@ -73,151 +73,6 @@ class NoiseModal {
                                       );
   }
 
-  private static void constructDropdown(UIBoxCol fieldBox, UISelectionMenu field, String[] dropdownOptions, String title) {
-
-    UIBoxRow fieldRow = new UIBoxRow(fieldBox);
-    fieldRow.outlineWeight = 0;
-    fieldRow.noBackground = true;
-    fieldRow.padding = .3f;
-    fieldBox.addChild(fieldRow);
-
-    UIBoxRow fieldLabelRow = new UIBoxRow(fieldRow);
-    fieldLabelRow.minWidth = 10;
-    fieldLabelRow.minHeight = 2f;
-    fieldRow.outlineWeight = 0;
-    fieldRow.noBackground = true;
-    fieldRow.addChild(fieldLabelRow);
-
-    UIRightPositioner fieldLabelPositioner = new UIRightPositioner(fieldLabelRow);
-    fieldLabelRow.addChild(fieldLabelPositioner);
-
-    UITextBlock titleText = new UITextBlock(fieldLabelPositioner, title, .5f);
-    titleText.textColor = new Color("#ffffff");
-    titleText.noBackground = true;
-    titleText.maxWidth = 10f;
-    titleText.y = .2f;
-    fieldLabelPositioner.addChild(titleText);
-
-    UIBoxRow fieldRowPadding = new UIBoxRow(fieldRow);
-    fieldRowPadding.minWidth = .3f;
-    fieldRowPadding.outlineWeight = 0;
-    fieldRowPadding.noBackground = true;
-    fieldRow.addChild(fieldRowPadding);
-
-    field.parent = fieldRow;
-    fieldRow.addChild(field);
-    clickHandler.register(field);
-
-    field.minWidth = 10;
-    field.minHeight = 2f;
-    field.selectionBoxHeight = 6;
-    field.color = new Color("#000000");
-    field.mouseOverColor = new Color("#444444");
-    field.selectedColor = new Color("#222222");
-    field.mouseOverOutlineColor = new Color("#ffffff");
-    field.selectedOutlineColor = new Color("#ffffff");
-    field.outlineWeight = .1f;
-    field.margin = .1f;
-
-    for (String option : dropdownOptions) {
-      UISelectable entry = new UISelectable(field.scrollableList);
-      entry.x = 0;
-      entry.y = 0;
-      entry.minWidth = 10f;
-      entry.minHeight = 1.5f;
-      entry.color = new Color("#222222");
-      entry.mouseOverColor = new Color("#888888");
-      entry.outlineWeight = 0f;
-      entry.setZ(10);
-      field.addOption(entry, option);
-      clickHandler.register(entry);
-
-      UICenter entryCenter = new UICenter(entry);
-      entryCenter.centerY = true;
-      entryCenter.centerX = false;
-      entry.addChild(entryCenter);
-
-      UIBoxRow entryContents = new UIBoxRow(entryCenter);
-      entryContents.noBackground = true;
-      entryContents.outlineWeight = 0f;
-      entryCenter.addChild(entryContents);
-
-      UIBoxRow entryPadding = new UIBoxRow(entryContents);
-      entryPadding.minWidth = .1f;
-      entryPadding.noBackground = true;
-      entryPadding.outlineWeight = 0f;
-      entryContents.addChild(entryPadding);
-
-      UITextBlock entryText = new UITextBlock(entryContents, option, .5f);
-      entryText.textColor = new Color("#ffffff");
-      entryText.noBackground = true;
-      entryText.maxWidth = 10f;
-      entryContents.addChild(entryText);
-    }
-  }
-
-  private static void constructNumField(UIBoxCol fieldBox, UIBoxRow fieldRow, UINumberInput field, String title) {
-
-    fieldRow.parent = fieldBox;
-    fieldRow.outlineWeight = 0;
-    fieldRow.noBackground = true;
-    fieldRow.padding = .3f;
-    fieldBox.addChild(fieldRow);
-
-    UIBoxRow fieldLabelRow = new UIBoxRow(fieldRow);
-    fieldLabelRow.minWidth = 10;
-    fieldLabelRow.minHeight = 2f;
-    fieldRow.outlineWeight = 0;
-    fieldRow.noBackground = true;
-    fieldRow.children.add(0, fieldLabelRow);
-
-    UIRightPositioner fieldLabelPositioner = new UIRightPositioner(fieldLabelRow);
-    fieldLabelRow.addChild(fieldLabelPositioner);
-
-    UITextBlock titleText = new UITextBlock(fieldLabelPositioner, title, .5f);
-    titleText.textColor = new Color("#ffffff");
-    titleText.noBackground = true;
-    titleText.maxWidth = 10f;
-    titleText.y = .2f;
-    fieldLabelPositioner.addChild(titleText);
-
-    UIBoxRow fieldRowPadding = new UIBoxRow(fieldRow);
-    fieldRowPadding.minWidth = .3f;
-    fieldRowPadding.outlineWeight = 0;
-    fieldRowPadding.noBackground = true;
-    fieldRow.children.add(1, fieldRowPadding);
-
-    clickHandler.register(field);
-    keyboardHandler.register(field);
-
-    field.minWidth = 10f - .4f - (1.7f / 2f - .6f) * 2f;;
-    field.minHeight = 1.7f;
-    field.color = new Color("#000000");
-    field.textColor = new Color("#ffffff");
-    field.mouseOverColor = new Color("#444444");
-    field.selectedColor = new Color("#222222");
-    field.mouseOverOutlineColor = new Color("#ffffff");
-    field.selectedOutlineColor = new Color("#ffffff");
-    field.outlineWeight = .1f;
-    field.margin = .1f;
-
-    field.incrementButton.mouseOverOutlineColor = new Color("#ffffff");
-    field.incrementButton.outlineColor = new Color("#ffffff");
-    field.incrementButton.color = new Color("#000000");
-    field.incrementButton.mouseOverColor = new Color("#444444");
-    field.incrementIcon.padding = .3f;
-    field.incrementIcon.minWidth = (1.7f / 2f - .6f) * 2f;
-    field.incrementIcon.minHeight = 1.7f / 2f - .6f;
-
-    field.decrementButton.mouseOverOutlineColor = new Color("#ffffff");
-    field.decrementButton.outlineColor = new Color("#ffffff");
-    field.decrementButton.color = new Color("#000000");
-    field.decrementButton.mouseOverColor = new Color("#444444");
-    field.decrementIcon.padding = .3f;
-    field.decrementIcon.minWidth = (1.7f / 2f - .6f) * 2f;
-    field.decrementIcon.minHeight = 1.7f / 2f - .6f;
-  }
-
   public static void openNoiseModal() {
     FastNoiseLite fnl = new FastNoiseLite();
     openNoiseModal(fnl, (FastNoiseLite newFnl) -> {});
@@ -230,7 +85,7 @@ class NoiseModal {
   public static void openNoiseModal(FastNoiseLite fnl, Consumer<FastNoiseLite> afterClose) {
 
     Wrapper<ImageResource> noisePreviewWrapper = new Wrapper<ImageResource>();
-    noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+    noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
 
     UIModal noiseModal = new UIModal(screen);
     // noiseModal.centerBox.minWidth = 20f;
@@ -305,7 +160,7 @@ class NoiseModal {
             fnl.SetNoiseType(FastNoiseLite.NoiseType.Value);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
       }
     };
 
@@ -318,7 +173,7 @@ class NoiseModal {
       "Value"
     };
 
-    constructDropdown(controls, noiseTypeField, noiseTypeFieldOptions, "Noise Type");
+    EditorUtils.constructDropdown(controls, noiseTypeField, noiseTypeFieldOptions, "Noise Type");
 
     UISelectionMenu rotationType3DField = new UISelectionMenu(controls, screen, clickHandler){
       @Override
@@ -351,7 +206,7 @@ class NoiseModal {
             fnl.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXZPlanes);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
       }
     };
 
@@ -361,7 +216,7 @@ class NoiseModal {
       "ImproveXZPlanes"
     };
 
-    constructDropdown(controls, rotationType3DField, rotationType3DFieldOptions, "Rotation Type 3D");
+    EditorUtils.constructDropdown(controls, rotationType3DField, rotationType3DFieldOptions, "Rotation Type 3D");
 
     Wrapper<String> frequencyStringWrapper = new Wrapper<String>(Float.toString(fnl.GetFrequency()));
     UIBoxRow frequencyFieldRow = new UIBoxRow(null);
@@ -376,7 +231,7 @@ class NoiseModal {
             return;
           }
           fnl.SetFrequency(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -402,7 +257,7 @@ class NoiseModal {
     frequencyField.incrementAmount = .005f;
     frequencyField.precision = 3;
 
-    constructNumField(controls, frequencyFieldRow, frequencyField, "Frequency");
+    EditorUtils.constructNumField(controls, frequencyFieldRow, frequencyField, "Frequency");
 
     UITextBlock fractalText = new UITextBlock(controls, "Fractal", .5f);
     fractalText.textColor = new Color("#ffffff");
@@ -446,7 +301,7 @@ class NoiseModal {
             fnl.SetFractalType(FastNoiseLite.FractalType.PingPong);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
       }
     };
 
@@ -457,7 +312,7 @@ class NoiseModal {
       "PingPong"
     };
 
-    constructDropdown(controls, fractalTypeField, fractalTypeFieldOptions, "Type");
+    EditorUtils.constructDropdown(controls, fractalTypeField, fractalTypeFieldOptions, "Type");
 
     Wrapper<String> fractalOctavesStringWrapper = new Wrapper<String>(Integer.toString(fnl.GetFractalOctaves()));
     UIBoxRow fractalOctavesFieldRow = new UIBoxRow(null);
@@ -472,7 +327,7 @@ class NoiseModal {
             return;
           }
           fnl.SetFractalOctaves(Integer.parseInt(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -498,7 +353,7 @@ class NoiseModal {
     fractalOctavesField.incrementAmount = 1f;
     fractalOctavesField.precision = 0;
 
-    constructNumField(controls, fractalOctavesFieldRow, fractalOctavesField, "Octaves");
+    EditorUtils.constructNumField(controls, fractalOctavesFieldRow, fractalOctavesField, "Octaves");
 
     Wrapper<String> fractalLacunarityStringWrapper = new Wrapper<String>(Float.toString(fnl.GetFractalLacunarity()));
     UIBoxRow fractalLacunarityFieldRow = new UIBoxRow(null);
@@ -513,7 +368,7 @@ class NoiseModal {
             return;
           }
           fnl.SetFractalLacunarity(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -539,7 +394,7 @@ class NoiseModal {
     fractalLacunarityField.incrementAmount = .1f;
     fractalLacunarityField.precision = 2;
 
-    constructNumField(controls, fractalLacunarityFieldRow, fractalLacunarityField, "Lacunarity");
+    EditorUtils.constructNumField(controls, fractalLacunarityFieldRow, fractalLacunarityField, "Lacunarity");
 
     Wrapper<String> fractalGainStringWrapper = new Wrapper<String>(Float.toString(fnl.GetFractalGain()));
     UIBoxRow fractalGainFieldRow = new UIBoxRow(null);
@@ -554,7 +409,7 @@ class NoiseModal {
             return;
           }
           fnl.SetFractalGain(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -580,7 +435,7 @@ class NoiseModal {
     fractalGainField.incrementAmount = .1f;
     fractalGainField.precision = 2;
 
-    constructNumField(controls, fractalGainFieldRow, fractalGainField, "Gain");
+    EditorUtils.constructNumField(controls, fractalGainFieldRow, fractalGainField, "Gain");
 
     Wrapper<String> fractalWeightedStrengthStringWrapper = new Wrapper<String>(Float.toString(fnl.GetFractalWeightedStrength()));
     UIBoxRow fractalWeightedStrengthFieldRow = new UIBoxRow(null);
@@ -595,7 +450,7 @@ class NoiseModal {
             return;
           }
           fnl.SetFractalWeightedStrength(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -621,7 +476,7 @@ class NoiseModal {
     fractalWeightedStrengthField.incrementAmount = .1f;
     fractalWeightedStrengthField.precision = 2;
 
-    constructNumField(controls, fractalWeightedStrengthFieldRow, fractalWeightedStrengthField, "Weighted Strength");
+    EditorUtils.constructNumField(controls, fractalWeightedStrengthFieldRow, fractalWeightedStrengthField, "Weighted Strength");
 
     Wrapper<String> fractalPingPongStrengthStringWrapper = new Wrapper<String>(Float.toString(fnl.GetFractalPingPongStrength()));
     UIBoxRow fractalPingPongStrengthFieldRow = new UIBoxRow(null);
@@ -636,7 +491,7 @@ class NoiseModal {
             return;
           }
           fnl.SetFractalPingPongStrength(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -662,7 +517,7 @@ class NoiseModal {
     fractalPingPongStrengthField.incrementAmount = .1f;
     fractalPingPongStrengthField.precision = 2;
 
-    constructNumField(controls, fractalPingPongStrengthFieldRow, fractalPingPongStrengthField, "Ping Pong Strength");
+    EditorUtils.constructNumField(controls, fractalPingPongStrengthFieldRow, fractalPingPongStrengthField, "Ping Pong Strength");
 
     UITextBlock cellularText = new UITextBlock(controls, "Cellular", .5f);
     cellularText.textColor = new Color("#ffffff");
@@ -706,7 +561,7 @@ class NoiseModal {
             fnl.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Hybrid);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
       }
     };
 
@@ -717,7 +572,7 @@ class NoiseModal {
       "Hybrid"
     };
 
-    constructDropdown(controls, cellularDistanceFunctionField, cellularDistanceFunctionFieldOptions, "Distance Function");
+    EditorUtils.constructDropdown(controls, cellularDistanceFunctionField, cellularDistanceFunctionFieldOptions, "Distance Function");
 
     UISelectionMenu cellularReturnTypeField = new UISelectionMenu(controls, screen, clickHandler){
       @Override
@@ -770,7 +625,7 @@ class NoiseModal {
             fnl.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Div);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
       }
     };
 
@@ -784,7 +639,7 @@ class NoiseModal {
       "Distance2Div"
     };
 
-    constructDropdown(controls, cellularReturnTypeField, cellularReturnTypeFieldOptions, "Return Type");
+    EditorUtils.constructDropdown(controls, cellularReturnTypeField, cellularReturnTypeFieldOptions, "Return Type");
 
     Wrapper<String> cellularJitterStringWrapper = new Wrapper<String>(Float.toString(fnl.GetCellularJitter()));
     UIBoxRow cellularJitterFieldRow = new UIBoxRow(null);
@@ -799,7 +654,7 @@ class NoiseModal {
             return;
           }
           fnl.SetCellularJitter(Float.parseFloat(val));
-          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
         } catch (Exception e) {
           return;
         }
@@ -825,7 +680,7 @@ class NoiseModal {
     cellularJitterField.incrementAmount = .1f;
     cellularJitterField.precision = 2;
 
-    constructNumField(controls, cellularJitterFieldRow, cellularJitterField, "Jitter");
+    EditorUtils.constructNumField(controls, cellularJitterFieldRow, cellularJitterField, "Jitter");
 
     UITextBlock domainWarpText = new UITextBlock(controls, "Domain Warp", .5f);
     domainWarpText.textColor = new Color("#ffffff");
@@ -864,7 +719,7 @@ class NoiseModal {
             fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
             break;
         }
-        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 1L, 2400), 1, 1000));
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
       }
     };
 
@@ -874,7 +729,7 @@ class NoiseModal {
       "BasicGrid"
     };
 
-    constructDropdown(controls, domainWarpTypeField, domainWarpTypeFieldOptions, "Type");
+    EditorUtils.constructDropdown(controls, domainWarpTypeField, domainWarpTypeFieldOptions, "Type");
 
     UIBoxCol previewCol = new UIBoxCol(modalContentRow);
     previewCol.outlineWeight = 0;

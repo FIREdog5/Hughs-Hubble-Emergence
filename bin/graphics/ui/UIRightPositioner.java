@@ -70,5 +70,10 @@ public class UIRightPositioner extends UIBoxRow implements IPositioner{
     }
   }
 
+  @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
+
 
 }

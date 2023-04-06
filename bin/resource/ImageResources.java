@@ -1,5 +1,6 @@
 package bin.resource;
 
+import bin.resource.FastNoiseLite;
 import bin.resource.proceduralGeneration.*;
 import bin.resource.proceduralGeneration.modifiers.*;
 
@@ -39,6 +40,7 @@ public class ImageResources{
   public static ImageResource mapIcon = null;
   public static ImageResource addIcon = null;
   public static ImageResource menuIcon = null;
+  public static ImageResource settingsIcon = null;
   public static ImageResource littleArrow = null;
 
   public static void init() {
@@ -76,24 +78,28 @@ public class ImageResources{
         1.6f, -100f), 1, 1000);
 
     CompoundImage baseImage = new CompoundImage();
-    baseImage.addStep(new ImageCreateModifier(1L, 70d));
+    FastNoiseLite fnl1 = new FastNoiseLite();
+    fnl1.SetSeed(1);
+    fnl1.SetFrequency(.01f);
+    FastNoiseLite basefnl1 = new FastNoiseLite();
+    basefnl1.SetSeed(3);
+    basefnl1.SetFrequency(.005f);
+    baseImage.addStep(new ImageCreateModifier(basefnl1));
     baseImage.addStep(new ImageContrastModifier(1.9d, -130d));
-    SimpleImage secondImage = new SimpleImage();
-    secondImage.addStep(new ImageCreateModifier(1L, 20d));
-    secondImage.addStep(new ImageInvertModifier());
-    secondImage.addStep(new ImageContrastModifier(1.3d, 70d));
-    baseImage.addStep(new ImageMultModifier(secondImage));
+    baseImage.addStep(new ImageMultModifier(fnl1));
     baseImage.addStep(new ImageContrastModifier(1.6d, -100d));
     generationTest = new ImageResource(baseImage.resolve(2400, 800), 1, 1000);
 
     CompoundImage baseImage2 = new CompoundImage();
-    baseImage2.addStep(new ImageCreateModifier(2L, 270d));
+    FastNoiseLite fnl2 = new FastNoiseLite();
+    fnl2.SetSeed(2);
+    fnl2.SetFrequency(.005f);
+    FastNoiseLite basefnl2 = new FastNoiseLite();
+    basefnl2.SetSeed(2);
+    basefnl2.SetFrequency(.001f);
+    baseImage2.addStep(new ImageCreateModifier(basefnl2));
     baseImage2.addStep(new ImageContrastModifier(1.9d, -130d));
-    SimpleImage secondImage2 = new SimpleImage();
-    secondImage2.addStep(new ImageCreateModifier(2L, 170d));
-    secondImage2.addStep(new ImageInvertModifier());
-    secondImage2.addStep(new ImageContrastModifier(1.3d, 70d));
-    baseImage2.addStep(new ImageMultModifier(secondImage2));
+    baseImage2.addStep(new ImageMultModifier(fnl2));
     baseImage2.addStep(new ImageContrastModifier(1.6d, -100d));
     generationTest2 = new ImageResource(baseImage2.resolve(2400, 800), 1, 1000);
 
@@ -111,6 +117,7 @@ public class ImageResources{
     mapIcon = new ImageResource("/assets/images/icons/mapIcon.png");
     addIcon = new ImageResource("/assets/images/icons/addIcon.png");
     menuIcon = new ImageResource("/assets/images/icons/menuIcon.png");
+    settingsIcon = new ImageResource("/assets/images/icons/settingsIcon.png");
     littleArrow = new ImageResource("/assets/images/icons/LittleArrow.png");
 
     System.out.println("Loaded all resources");

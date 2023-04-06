@@ -104,4 +104,9 @@ public class UIColorWheel extends UIButton {
   public void addChild(UIElement child) {
     throw new UnsupportedOperationException();
   }
+
+  @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
 }

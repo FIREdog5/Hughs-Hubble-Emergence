@@ -58,4 +58,9 @@ public class UIText extends UIBox {
     throw new java.lang.UnsupportedOperationException();
   }
 
+  @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
+
 }

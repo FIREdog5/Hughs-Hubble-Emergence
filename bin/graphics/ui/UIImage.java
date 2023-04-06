@@ -75,6 +75,11 @@ public class UIImage extends UIBox {
   }
 
   @Override
+  public void addChild(UIElement child, int index) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void render() {
     if (this.image != null) {
       Global.drawColor(new Color("#ffffff"));

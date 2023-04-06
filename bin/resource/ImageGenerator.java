@@ -41,7 +41,7 @@ public class ImageGenerator {
     return newImage;
   }
 
-  public static BufferedImage FNLTexture(FastNoiseLite fnl, long seed, int width, int height) {
+  public static BufferedImage FNLTexture(FastNoiseLite fnl, int width, int height) {
     BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
@@ -53,12 +53,11 @@ public class ImageGenerator {
     return newImage;
   }
 
-  public static BufferedImage SphericalFNL(FastNoiseLite fnl, long seed, int width) {
+  public static BufferedImage SphericalFNL(FastNoiseLite fnl, int width) {
     double radius = width / (2f * Math.PI);
     double dTheta = (2f * Math.PI) / width;
     int height = (int) (2 * radius);
     double dPhi = (Math.PI) / height;
-    fnl.SetSeed((int)seed);
     BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     int i = 0;
     for (double theta = 0; i < width; theta += dTheta) {

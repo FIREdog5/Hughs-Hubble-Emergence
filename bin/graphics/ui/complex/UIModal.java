@@ -64,7 +64,12 @@ public class UIModal extends UIBox {
 
   @Override
   public void addChild(UIElement child) {
-    this.centerBox.addChild(child);
+    this.addChild(child, -1);
+  }
+
+  @Override
+  public void addChild(UIElement child, int index) {
+    this.centerBox.addChild(child, index);
   }
 
 }
