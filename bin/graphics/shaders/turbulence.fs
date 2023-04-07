@@ -39,7 +39,7 @@ vec4 sample(float x, float y)
  int textureHeight = textureSize(heightSampler, 0).y;
 
  float xNew = x + offset;
- vec2 warp = texture2D(warpSampler, vec2(xNew,y)).xz /25;
+ vec2 warp = (texture2D(warpSampler, vec2(xNew,y)).xz + vec2(-0.5, -0.5)) / 50;
  if (warp.y + y > textureHeight) {
    warp.y = textureHeight - y;
  }
