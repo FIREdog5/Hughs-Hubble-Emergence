@@ -9,6 +9,7 @@ public class Shaders {
 
   public static ShaderProgram terrainShader;
   public static ShaderProgram blackHoleShader;
+  public static ShaderProgram turbulenceShader;
 
   public static void init() {
     GL2 gl2 = ClientMain.gl;
@@ -28,6 +29,11 @@ public class Shaders {
 			throw new IllegalStateException("Unable to initiate the shaders!");
 		}
 
-
+    File turbulenceFS = new File("bin/graphics/shaders/turbulence.fs");
+    String turbulenceUniforms[] = {"heightSampler", "warpSampler", "offset"};
+    turbulenceShader = new ShaderProgram();
+    if (!turbulenceShader.init(gl2, vertexShader, turbulenceFS, turbulenceUniforms)) {
+			throw new IllegalStateException("Unable to initiate the shaders!");
+		}
   }
 }

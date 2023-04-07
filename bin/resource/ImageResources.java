@@ -32,6 +32,8 @@ public class ImageResources{
   public static ImageResource biomeGradientTest = null;
   public static ImageResource sphericalTest = null;
   public static ImageResource gradientTest = null;
+  public static ImageResource stripeTest = null;
+  public static ImageResource domainWarpRBTest = null;
 
   //resources
 
@@ -63,6 +65,14 @@ public class ImageResources{
     terainShaderTest = new ImageResource("/assets/images/tests/terainShader.png");
     biomeShaderTest = new ImageResource("/assets/images/tests/biomeShaderTest.png");
     biomeGradientTest = new ImageResource("/assets/images/tests/biomeGradientTest.png");
+    stripeTest = new ImageResource("/assets/images/tests/stripeTest.png", 1, 1000);
+
+    FastNoiseLite fnlRB1 = new FastNoiseLite();
+    fnlRB1.SetSeed(1);
+    FastNoiseLite fnlRB2 = new FastNoiseLite();
+    fnlRB2.SetSeed(2);
+    domainWarpRBTest = new ImageResource(ImageGenerator.SphericalFNLRB(fnlRB1, fnlRB2, 2400), 1, 4000);
+
     //TODO: make contrast its own thing lol
     generationTest = new PolarResource(ImagePreprocessor.adjustContrast(
       ImagePreprocessor.combineImagesMult(

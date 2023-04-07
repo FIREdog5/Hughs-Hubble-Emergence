@@ -443,6 +443,26 @@ public class GraphicsTest extends Thread{
       Globe.draw(ImageResources.earthTest, camera.scaleToZoom(15), camera.convertXToCamera(140), camera.convertYToCamera(-49));
       Image.drawNoAA(ImageResources.gradientTest, camera.convertXToCamera(192), camera.convertYToCamera(0), camera.scaleToZoom(1), camera.scaleToZoom(130), 0);
 
+      //draw gas giant test
+      Global.drawColor(new Color("#ffffff"));
+      Globe.draw(ImageResources.stripeTest, camera.scaleToZoom(15), camera.convertXToCamera(110), camera.convertYToCamera(-79));
+      Globe.draw(ImageResources.domainWarpRBTest, camera.scaleToZoom(15), camera.convertXToCamera(140), camera.convertYToCamera(-79));
+
+      Shaders.turbulenceShader.startShader(gl);
+      float frame = Global.getFrame();
+      float offset = (frame % ImageResources.domainWarpRBTest.getFrameDelay()) / (float)ImageResources.domainWarpRBTest.getFrameDelay();
+      // System.out.println(frame);
+      gl.glUniform1f(gl.glGetUniformLocation(Shaders.turbulenceShader.getProgramId(), "offset"), offset);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+1);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.domainWarpRBTest.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+      gl.glActiveTexture(GL2.GL_TEXTURE0);
+      Global.drawColor(new Color("#ffffff"));
+      Globe.draw(ImageResources.stripeTest, camera.scaleToZoom(15), camera.convertXToCamera(170), camera.convertYToCamera(-79));
+      Shaders.turbulenceShader.stopShader(gl);
+
       //draw circles
       Global.drawColor(new Color("#ffffff"));
       float[] circles = {.1f, .5f, 1f, 2f, 5f, 10f, 20f, 50f};

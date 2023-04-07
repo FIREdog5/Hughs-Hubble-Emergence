@@ -78,18 +78,21 @@ class NoiseBar {
     heightMapWrapper = passedHeightMapWrapper;
   }
 
-  private static void recalculateNoise(ArrayList<NoiseStepData> noiseStepList, NoiseStepData changedNoiseStep) {
+  private static void recalculateNoise(ArrayList<NoiseStepData> noiseStepList, NoiseStepData changedNoiseStep, int seed) {
     int index = noiseStepList.indexOf(changedNoiseStep);
     if (index >= noiseStepList.size() || index < 0) {
       index = 0;
     }
+    int newSeed = index + seed;
     for (int i = index; i < noiseStepList.size(); i++) {
+      noiseStepList.get(i).fnl.SetSeed(newSeed);
       if (i == 0) {
         BufferedImage newImage = new BufferedImage(2400, 800, BufferedImage.TYPE_INT_RGB);
         noiseStepList.get(i).noisePreviewWrapper.set(new ImageResource(noiseStepList.get(i).modifier.resolve(newImage), 1, 1000));
       } else {
         noiseStepList.get(i).noisePreviewWrapper.set(new ImageResource(noiseStepList.get(i).modifier.resolve(noiseStepList.get(i-1).noisePreviewWrapper.get().getBufferedImage()), 1, 1000));
       }
+      seed++;
     }
     heightMapWrapper.set(noiseStepList.get(noiseStepList.size() - 1).noisePreviewWrapper.get());
   }
@@ -103,7 +106,7 @@ class NoiseBar {
 
     noiseStepList.add(noiseStepData);
 
-    recalculateNoise(noiseStepList, noiseStepData);
+    recalculateNoise(noiseStepList, noiseStepData, 1);
 
     UIBoxRow stepRow = new UIBoxRow(scrollBox);
     stepRow.minWidth = 18f;
@@ -167,7 +170,7 @@ class NoiseBar {
         super.mousedUp(x, y);
         NoiseModal.openNoiseModal(new FastNoiseLite(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
                                                                                                    noiseStepData.fnl.Set(newFnl);
-                                                                                                   recalculateNoise(noiseStepList, noiseStepData);
+                                                                                                   recalculateNoise(noiseStepList, noiseStepData, 1);
                                                                                                   });
       }
     };
@@ -218,7 +221,7 @@ class NoiseBar {
       noiseStepList.add(noiseStepData);
     }
 
-    recalculateNoise(noiseStepList, noiseStepData);
+    recalculateNoise(noiseStepList, noiseStepData, 1);
 
     UIBoxRow stepRow = new UIBoxRow(scrollBox);
     stepRow.minWidth = 18f;
@@ -246,7 +249,7 @@ class NoiseBar {
           Collections.swap(noiseStepList, index, index - 1);
           index = scrollBox.children.indexOf(stepRow);
           Collections.swap(scrollBox.children, index, index - 1);
-          recalculateNoise(noiseStepList, noiseStepData);
+          recalculateNoise(noiseStepList, noiseStepData, 1);
         }
       }
     };
@@ -277,7 +280,7 @@ class NoiseBar {
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
         openNoiseStepOptionsModal(scrollBox, noiseStepList, noiseStepData, stepRow, () -> {
-          recalculateNoise(noiseStepList, noiseStepData);
+          recalculateNoise(noiseStepList, noiseStepData, 1);
         });
       }
     };
@@ -312,7 +315,7 @@ class NoiseBar {
           Collections.swap(noiseStepList, index, index + 1);
           index = scrollBox.children.indexOf(stepRow);
           Collections.swap(scrollBox.children, index, index + 1);
-          recalculateNoise(noiseStepList, noiseStepList.get(index));
+          recalculateNoise(noiseStepList, noiseStepList.get(index), 1);
         }
       }
     };
@@ -390,7 +393,7 @@ class NoiseBar {
           noiseStepData.modifier = new ImageScaleModifier(0d, 255d);
             break;
         }
-        recalculateNoise(noiseStepList, noiseStepData);
+        recalculateNoise(noiseStepList, noiseStepData, 1);
       }
     };
 
@@ -417,7 +420,7 @@ class NoiseBar {
         super.mousedUp(x, y);
         openNoiseStepSettingsModal(scrollBox, noiseStepList, noiseStepData, stepRow, (IImageModifier newModifier) -> {
                                                                                                                   noiseStepData.modifier = newModifier;
-                                                                                                                  recalculateNoise(noiseStepList, noiseStepData);
+                                                                                                                  recalculateNoise(noiseStepList, noiseStepData, 1);
                                                                                                                 });
       }
       @Override
@@ -461,7 +464,7 @@ class NoiseBar {
         super.mousedUp(x, y);
         NoiseModal.openNoiseModal(new FastNoiseLite(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
                                                                                                    noiseStepData.fnl.Set(newFnl);
-                                                                                                   recalculateNoise(noiseStepList, noiseStepData);
+                                                                                                   recalculateNoise(noiseStepList, noiseStepData, 1);
                                                                                                   });
       }
     };
@@ -496,7 +499,7 @@ class NoiseBar {
       scrollBox.addChild(stepRow);
     }
 
-    recalculateNoise(noiseStepList, noiseStepData);
+    recalculateNoise(noiseStepList, noiseStepData, 1);
   }
 
   private static void openNoiseStepSettingsModal(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList, NoiseStepData noiseStepData, UIBoxRow stepRow, Consumer<IImageModifier> afterClose) {
