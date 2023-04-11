@@ -8,6 +8,10 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.FPSAnimator;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.DisplayMode;
+
 public class Renderer {
 
   private static GLWindow window = null;
@@ -20,7 +24,7 @@ public class Renderer {
 
   public static FramebufferController framebufferController = new FramebufferController();
 
-  public static void init(String mode) {
+  public static void init(String mode, String fullscreen) {
     GLProfile.initSingleton();
     profile = GLProfile.get(GLProfile.GL2);
     GLCapabilities caps = new GLCapabilities(profile);
@@ -29,9 +33,25 @@ public class Renderer {
 
     window = GLWindow.create(caps);
 
+    switch (fullscreen){
+      case "borderless":
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        DisplayMode displayMode = gs[0].getDisplayMode();
+        screenWidth = displayMode.getWidth();
+        screenHeight = displayMode.getHeight();
+        window.setUndecorated(true);
+        break;
+      case "bordered":
+        break;
+      case "":
+      case "fullscreen":
+        window.setFullscreen(true);
+        break;
+    }
     window.setSize(screenWidth, screenHeight);
     window.setResizable(false);
-    window.setFullscreen(true);
+
     switch (mode) {
       case "editor":
         window.addGLEventListener(new EditorEventListener());

@@ -13,14 +13,21 @@ public class ClientMain{
   public static TextRenderer textRenderer = null;
 
   public static void main(String[] args) {
-    if (Arrays.asList(args).contains("--editor")) {
-      Renderer.init("editor");
+    String fullscreen = "";
+    if (Arrays.asList(args).contains("borderless")) {
+      fullscreen = "borderless";
+    } else if (Arrays.asList(args).contains("bordered")) {
+      fullscreen = "bordered";
+      System.out.println("[WARNING] bordered mode is not fully implemented");
+    }
+    if (Arrays.asList(args).contains("editor")) {
+      Renderer.init("editor", fullscreen);
       Editor.init();
-    } else if (Arrays.asList(args).contains("--graphicsTest")) {
-      Renderer.init("graphicsTest");
+    } else if (Arrays.asList(args).contains("graphicsTest")) {
+      Renderer.init("graphicsTest", fullscreen);
       GraphicsTest.init();
     } else {
-      Renderer.init("");
+      Renderer.init("", fullscreen);
       GameLoop.init();
     }
   }
