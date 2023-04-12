@@ -41,6 +41,7 @@ import bin.graphics.ui.complex.UIVerticalValueSlider;
 import bin.graphics.ui.complex.UISelectionMenu;
 import bin.graphics.ui.complex.UINumberInput;
 import bin.graphics.ui.complex.UIScrollableBox;
+import bin.graphics.ui.complex.UITextInput;
 import bin.graphics.ui.colorUtils.UIColorWheel;
 import bin.graphics.ui.colorUtils.UIColorSlider;
 import bin.graphics.ui.colorUtils.UIGlobeDisplay;
@@ -56,6 +57,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import com.jogamp.newt.event.KeyEvent;
 import java.util.function.Consumer;
+import java.util.regex.*;
+import java.util.Arrays;
 
 class ColorModal {
   private static ClickHandler clickHandler;
@@ -71,6 +74,8 @@ class ColorModal {
   }
 
   public static void openColorModal(Color colorPointer, Runnable afterClose) {
+
+    //set up modal and create a temporary new color
     Color newColor = new Color("#ffffff");
     float[] hsv = colorPointer.getHSV();
     newColor.setHSV(hsv);
@@ -82,8 +87,7 @@ class ColorModal {
     screen.addChild(colorModal);
     clickHandler.setMask(colorModal.centerBox);
 
-    //color wheel
-
+    //color wheel and sliders
     UICenter colorSettersCenterer = new UICenter(colorModal.centerBox);
     colorSettersCenterer.centerY = false;
     colorModal.addChild(colorSettersCenterer);
@@ -138,8 +142,81 @@ class ColorModal {
     addColorSlider(hsvSliderRow, newColor, "saturation", "S");
     addColorSlider(hsvSliderRow, newColor, "value", "V");
 
-    //bottom bar with cancel and confirm buttons
+    //a text input for hex codes
+    UICenter hexInputCenterer = new UICenter(colorWheelCol);
+    hexInputCenterer.centerY = false;
+    colorWheelCol.addChild(hexInputCenterer);
 
+    UITextInput hexField = new UITextInput(hexInputCenterer, .5f){
+
+      Wrapper<String> hexStringWrapper = new Wrapper<String>(newColor.getHex());
+
+      @Override
+      public String getValue() {
+        if(this.isSelected()) {
+          return hexStringWrapper.get();
+        }
+        return newColor.getHex();
+      }
+
+      @Override
+      public void select() {
+        super.select();
+        hexStringWrapper.set(newColor.getHex());
+      }
+
+      @Override
+      public boolean setValue(String newValue) {
+        hexStringWrapper.set(newValue.toLowerCase());
+        return true;
+      }
+
+      @Override
+      public boolean setUnfilteredValue(String newValue) {
+        if (Pattern.matches("#[0-9A-Fa-f]{0,6}", newValue)) {
+          return setValue(newValue);
+        }
+        return false;
+      }
+
+      @Override
+      public void onDeselect() {
+        if (!this.isSelected()) {
+          return;
+        }
+        String newValue = this.getValue();
+        if (newValue.length() != 7) {
+          return;
+        }
+        if (Pattern.matches("#[0-9A-Fa-f]{6}", newValue)) {
+          Color tempColor = new Color(newValue);
+          float[] hsv = tempColor.getHSV();
+          if(hsv[1] == 0)
+          {
+            hsv[1] = .000001f;
+          }
+          newColor.setHSV(hsv);
+        }
+        return;
+      }
+    };
+    hexField.minWidth = 4.3f;
+    hexField.minHeight = 1.7f;
+    hexField.color = new Color("#000000");
+    hexField.textColor = new Color("#ffffff");
+    hexField.mouseOverColor = new Color("#444444");
+    hexField.selectedColor = new Color("#222222");
+    hexField.mouseOverOutlineColor = new Color("#ffffff");
+    hexField.selectedOutlineColor = new Color("#ffffff");
+    hexField.outlineWeight = .1f;
+    hexField.margin = .1f;
+    hexField.padding = .5f;
+
+    hexInputCenterer.addChild(hexField);
+    clickHandler.register(hexField);
+    keyboardHandler.register(hexField);
+
+    //bottom bar with cancel and confirm buttons
     UICenter bottomBarCenterer = new UICenter(colorModal.centerBox);
     bottomBarCenterer.centerY = false;
     colorModal.addChild(bottomBarCenterer);

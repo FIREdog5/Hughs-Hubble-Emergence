@@ -81,8 +81,8 @@ public class UISelectable extends UIButton {
     if (this.deselectBlocked) {
       return;
     }
-    this.isActive = false;
     this.onDeselect();
+    this.isActive = false;
   }
 
   public void onDeselect() {

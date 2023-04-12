@@ -5,12 +5,14 @@ default: ## 'make' will clean, compile, and run the project.
 default: clean classes run
 
 .PHONY: editor
-editor: default
+editor: default ## 'make editor' will run the planet editor.
 .PHONY: graphicsTest
-graphicsTest: default
+graphicsTest: default ## 'make graphicsTest' will run the graphics sandbox.
 .PHONY: borderless
+borderless: ## 'nake borderless' will launch the game in borderless mode. This is not a standalone target.
 borderless:
 .PHONY: bordered
+bordered: ## 'nake bordered' will launch the game in border mode. This is not a standalone target.
 bordered:
 
 classes: ## 'make classes' will compile the project.

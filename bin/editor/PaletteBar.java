@@ -24,6 +24,7 @@ import bin.graphics.objects.Pointer;
 import bin.graphics.objects.PointerOutline;
 
 import bin.graphics.ui.UIScreen;
+import bin.graphics.ui.UIText;
 import bin.graphics.ui.UIBoxRow;
 import bin.graphics.ui.UIBoxCol;
 import bin.graphics.ui.UICenter;
@@ -117,6 +118,7 @@ class PaletteBar {
   }
 
   private static void addGradientSlider(UIElement parent, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, ColorPosition newPosition, BufferedImage gradientTestBuffer) {
+    Wrapper<UIText> displayTextWrapper = new Wrapper<UIText>();
     UIVerticalValueSlider slider = new UIVerticalValueSlider(parent){
 
       private int oldPos = 0;
@@ -221,6 +223,9 @@ class PaletteBar {
         }
         GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
         palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+        if (displayTextWrapper.get() != null) {
+          displayTextWrapper.get().text = Integer.toString(255 - newPosition.position);
+        }
       }
     };
 
@@ -298,6 +303,30 @@ class PaletteBar {
 
     sliderButtons.addChild(colorButton);
     clickHandler.register(colorButton);
+
+    UIBoxLayered textPositioner = new UIBoxLayered(slider){
+      @Override
+      public float getWidth() {
+        return 0;
+      }
+      @Override
+      public float getHeight() {
+        return 0;
+      }
+    };
+    textPositioner.noBackground = true;
+    textPositioner.outlineWeight = 0f;
+    slider.addChild(textPositioner);
+
+    UIText displayText = new UIText(textPositioner, Integer.toString(255 - newPosition.position), 0f);
+    displayText.color = new Color("#ffffff");
+    displayText.noBackground = true;
+    displayText.maxWidth = 10f;
+    displayText.x = 4.5f;
+    displayText.y = .2f;
+    textPositioner.addChild(displayText);
+    displayTextWrapper.set(displayText);
+
   }
 
   public static void makeSidePaletteBar() {
@@ -377,6 +406,10 @@ class PaletteBar {
           slider.maxWidth = .3f;
           slider.setOnTop(false);
           for (UIElement sliderChild : slider.children) {
+            if (sliderChild instanceof UIBoxLayered) {
+              ((UIText)(sliderChild.children.get(0))).size = 0f;
+              continue;
+            }
             for (int i = 0; i < sliderChild.children.size(); i++) {
               UIElement scc = sliderChild.children.get(i);
               if (i == 0) {
@@ -402,6 +435,10 @@ class PaletteBar {
         closest.x = 0f;
         closest.setOnTop(true);
         for (UIElement sliderChild : closest.children) {
+          if (sliderChild instanceof UIBoxLayered) {
+            ((UIText)(sliderChild.children.get(0))).size = .5f;
+            continue;
+          }
           for (UIElement scc : sliderChild.children) {
             scc.minWidth = 1f;
             scc.minHeight = 1f;
