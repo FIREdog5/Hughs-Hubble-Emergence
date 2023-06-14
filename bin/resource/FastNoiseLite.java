@@ -104,6 +104,7 @@ public class FastNoiseLite
 
     public enum DomainWarpType
     {
+        None,
         OpenSimplex2,
         OpenSimplex2Reduced,
         BasicGrid
@@ -136,7 +137,7 @@ public class FastNoiseLite
     private CellularReturnType mCellularReturnType = CellularReturnType.Distance;
     private float mCellularJitterModifier = 1.0f;
 
-    private DomainWarpType mDomainWarpType = DomainWarpType.OpenSimplex2;
+    private DomainWarpType mDomainWarpType = DomainWarpType.None;
     private TransformType3D mWarpTransformType3D = TransformType3D.DefaultOpenSimplex2;
     private float mDomainWarpAmp = 1.0f;
 
@@ -1941,6 +1942,8 @@ public class FastNoiseLite
             case BasicGrid:
                 SingleDomainWarpBasicGrid(seed, amp, freq, x, y, coord);
                 break;
+            default:
+                break;
         }
     }
 
@@ -1956,6 +1959,8 @@ public class FastNoiseLite
                 break;
             case BasicGrid:
                 SingleDomainWarpBasicGrid(seed, amp, freq, x, y, z, coord);
+                break;
+            default:
                 break;
         }
     }

@@ -692,6 +692,8 @@ class NoiseModal {
       @Override
       public String getValue() {
         switch (fnl.GetDomainWarpType()) {
+          case None:
+            return "None";
           case OpenSimplex2:
             return "OpenSimplex2";
           case OpenSimplex2Reduced:
@@ -709,6 +711,9 @@ class NoiseModal {
           return;
         }
         switch (val) {
+          case "None":
+            fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.None);
+            break;
           case "OpenSimplex2":
             fnl.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
             break;
@@ -724,6 +729,7 @@ class NoiseModal {
     };
 
     String[] domainWarpTypeFieldOptions = {
+      "None",
       "OpenSimplex2",
       "OpenSimplex2Reduced",
       "BasicGrid"
