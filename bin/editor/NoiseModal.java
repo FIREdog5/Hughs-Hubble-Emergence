@@ -773,7 +773,7 @@ class NoiseModal {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseModal.close();
         afterClose.accept(fnl);
       }
@@ -796,7 +796,7 @@ class NoiseModal {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseModal.close();
       }
     };

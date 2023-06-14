@@ -36,6 +36,7 @@ public class ImageResources{
   public static ImageResource domainWarpRBTest = null;
 
   //resources
+  public static ImageResource blankGradient = null;
 
   //icons
   public static ImageResource globeIcon = null;
@@ -121,6 +122,9 @@ public class ImageResources{
     gradientTest = new ImageResource(gradientTestBuffer);
 
     //resources
+    BufferedImage blankGradientBuffer = GradientGenerator.newGradient(1);
+    GradientGenerator.setColumn(blankGradientBuffer, 0, new ColorPosition[]{new ColorPosition(new Color("#000000"), 1, 255)}, new ColorPosition[]{});
+    blankGradient = new ImageResource(blankGradientBuffer);
 
     //icons
     globeIcon = new ImageResource("/assets/images/icons/globeIcon.png");

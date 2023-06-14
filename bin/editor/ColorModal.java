@@ -231,7 +231,7 @@ class ColorModal {
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
         colorPointer.setRGB(newColor.getRGB());
-        clickHandler.clearMask();
+        clickHandler.popMask();
         colorModal.close();
         afterClose.run();
       }
@@ -254,7 +254,7 @@ class ColorModal {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         colorModal.close();
       }
     };

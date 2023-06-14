@@ -76,6 +76,10 @@ public class Editor extends Thread{
     (new Editor()).start();
   }
 
+  public static Wrapper<ImageResource> getPalettResourceWrapper() {
+    return palettResourceWrapper;
+  }
+
   public Editor () {
     this.setName("Editor");
     this.running = true;

@@ -1,7 +1,9 @@
 package bin.resource;
+import bin.Pair;
 
 import java.awt.image.RescaleOp;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class ImagePreprocessor {
   public static BufferedImage wrapPoles(BufferedImage originalImage) {
@@ -236,6 +238,31 @@ public class ImagePreprocessor {
         float currStrength = colorStrength(color1);
         float adjustedStrength = (currStrength - minStrength) / (maxStrength - minStrength) * (maxValue / 255f - minValue / 255f) + minValue / 255f;
         newImage.setRGB(i, j, clampColor(strengthToColor(adjustedStrength)));
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage remap(BufferedImage image, ArrayList<Pair<Integer, Integer>> mappings) {
+    //TODO push this onto the gpu (very low pri)
+    float[] remaps = new float[256];
+    for (int i = 0; i <= 255 - 1; i++) {
+      for (int k = 0; k < mappings.size() - 1; k++) {
+        Pair<Integer, Integer> lower = mappings.get(k);
+        Pair<Integer, Integer> upper = mappings.get(k + 1);
+        if (i >= lower.getKey() && i <= upper.getKey()) {
+          float strength = ((float)(i - lower.getKey()) / (float)(upper.getKey() - lower.getKey()) * (float)(upper.getValue() - lower.getValue()) + lower.getValue()) / 255f;
+          remaps[i] = strength;
+          break;
+        }
+      }
+    }
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        int strength = (int) (colorStrength(color1) * 255f);
+        newImage.setRGB(i, j, clampColor(strengthToColor(remaps[strength])));
       }
     }
     return newImage;

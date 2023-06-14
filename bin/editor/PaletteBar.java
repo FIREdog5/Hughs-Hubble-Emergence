@@ -137,7 +137,7 @@ class PaletteBar {
         return this.valueToY(this.getValue()) + this.getChildHeight() / 2 - this.valueToYRelative(.5f);
       }
 
-      protected float valueToYRelative(float value) {
+      public float valueToYRelative(float value) {
         return this.getHeight() * (value - this.minValue) / (this.maxValue - this.minValue);
       }
 
@@ -174,7 +174,7 @@ class PaletteBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
       }
 
       @Override
@@ -524,7 +524,7 @@ class PaletteBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         sliderOptionsModal.close();
         if (gradientPositions.size() < 256) {
           Comparator<ColorPosition> comparator = (ColorPosition o1, ColorPosition o2) -> o1.position - o2.position;
@@ -584,7 +584,7 @@ class PaletteBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         sliderOptionsModal.close();
         slider.removeFromParent();
         if(gradientPositions.contains(colorPosition)) {
@@ -619,7 +619,7 @@ class PaletteBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         sliderOptionsModal.close();
         afterClose.run();
       }

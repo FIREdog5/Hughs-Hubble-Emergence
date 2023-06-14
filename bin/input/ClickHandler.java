@@ -16,6 +16,7 @@ public class ClickHandler {
   private ArrayList<IClickable> clickables;
   private ArrayList<IClickable> mousedOver;
   private ArrayList<IClickable> mousedDown;
+  private ArrayList<UIElement> maskHistory;
   private int zCounter;
   private UIElement mask;
 
@@ -26,6 +27,7 @@ public class ClickHandler {
     this.clickables = new ArrayList<IClickable>();
     this.mousedOver = new ArrayList<IClickable>();
     this.mousedDown = new ArrayList<IClickable>();
+    this.maskHistory = new ArrayList<UIElement>();
     this.zCounter = 0;
     this.mask = null;
   }
@@ -57,11 +59,23 @@ public class ClickHandler {
   }
 
   public void setMask(UIElement mask) {
+    if (this.hasMask()) {
+      this.maskHistory.add(this.mask);
+    }
     this.mask = mask;
   }
 
   public void clearMask() {
     this.mask = null;
+    this.maskHistory = new ArrayList<UIElement>();
+  }
+
+  public void popMask() {
+    if (this.maskHistory.size() > 0) {
+      this.mask = this.maskHistory.remove(this.maskHistory.size() - 1);
+    } else {
+      this.mask = null;
+    }
   }
 
   public boolean hasMask() {

@@ -18,6 +18,7 @@ import bin.graphics.objects.ColorWheel;
 import bin.graphics.objects.Pointer;
 import bin.graphics.objects.PointerOutline;
 import bin.graphics.objects.ScreenArea;
+import bin.graphics.objects.Line;
 import bin.graphics.Color;
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIBoxCol;
@@ -26,6 +27,7 @@ import bin.graphics.ui.UICenter;
 import bin.graphics.ui.UIText;
 import bin.graphics.ui.UITextBlock;
 import bin.graphics.ui.UIButton;
+import bin.graphics.ui.UIImage;
 import bin.graphics.ui.UISelectable;
 import bin.graphics.ui.complex.UITextInput;
 import bin.graphics.ui.complex.UINumberInput;
@@ -114,7 +116,14 @@ public class GraphicsTest extends Thread{
       outerBoxRow.addChild(innerBoxRow1);
       outerBoxRow.addChild(innerBoxRow2);
 
-      UIScrollableBox scrollBox = new UIScrollableBox(outerBoxRow);
+      UIBoxCol containerBox = new UIBoxCol(outerBoxRow);
+      containerBox.color = new Color("#00ffff");
+      containerBox.outlineWeight = 0f;
+
+      outerBoxRow.addChild(containerBox);
+
+
+      UIScrollableBox scrollBox = new UIScrollableBox(containerBox);
       scrollBox.maxHeight = 10;
       scrollBox.scrollbarWidth = 1;
       scrollBox.outlineColor = new Color("#444444");
@@ -123,7 +132,7 @@ public class GraphicsTest extends Thread{
       scrollBox.scrollbarMouseOverColor = new Color("#eeeeee");
       scrollBox.padding = 1;
       scrollBox.outlineWeight = .3f;
-      outerBoxRow.addChild(scrollBox);
+      containerBox.addChild(scrollBox);
       clickHandler.register(scrollBox);
 
       for (int i = 0; i < 10; i++) {
@@ -138,6 +147,27 @@ public class GraphicsTest extends Thread{
         scrollBox.addChild(scrolledBox);
         clickHandler.register(scrolledBox);
       }
+
+      UIBoxCol outliner = new UIBoxCol(containerBox);
+      outliner.padding = 1f;
+      outliner.margin = .3f;
+      outliner.outlineColor = new Color("#ff0000");
+      outliner.noBackground = true;
+      outliner.outlineWeight = .3f;
+      containerBox.addChild(outliner);
+
+
+      UIImage testImageRotator = new UIImage(outliner, ImageResources.error){
+        @Override
+        public void render() {
+          super.render();
+          this.rotation += .1f;
+          this.rotation %= 360f;
+        }
+      };
+      testImageRotator.minWidth = 6f;
+      testImageRotator.minHeight = 3f;
+      outliner.addChild(testImageRotator);
 
       UIBoxCol outerBoxCol = new UIBoxCol(innerBoxRow1);
       outerBoxCol.x = 0;
@@ -451,7 +481,6 @@ public class GraphicsTest extends Thread{
       Shaders.turbulenceShader.startShader(gl);
       float frame = Global.getFrame();
       float offset = (frame % ImageResources.domainWarpRBTest.getFrameDelay()) / (float)ImageResources.domainWarpRBTest.getFrameDelay();
-      // System.out.println(frame);
       gl.glUniform1f(gl.glGetUniformLocation(Shaders.turbulenceShader.getProgramId(), "offset"), offset);
       gl.glActiveTexture(GL2.GL_TEXTURE0+1);
       gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.domainWarpRBTest.getTexture().getTextureObject());
@@ -513,12 +542,34 @@ public class GraphicsTest extends Thread{
 
       //pointers
       Global.drawColor(new Color("#0000ff"));
-      Pointer.draw(camera.convertXToCamera(-30), camera.convertYToCamera(70), camera.scaleToZoom(9), camera.scaleToZoom(3), "right");
-      Pointer.draw(camera.convertXToCamera(-30), camera.convertYToCamera(65), camera.scaleToZoom(9), camera.scaleToZoom(3), "left");
+      Pointer.draw(camera.convertXToCamera(-34f), camera.convertYToCamera(70f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "right");
+      Pointer.draw(camera.convertXToCamera(-34f), camera.convertYToCamera(65f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "left");
+      Pointer.draw(camera.convertXToCamera(-25.5f), camera.convertYToCamera(67.5f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "up");
+      Pointer.draw(camera.convertXToCamera(-20.5f), camera.convertYToCamera(67.5f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "down");
+      Pointer.draw(camera.convertXToCamera(-13f), camera.convertYToCamera(67.5f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), 45f);
 
       Global.drawColor(new Color("#ffffff"));
-      PointerOutline.draw(camera.convertXToCamera(-30), camera.convertYToCamera(70), camera.scaleToZoom(9), camera.scaleToZoom(3), "right", camera.scaleToZoom(.3f));
-      PointerOutline.draw(camera.convertXToCamera(-30), camera.convertYToCamera(65), camera.scaleToZoom(9), camera.scaleToZoom(3), "left", camera.scaleToZoom(.3f));
+      PointerOutline.draw(camera.convertXToCamera(-34f), camera.convertYToCamera(70f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "right", camera.scaleToZoom(.3f));
+      PointerOutline.draw(camera.convertXToCamera(-34f), camera.convertYToCamera(65f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "left", camera.scaleToZoom(.3f));
+      PointerOutline.draw(camera.convertXToCamera(-25.5f), camera.convertYToCamera(67.5f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "up", camera.scaleToZoom(.3f));
+      PointerOutline.draw(camera.convertXToCamera(-20.5f), camera.convertYToCamera(67.5f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), "down", camera.scaleToZoom(.3f));
+      PointerOutline.draw(camera.convertXToCamera(-13f), camera.convertYToCamera(67.5f), camera.scaleToZoom(9f), camera.scaleToZoom(3f), 45f, camera.scaleToZoom(.3f));
+
+      //line
+      Global.drawColor(new Color("#00ff00"));
+      int lineEnd = 0;
+      for (lineEnd = 0; lineEnd < 7; lineEnd++){
+        Line.draw(camera.convertXToCamera(-23f), camera.convertYToCamera(57f), camera.convertXToCamera(-38f + lineEnd * 5f), camera.convertYToCamera(61f), camera.scaleToZoom(.3f));
+      }
+      for (lineEnd = 1; lineEnd < 4; lineEnd++){
+        Line.draw(camera.convertXToCamera(-23f), camera.convertYToCamera(57f), camera.convertXToCamera(-8f), camera.convertYToCamera(61f - lineEnd * 2f), camera.scaleToZoom(.3f));
+      }
+      for (lineEnd = 0; lineEnd < 7; lineEnd++){
+        Line.draw(camera.convertXToCamera(-23f), camera.convertYToCamera(57f), camera.convertXToCamera(-38f + lineEnd * 5f), camera.convertYToCamera(53f), camera.scaleToZoom(.3f));
+      }
+      for (lineEnd = 1; lineEnd < 4; lineEnd++){
+        Line.draw(camera.convertXToCamera(-23f), camera.convertYToCamera(57f), camera.convertXToCamera(-38f), camera.convertYToCamera(61f - lineEnd * 2f), camera.scaleToZoom(.3f));
+      }
 
       //draw blackhole
       float bhX = 0f;

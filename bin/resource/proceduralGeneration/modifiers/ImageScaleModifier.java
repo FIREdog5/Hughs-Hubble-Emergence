@@ -38,12 +38,6 @@ public class ImageScaleModifier implements IImageModifier {
 
   }
 
-  // @Override
-  // public Parameter[] getParameters() {
-  //   Parameter[] parameters = {new Parameter("Min value", 0d, 255d), new Parameter("Max value", 0d, 255d)};
-  //   return parameters;
-  // }
-
   @Override
   public boolean hasParameter() {
     return true;

@@ -41,22 +41,36 @@ public class UIImage extends UIBox {
     return this.rotation;
   }
 
+  private float getRotationRads(){
+    return this.getRotation() / 180f * (float)Math.PI;
+  }
+
   @Override
   public float getWidth() {
-    float minimum = Math.max(this.minWidth, this.margin * 2);
+    float minimumWidth = Math.max(this.minWidth, this.margin * 2);
     if (this.maxWidth != -1) {
-      minimum = Math.min(minimum, maxWidth);
+      minimumWidth = Math.min(minimumWidth, maxWidth);
     }
-    return minimum;
+    float minimumHeight = Math.max(this.minHeight, this.margin * 2);
+    if (this.maxHeight != -1) {
+      minimumHeight = Math.min(minimumHeight, maxHeight);
+    }
+    float calcWidth = (float) (Math.abs(Math.sin(this.getRotationRads()) * minimumHeight) + Math.abs(Math.cos(this.getRotationRads()) * minimumWidth));
+    return calcWidth;
   }
 
   @Override
   public float getHeight() {
-    float minimum = Math.max(this.minHeight, this.margin * 2);
-    if (this.maxHeight != -1) {
-      minimum = Math.min(minimum, maxHeight);
+    float minimumWidth = Math.max(this.minWidth, this.margin * 2);
+    if (this.maxWidth != -1) {
+      minimumWidth = Math.min(minimumWidth, maxWidth);
     }
-    return minimum;
+    float minimumHeight = Math.max(this.minHeight, this.margin * 2);
+    if (this.maxHeight != -1) {
+      minimumHeight = Math.min(minimumHeight, maxHeight);
+    }
+    float calcHeight = (float) (Math.abs(Math.cos(this.getRotationRads()) * minimumHeight) + Math.abs(Math.sin(this.getRotationRads()) * minimumWidth));
+    return calcHeight;
   }
 
   @Override
@@ -81,20 +95,28 @@ public class UIImage extends UIBox {
 
   @Override
   public void render() {
+    float minimumWidth = Math.max(this.minWidth, this.margin * 2);
+    if (this.maxWidth != -1) {
+      minimumWidth = Math.min(minimumWidth, maxWidth);
+    }
+    float minimumHeight = Math.max(this.minHeight, this.margin * 2);
+    if (this.maxHeight != -1) {
+      minimumHeight = Math.min(minimumHeight, maxHeight);
+    }
     if (this.image != null) {
       Global.drawColor(new Color("#ffffff"));
       if (this.useAA) {
-        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
+        Image.draw(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, minimumWidth, minimumHeight, this.getRotation());
       } else {
-        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
+        Image.drawNoAA(this.image, this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, minimumWidth, minimumHeight, this.getRotation());
       }
     }
     if (imageWrapper != null) {
       Global.drawColor(new Color("#ffffff"));
       if (this.useAA) {
-        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
+        Image.draw(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, minimumWidth, minimumHeight, this.getRotation());
       } else {
-        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, this.getWidth(), this.getHeight(), this.getRotation());
+        Image.drawNoAA(this.imageWrapper.get(), this.getX() + this.getWidth() / 2, this.getY() - this.getHeight() / 2, minimumWidth, minimumHeight, this.getRotation());
       }
     }
 

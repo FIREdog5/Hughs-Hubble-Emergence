@@ -9,20 +9,20 @@ import bin.graphics.objects.PointerOutline;
 
 import java.lang.UnsupportedOperationException;
 
-public class UIVerticalValueSlider extends UIButton {
+public class UIHorizontalValueSlider extends UIButton {
 
    public float maxValue;
    public float minValue;
    public String facing;
 
-   protected float deltaY;
+   protected float deltaX;
 
-   public UIVerticalValueSlider(UIElement parent) {
+   public UIHorizontalValueSlider(UIElement parent) {
       super(parent);
       this.maxValue = 0;
       this.minValue = 0;
-      this.facing = "right";
-      this.deltaY = 0;
+      this.facing = "up";
+      this.deltaX = 0;
    }
 
    public float getValue() {
@@ -33,26 +33,26 @@ public class UIVerticalValueSlider extends UIButton {
      throw new UnsupportedOperationException();
    }
 
-   public float valueToY(float value) {
-     return this.getY() - this.getHeight() * (value - this.minValue) / (this.maxValue - this.minValue);
+   public float valueToX(float value) {
+     return this.getX() + this.getWidth() * (value - this.minValue) / (this.maxValue - this.minValue);
    }
 
-   public float yToValue(float y) {
-     return (this.getY() - y) / this.getHeight() * (this.maxValue - this.minValue) + this.minValue;
+   public float xToValue(float x) {
+     return (x - this.getX()) / this.getWidth() * (this.maxValue - this.minValue) + this.minValue;
    }
 
-   public float valueToYRelative(float value) {
+   public float valueToXRelative(float value) {
      throw new UnsupportedOperationException();
    }
 
    @Override
    public float getHeight() {
-     return this.maxHeight;
+     return this.maxHeight + this.getChildWidth() + this.getChildHeight();
    }
 
    @Override
    public float getWidth() {
-     return this.maxWidth + this.getChildWidth() + this.getChildHeight();
+     return this.maxWidth;
    }
 
    protected float getChildHeight() {
@@ -66,28 +66,28 @@ public class UIVerticalValueSlider extends UIButton {
    @Override
    public float getChildX(int i) {
      if (i >= this.children.size() || i < 0) {
-       throw new IndexOutOfBoundsException("UIVerticalValueSlider does not contain " + i + " children.");
+       throw new IndexOutOfBoundsException("UIHorizontalValueSlider does not contain " + i + " children.");
      }
-     return this.getX();
+     return this.valueToX(this.getValue()) + this.getChildWidth() / 2;
    }
 
    @Override
    public float getChildY(int i) {
      if (i >= this.children.size() || i < 0) {
-       throw new IndexOutOfBoundsException("UIVerticalValueSlider does not contain " + i + " children.");
+       throw new IndexOutOfBoundsException("UIHorizontalValueSlider does not contain " + i + " children.");
      }
-     return this.valueToY(this.getValue()) + this.getChildHeight() / 2;
+     return this.getY();
    }
 
    @Override
    public void render() {
      if (!this.getNoBackground()) {
        Global.drawColor(this.getColor());
-       Pointer.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing);
+       Pointer.draw(this.valueToX(this.getValue()), this.getY() - this.getHeight() / 2, this.getHeight(), this.getChildWidth(), this.facing);
      }
      if (this.getOutlineWeight() > 0f) {
        Global.drawColor(this.getOutlineColor());
-       PointerOutline.draw(this.getX() + this.getWidth() / 2, this.valueToY(this.getValue()), this.getWidth(), this.getChildHeight(), this.facing, this.getOutlineWeight());
+       PointerOutline.draw(this.valueToX(this.getValue()), this.getY() - this.getHeight() / 2, this.getHeight(), this.getChildWidth(), this.facing, this.getOutlineWeight());
      }
      for (int i = 0; i < this.children.size(); i++) {
        this.children.get(i).render();
@@ -96,21 +96,21 @@ public class UIVerticalValueSlider extends UIButton {
 
    @Override
    public boolean isMouseOver(float x, float y) {
-     return (x >= this.getX() && x <= this.getX() + this.getWidth() && y <= this.valueToY(this.getValue()) + this.getChildHeight() / 2 && y >= this.valueToY(this.getValue()) - this.getChildHeight() / 2) && (this.parent == null || this.parent.allowChildContent(x, y));
+     return (x >= this.valueToX(this.getValue()) - this.getChildWidth() / 2 && x <= this.valueToX(this.getValue()) + this.getChildWidth() / 2 && y >= this.getY() - this.getHeight() && y <= this.getY()) && (this.parent == null || this.parent.allowChildContent(x, y));
    }
 
    @Override
    public void mousedDown(float x, float y) {
      if(!this.getIsMouseDown()) {
        this.setIsMouseDown(true);
-       this.deltaY = y - this.valueToY(this.getValue());
+       this.deltaX = x - this.valueToX(this.getValue());
      }
    }
 
    @Override
    public void mouseMoved(float x, float y) {
      if (this.getIsMouseDown()) {
-       this.setValue(Math.max(Math.min(this.yToValue(y - this.deltaY), this.maxValue), this.minValue));
+       this.setValue(Math.max(Math.min(this.xToValue(x - this.deltaX), this.maxValue), this.minValue));
      }
    }
 

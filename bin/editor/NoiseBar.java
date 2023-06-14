@@ -363,6 +363,8 @@ class NoiseBar {
             return "Subtract Noise";
           case "ImageScaleModifier":
             return "Scale";
+          case "ImageRemapModifier":
+            return "Remap";
         }
         return "";
       }
@@ -392,6 +394,9 @@ class NoiseBar {
           case "Scale":
           noiseStepData.modifier = new ImageScaleModifier(0d, 255d);
             break;
+          case "Remap":
+          noiseStepData.modifier = new ImageRemapModifier();
+            break;
         }
         recalculateNoise(noiseStepList, noiseStepData, 1);
       }
@@ -403,7 +408,8 @@ class NoiseBar {
       "Invert",
       "Multiply Noise",
       "Subtract Noise",
-      "Scale"
+      "Scale",
+      "Remap"
     };
 
     modifierTypeField.padding = .2f;
@@ -527,10 +533,14 @@ class NoiseBar {
     Wrapper<ImageResource> settingsPreviewWrapper = new Wrapper<ImageResource>();
     settingsPreviewWrapper.set(new ImageResource(noiseStepData.modifier.resolve(noiseStepList.get(index - 1).noisePreviewWrapper.get().getBufferedImage()), 1, 1000));
 
-    UIBoxRow globeRow = new UIBoxRow(contentBox);
+    UICenter globeRowCenterer = new UICenter(contentBox);
+    globeRowCenterer.centerY = false;
+    contentBox.addChild(globeRowCenterer);
+
+    UIBoxRow globeRow = new UIBoxRow(globeRowCenterer);
     globeRow.outlineWeight = 0;
     globeRow.noBackground = true;
-    contentBox.addChild(globeRow);
+    globeRowCenterer.addChild(globeRow);
 
     UIGlobeDisplay grayGlobe = new UIGlobeDisplay(globeRow, settingsPreviewWrapper, null);
     grayGlobe.setRadius(12);
@@ -558,7 +568,7 @@ class NoiseBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseStepSettingsModal.close();
         afterClose.accept(newNoiseStepModifier);
       }
@@ -581,7 +591,7 @@ class NoiseBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseStepSettingsModal.close();
       }
     };
@@ -619,7 +629,7 @@ class NoiseBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseStepOptionsModal.close();
         NoiseStepData newNoiseStepData = new NoiseStepData(noiseStepData);
         int index = noiseStepList.indexOf(noiseStepData);
@@ -650,7 +660,7 @@ class NoiseBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseStepOptionsModal.close();
         int index = noiseStepList.indexOf(noiseStepData);
         noiseStepList.remove(index);
@@ -682,7 +692,7 @@ class NoiseBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        clickHandler.clearMask();
+        clickHandler.popMask();
         noiseStepOptionsModal.close();
         afterClose.run();
       }
