@@ -1,6 +1,7 @@
 package bin.resource;
 
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 import bin.resource.proceduralGeneration.*;
 import bin.resource.proceduralGeneration.modifiers.*;
 
@@ -68,9 +69,9 @@ public class ImageResources{
     biomeGradientTest = new ImageResource("/assets/images/tests/biomeGradientTest.png");
     stripeTest = new ImageResource("/assets/images/tests/stripeTest.png", 1, 1000);
 
-    FastNoiseLite fnlRB1 = new FastNoiseLite();
+    FastNoiseLite fnlRB1 = new FastNoiseLiteDomainWarp();
     fnlRB1.SetSeed(1);
-    FastNoiseLite fnlRB2 = new FastNoiseLite();
+    FastNoiseLite fnlRB2 = new FastNoiseLiteDomainWarp();
     fnlRB2.SetSeed(2);
     domainWarpRBTest = new ImageResource(ImageGenerator.SphericalFNLRB(fnlRB1, fnlRB2, 2400), 1, 4000);
 
@@ -89,10 +90,10 @@ public class ImageResources{
         1.6f, -100f), 1, 1000);
 
     CompoundImage baseImage = new CompoundImage();
-    FastNoiseLite fnl1 = new FastNoiseLite();
+    FastNoiseLite fnl1 = new FastNoiseLiteDomainWarp();
     fnl1.SetSeed(1);
     fnl1.SetFrequency(.01f);
-    FastNoiseLite basefnl1 = new FastNoiseLite();
+    FastNoiseLite basefnl1 = new FastNoiseLiteDomainWarp();
     basefnl1.SetSeed(3);
     basefnl1.SetFrequency(.005f);
     baseImage.addStep(new ImageCreateModifier(basefnl1));
@@ -102,10 +103,10 @@ public class ImageResources{
     generationTest = new ImageResource(baseImage.resolve(2400, 800), 1, 1000);
 
     CompoundImage baseImage2 = new CompoundImage();
-    FastNoiseLite fnl2 = new FastNoiseLite();
+    FastNoiseLite fnl2 = new FastNoiseLiteDomainWarp();
     fnl2.SetSeed(2);
     fnl2.SetFrequency(.005f);
-    FastNoiseLite basefnl2 = new FastNoiseLite();
+    FastNoiseLite basefnl2 = new FastNoiseLiteDomainWarp();
     basefnl2.SetSeed(2);
     basefnl2.SetFrequency(.001f);
     baseImage2.addStep(new ImageCreateModifier(basefnl2));

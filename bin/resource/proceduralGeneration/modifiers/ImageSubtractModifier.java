@@ -3,6 +3,7 @@ package bin.resource.proceduralGeneration.modifiers;
 import java.awt.image.BufferedImage;
 
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 import bin.resource.proceduralGeneration.IImageModifier;
 import bin.resource.proceduralGeneration.ImageCombineModifier;
 import bin.resource.proceduralGeneration.Parameter;
@@ -16,7 +17,7 @@ public class ImageSubtractModifier extends ImageCombineModifier {
 
   @Override
   public IImageModifier copy() {
-    return new ImageSubtractModifier(new FastNoiseLite(this.fnl));
+    return new ImageSubtractModifier(new FastNoiseLiteDomainWarp(this.fnl));
   }
 
   @Override

@@ -1,10 +1,10 @@
 package bin.editor;
 
 import bin.resource.proceduralGeneration.IImageModifier;
-import bin.resource.FastNoiseLite;
 import bin.Wrapper;
 import bin.resource.ImageResource;
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 
 public class NoiseStepData {
 
@@ -18,7 +18,7 @@ public class NoiseStepData {
 
   public NoiseStepData(NoiseStepData old) {
     this.modifier = old.modifier.copy();
-    this.fnl = new FastNoiseLite(old.fnl);
+    this.fnl = new FastNoiseLiteDomainWarp(old.fnl);
     this.init = old.init;
   }
 }

@@ -15,18 +15,30 @@ this class estends FNL to contain:
 
 public class FastNoiseLiteDomainWarp extends FastNoiseLite
 {
-  private FastNoiseLite mWarpNoise = new FasrNoiseLite();
+  private FastNoiseLite mWarpNoise = new FastNoiseLite();
   private float mLowerBound = 0f;
   private float mUpperBound = 255f;
+
+  public FastNoiseLiteDomainWarp() { }
+
+  public FastNoiseLiteDomainWarp(int seed)
+  {
+      SetSeed(seed);
+  }
+
+  public FastNoiseLiteDomainWarp(FastNoiseLite fnl)
+  {
+      Set(fnl);
+  }
 
   @Override
   public void Set(FastNoiseLite fnl) {
     if (fnl instanceof FastNoiseLiteDomainWarp) {
-      this.mWarpNoise.Set((FastNoiseLiteDomainWarp) fnl.GetWarpNoise();
-      this.SetLowerBound((FastNoiseLiteDomainWarp) fnl.GetLowerBound();
-      this.SetUpperBound((FastNoiseLiteDomainWarp) fnl.GetUpperBound();
+      this.mWarpNoise.Set(((FastNoiseLiteDomainWarp) fnl).GetWarpNoise());
+      this.SetLowerBound(((FastNoiseLiteDomainWarp) fnl).GetLowerBound());
+      this.SetUpperBound(((FastNoiseLiteDomainWarp) fnl).GetUpperBound());
     }
-    super.set(fnl);
+    super.Set(fnl);
   }
 
   @Override
@@ -47,6 +59,9 @@ public class FastNoiseLiteDomainWarp extends FastNoiseLite
     super.SetDomainWarpAmp(amp);
   }
 
+  public void SetWarpNoise(FastNoiseLite fnl) { mWarpNoise = fnl; }
+  public FastNoiseLite GetWarpNoise() { return mWarpNoise; }
+
   public void SetDomainWarpFrequency(float frequency) { mWarpNoise.SetFrequency(frequency); }
   public float GetDomainWarpFrequency() { return mWarpNoise.GetFrequency(); }
 
@@ -65,11 +80,11 @@ public class FastNoiseLiteDomainWarp extends FastNoiseLite
   public void SetDomainWarpFractalGain(float fractalGain) { mWarpNoise.SetFractalGain(fractalGain); }
   public float GetDomainWarpFractalGain() { return mWarpNoise.GetFractalGain(); }
 
-  public void SetLowerBound(float lowerBound) { mLowerBound = lowerBound };
-  public float GetLowerBound() { return mLowerBound; };
+  public void SetLowerBound(float lowerBound) { mLowerBound = lowerBound; }
+  public float GetLowerBound() { return mLowerBound; }
 
-  public void SetUpperBound(float upperBound) { mUpperBound = upperBound };
-  public float GetUpperBound() { return mUpperBound; };
+  public void SetUpperBound(float upperBound) { mUpperBound = upperBound; }
+  public float GetUpperBound() { return mUpperBound; }
 
   @Override
   public float GetNoise(float x, float y)

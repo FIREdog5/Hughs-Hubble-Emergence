@@ -17,6 +17,7 @@ import bin.resource.GradientGenerator;
 import bin.resource.ImageGenerator;
 import bin.resource.ColorPosition;
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 import bin.resource.proceduralGeneration.modifiers.*;
 import bin.resource.proceduralGeneration.ImageCombineModifier;
 import bin.resource.proceduralGeneration.IImageModifier;
@@ -100,7 +101,7 @@ class NoiseBar {
   private static void addFixedNoiseStep(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList) {
 
     NoiseStepData noiseStepData = new NoiseStepData();
-    noiseStepData.fnl = new FastNoiseLite();
+    noiseStepData.fnl = new FastNoiseLiteDomainWarp();
     noiseStepData.fnl.SetSeed(1);
     noiseStepData.modifier = new ImageCreateModifier(noiseStepData.fnl);
 
@@ -168,7 +169,7 @@ class NoiseBar {
       @Override
       public void mousedUp(float x, float y) {
         super.mousedUp(x, y);
-        NoiseModal.openNoiseModal(new FastNoiseLite(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
+        NoiseModal.openNoiseModal(new FastNoiseLiteDomainWarp(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
                                                                                                    noiseStepData.fnl.Set(newFnl);
                                                                                                    recalculateNoise(noiseStepList, noiseStepData, 1);
                                                                                                   });
@@ -209,7 +210,7 @@ class NoiseBar {
 
   private static void addNoiseStep(UIScrollableBox scrollBox, ArrayList<NoiseStepData> noiseStepList, NoiseStepData noiseStepData, int index) {
     if(noiseStepData.init == false) {
-      noiseStepData.fnl = new FastNoiseLite();
+      noiseStepData.fnl = new FastNoiseLiteDomainWarp();
       noiseStepData.fnl.SetSeed(1);
       noiseStepData.modifier = new ImageAddModifier(noiseStepData.fnl);
       noiseStepData.init = true;
@@ -468,7 +469,7 @@ class NoiseBar {
           return;
         }
         super.mousedUp(x, y);
-        NoiseModal.openNoiseModal(new FastNoiseLite(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
+        NoiseModal.openNoiseModal(new FastNoiseLiteDomainWarp(noiseStepData.fnl), (FastNoiseLite newFnl) -> {
                                                                                                    noiseStepData.fnl.Set(newFnl);
                                                                                                    recalculateNoise(noiseStepList, noiseStepData, 1);
                                                                                                   });

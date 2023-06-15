@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.lang.UnsupportedOperationException;
 
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 import bin.resource.proceduralGeneration.IImageModifier;
 import bin.resource.proceduralGeneration.ImageCombineModifier;
 import bin.resource.proceduralGeneration.Parameter;
@@ -17,7 +18,7 @@ public class ImageAddModifier extends ImageCombineModifier {
 
   @Override
   public IImageModifier copy() {
-    return new ImageAddModifier(new FastNoiseLite(this.fnl));
+    return new ImageAddModifier(new FastNoiseLiteDomainWarp(this.fnl));
   }
 
   @Override

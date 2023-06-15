@@ -8,11 +8,10 @@ import bin.graphics.ui.UIBoxCol;
 import java.awt.image.BufferedImage;
 
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 import bin.resource.proceduralGeneration.IImageModifier;
 import bin.resource.proceduralGeneration.Parameter;
-import bin.resource.FastNoiseLite;;
 import bin.resource.ImageGenerator;
-import bin.resource.FastNoiseLite;
 import bin.resource.ImageResource;
 
 public class ImageCreateModifier implements IImageModifier {
@@ -24,7 +23,7 @@ public class ImageCreateModifier implements IImageModifier {
 
   @Override
   public IImageModifier copy() {
-    return new ImageCreateModifier(new FastNoiseLite(this.fnl));
+    return new ImageCreateModifier(new FastNoiseLiteDomainWarp(this.fnl));
   }
 
 

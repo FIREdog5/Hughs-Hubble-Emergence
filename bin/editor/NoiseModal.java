@@ -17,6 +17,7 @@ import bin.resource.GradientGenerator;
 import bin.resource.ImageGenerator;
 import bin.resource.ColorPosition;
 import bin.resource.FastNoiseLite;
+import bin.resource.FastNoiseLiteDomainWarp;
 
 import bin.graphics.objects.Image;
 import bin.graphics.objects.Global;
@@ -74,7 +75,7 @@ class NoiseModal {
   }
 
   public static void openNoiseModal() {
-    FastNoiseLite fnl = new FastNoiseLite();
+    FastNoiseLite fnl = new FastNoiseLiteDomainWarp();
     openNoiseModal(fnl, (FastNoiseLite newFnl) -> {});
   }
 
@@ -736,6 +737,303 @@ class NoiseModal {
     };
 
     EditorUtils.constructDropdown(controls, domainWarpTypeField, domainWarpTypeFieldOptions, "Type");
+
+    Wrapper<String> domainWarpAmplitudeStringWrapper = new Wrapper<String>(Float.toString(fnl.GetDomainWarpAmp()));
+    UIBoxRow domainWarpAmplitudeFieldRow = new UIBoxRow(null);
+    UINumberInput domainWarpAmplitudeField = new UINumberInput(domainWarpAmplitudeFieldRow, .5f, clickHandler){
+      @Override
+      public void onDeselect() {
+        super.onDeselect();
+        try {
+          String val = this.getValue();
+          Float oldVal = fnl.GetDomainWarpAmp();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          fnl.SetDomainWarpAmp(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+        } catch (Exception e) {
+          return;
+        }
+      }
+
+      @Override
+      public String getValue() {
+        return domainWarpAmplitudeStringWrapper.get();
+      }
+
+      @Override
+      public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
+        domainWarpAmplitudeStringWrapper.set(val);
+        return true;
+      }
+    };
+    domainWarpAmplitudeField.minValue = -10000;
+    domainWarpAmplitudeField.maxValue = 10000;
+    domainWarpAmplitudeField.incrementAmount = 5f;
+    domainWarpAmplitudeField.precision = 2;
+
+    EditorUtils.constructNumField(controls, domainWarpAmplitudeFieldRow, domainWarpAmplitudeField, "Amplitude");
+
+    Wrapper<String> domainWarpFrequencyStringWrapper = new Wrapper<String>(Float.toString(((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFrequency()));
+    UIBoxRow domainWarpFrequencyFieldRow = new UIBoxRow(null);
+    UINumberInput domainWarpFrequencyField = new UINumberInput(domainWarpFrequencyFieldRow, .5f, clickHandler){
+      @Override
+      public void onDeselect() {
+        super.onDeselect();
+        try {
+          String val = this.getValue();
+          Float oldVal = ((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFrequency();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFrequency(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+        } catch (Exception e) {
+          return;
+        }
+      }
+
+      @Override
+      public String getValue() {
+        return domainWarpFrequencyStringWrapper.get();
+      }
+
+      @Override
+      public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
+        domainWarpFrequencyStringWrapper.set(val);
+        return true;
+      }
+    };
+    domainWarpFrequencyField.minValue = -1000;
+    domainWarpFrequencyField.maxValue = 1000;
+    domainWarpFrequencyField.incrementAmount = .005f;
+    domainWarpFrequencyField.precision = 3;
+
+    EditorUtils.constructNumField(controls, domainWarpFrequencyFieldRow, domainWarpFrequencyField, "Frequency");
+
+    UISelectionMenu domainWarpRotation3DField = new UISelectionMenu(controls, screen, clickHandler){
+      @Override
+      public String getValue() {
+        switch (((FastNoiseLiteDomainWarp) fnl).GetDomainWarpRotation3D()) {
+          case None:
+            return "None";
+          case ImproveXYPlanes:
+            return "ImproveXYPlanes";
+          case ImproveXZPlanes:
+            return "ImproveXZPlanes";
+        }
+        return "";
+      }
+
+      @Override
+      public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
+        switch (val) {
+          case "None":
+            ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpRotation3D(FastNoiseLite.RotationType3D.None);
+            break;
+          case "ImproveXYPlanes":
+            ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpRotation3D(FastNoiseLite.RotationType3D.ImproveXYPlanes);
+            break;
+          case "ImproveXZPlanes":
+            ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpRotation3D(FastNoiseLite.RotationType3D.ImproveXZPlanes);
+            break;
+        }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+      }
+    };
+
+    String[] domainWarpRotation3DFieldOptions = {
+      "None",
+      "ImproveXYPlanes",
+      "ImproveXZPlanes"
+    };
+
+    EditorUtils.constructDropdown(controls, domainWarpRotation3DField, domainWarpRotation3DFieldOptions, "Rotation 3D");
+
+    UITextBlock domainWarpFractalText = new UITextBlock(controls, "Domain Warp Fractal", .5f);
+    domainWarpFractalText.textColor = new Color("#ffffff");
+    domainWarpFractalText.noBackground = true;
+    domainWarpFractalText.maxWidth = 10f;
+    controls.addChild(domainWarpFractalText);
+
+    UISelectionMenu domainWarpFractalTypeField = new UISelectionMenu(controls, screen, clickHandler){
+      @Override
+      public String getValue() {
+        switch (((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalType()) {
+          case None:
+            return "None";
+          case DomainWarpProgressive:
+            return "DWarpProgressive";
+          case DomainWarpIndependent:
+            return "DWarpIndependent";
+        }
+        return "";
+      }
+
+      @Override
+      public void setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return;
+        }
+        switch (val) {
+          case "None":
+            ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFractalType(FastNoiseLite.FractalType.None);
+            break;
+          case "DWarpProgressive":
+            ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFractalType(FastNoiseLite.FractalType.DomainWarpProgressive);
+            break;
+          case "DWarpIndependent":
+            ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFractalType(FastNoiseLite.FractalType.DomainWarpIndependent);
+            break;
+        }
+        noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+      }
+    };
+
+    String[] domainWarpFractalTypeFieldOptions = {
+      "None",
+      "DWarpProgressive",
+      "DWarpIndependent",
+    };
+
+    EditorUtils.constructDropdown(controls, domainWarpFractalTypeField, domainWarpFractalTypeFieldOptions, "Type");
+
+    Wrapper<String> domainWarpFractalOctavesStringWrapper = new Wrapper<String>(Float.toString(((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalOctaves()));
+    UIBoxRow domainWarpFractalOctavesFieldRow = new UIBoxRow(null);
+    UINumberInput domainWarpFractalOctavesField = new UINumberInput(domainWarpFractalOctavesFieldRow, .5f, clickHandler){
+      @Override
+      public void onDeselect() {
+        super.onDeselect();
+        try {
+          String val = this.getValue();
+          int oldVal = ((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalOctaves();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFractalOctaves(Integer.parseInt(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+        } catch (Exception e) {
+          return;
+        }
+      }
+
+      @Override
+      public String getValue() {
+        return domainWarpFractalOctavesStringWrapper.get();
+      }
+
+      @Override
+      public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
+        domainWarpFractalOctavesStringWrapper.set(val);
+        return true;
+      }
+    };
+    domainWarpFractalOctavesField.minValue = 0;
+    domainWarpFractalOctavesField.maxValue = 10;
+    domainWarpFractalOctavesField.incrementAmount = 1f;
+    domainWarpFractalOctavesField.precision = 0;
+
+    EditorUtils.constructNumField(controls, domainWarpFractalOctavesFieldRow, domainWarpFractalOctavesField, "Octaves");
+
+    Wrapper<String> domainWarpFractalLacunarityStringWrapper = new Wrapper<String>(Float.toString(((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalLacunarity()));
+    UIBoxRow domainWarpFractalLacunarityFieldRow = new UIBoxRow(null);
+    UINumberInput domainWarpFractalLacunarityField = new UINumberInput(domainWarpFractalLacunarityFieldRow, .5f, clickHandler){
+      @Override
+      public void onDeselect() {
+        super.onDeselect();
+        try {
+          String val = this.getValue();
+          Float oldVal = ((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalLacunarity();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFractalLacunarity(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+        } catch (Exception e) {
+          return;
+        }
+      }
+
+      @Override
+      public String getValue() {
+        return domainWarpFractalLacunarityStringWrapper.get();
+      }
+
+      @Override
+      public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
+        domainWarpFractalLacunarityStringWrapper.set(val);
+        return true;
+      }
+    };
+    domainWarpFractalLacunarityField.minValue = -10;
+    domainWarpFractalLacunarityField.maxValue = 10;
+    domainWarpFractalLacunarityField.incrementAmount = .1f;
+    domainWarpFractalLacunarityField.precision = 2;
+
+    EditorUtils.constructNumField(controls, domainWarpFractalLacunarityFieldRow, domainWarpFractalLacunarityField, "Lacunarity");
+
+    Wrapper<String> domainWarpFractalGainStringWrapper = new Wrapper<String>(Float.toString(((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalGain()));
+    UIBoxRow domainWarpFractalGainFieldRow = new UIBoxRow(null);
+    UINumberInput domainWarpFractalGainField = new UINumberInput(domainWarpFractalGainFieldRow, .5f, clickHandler){
+      @Override
+      public void onDeselect() {
+        super.onDeselect();
+        try {
+          String val = this.getValue();
+          Float oldVal = ((FastNoiseLiteDomainWarp) fnl).GetDomainWarpFractalGain();
+          if (oldVal == Float.parseFloat(val)) {
+            return;
+          }
+          ((FastNoiseLiteDomainWarp) fnl).SetDomainWarpFractalGain(Float.parseFloat(val));
+          noisePreviewWrapper.set(new ImageResource(ImageGenerator.SphericalFNL(fnl, 2400), 1, 1000));
+        } catch (Exception e) {
+          return;
+        }
+      }
+
+      @Override
+      public String getValue() {
+        return domainWarpFractalGainStringWrapper.get();
+      }
+
+      @Override
+      public boolean setValue(String val) {
+        String oldVal = this.getValue();
+        if (oldVal.equals(val)) {
+          return false;
+        }
+        domainWarpFractalGainStringWrapper.set(val);
+        return true;
+      }
+    };
+    domainWarpFractalGainField.minValue = -10;
+    domainWarpFractalGainField.maxValue = 10;
+    domainWarpFractalGainField.incrementAmount = .1f;
+    domainWarpFractalGainField.precision = 2;
+
+    EditorUtils.constructNumField(controls, domainWarpFractalGainFieldRow, domainWarpFractalGainField, "Gain");
 
     UIBoxCol previewCol = new UIBoxCol(modalContentRow);
     previewCol.outlineWeight = 0;
