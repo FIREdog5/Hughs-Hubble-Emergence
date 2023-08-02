@@ -46,6 +46,8 @@ public class ImageResources{
   public static ImageResource menuIcon = null;
   public static ImageResource settingsIcon = null;
   public static ImageResource littleArrow = null;
+  public static ImageResource saveIcon = null;
+  public static ImageResource loadIcon = null;
 
   public static void init() {
     //tests
@@ -134,6 +136,8 @@ public class ImageResources{
     menuIcon = new ImageResource("/assets/images/icons/menuIcon.png");
     settingsIcon = new ImageResource("/assets/images/icons/settingsIcon.png");
     littleArrow = new ImageResource("/assets/images/icons/LittleArrow.png");
+    saveIcon = new ImageResource("/assets/images/icons/saveIcon.png");
+    loadIcon = new ImageResource("/assets/images/icons/loadIcon.png");
 
     System.out.println("Loaded all resources");
   }

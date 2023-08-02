@@ -37,6 +37,7 @@ public abstract class UIElement {
     try {
       StackTraceElement[] stackTrace = (new Exception("temp")).getStackTrace();
       for (int i = 0; i < stackTrace.length; i++) {
+        // System.out.println(stackTrace[i]);
         if (!stackTrace[i].getClassName().contains("bin.graphics.ui") && !stackTrace[i].getClassName().contains("$")) {
           this.defInfo = stackTrace[i].toString().split("\\(")[1].split("\\)")[0];
           break;

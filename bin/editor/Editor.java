@@ -104,8 +104,6 @@ public class Editor extends Thread{
     world.addWorldObject(new Planet(-20, -20, editorPalette, heightMapWrapper));
     world.addWorldObject(new Planet(20, -20, editorPalette, heightMapWrapper));
 
-    System.out.println(EditorUtils.openResource());
-
     while (this.running) {
       Renderer.render();
     }

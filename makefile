@@ -1,5 +1,9 @@
-GITBASH=C:/Program Files/Git/usr/bin/sh.exe
-JAVA_ARGS=""
+GITBASH := C:/Program Files/Git/usr/bin/sh.exe
+JAVA_CLASSPATH := .
+LIB_FILES := $(shell find lib -type f -name '*.jar' -exec echo -n :./{} \;)
+JAVA_CLASSPATH := "$(JAVA_CLASSPATH)$(LIB_FILES)"
+JAVA_CLASSPATH := $(subst /,\,$(JAVA_CLASSPATH))
+JAVA_ARGS := ""
 ifeq ($(SHELL),$(GITBASH))
 default: ## 'make' will clean, compile, and run the project.
 default: clean classes run
@@ -16,13 +20,13 @@ bordered: ## 'nake bordered' will launch the game in border mode. This is not a 
 bordered:
 
 classes: ## 'make classes' will compile the project.
-				javac -classpath ".:.\lib\gluegen-rt.jar:.\lib\jogl-all.jar" bin/ClientMain.java
+				javac -classpath $(JAVA_CLASSPATH) bin/ClientMain.java
 
 clean: ## 'make clean' will remove all compiled java sources.
 				find . -name *.class -type f -delete
 
 run: ## 'make run' will run the compiled project.
-				java -classpath ".:.\lib\gluegen-rt.jar:.\lib\jogl-all.jar" -Djava.library.path="/natives" bin/ClientMain.java $(MAKECMDGOALS)
+				java -classpath $(JAVA_CLASSPATH) -Djava.library.path="/natives" bin/ClientMain.java $(MAKECMDGOALS)
 
 report: ## 'make report' prints the os
 				@echo "Git Bash"
@@ -32,6 +36,7 @@ help: ## 'make help' shows this help message
 				@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 else
+JAVA_CLASSPATH := $(subst :,;,$(JAVA_CLASSPATH))
 default: clean classes run
 
 .PHONY: editor
@@ -44,13 +49,13 @@ borderless:
 bordered:
 
 classes:
-				javac -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" bin/ClientMain.java
+				javac -classpath $(JAVA_CLASSPATH) bin/ClientMain.java
 
 clean:
 				powershell "ls *.class -Recurse | foreach {rm $$PSItem}"
 
 run:
-				java -classpath ".;lib\gluegen-rt.jar;lib\jogl-all.jar" -D"java.library.path"="/natives" bin/ClientMain.java $(MAKECMDGOALS)
+				java -classpath $(JAVA_CLASSPATH) -D"java.library.path"="/natives" bin/ClientMain.java $(MAKECMDGOALS)
 
 report: ## 'make report' prints the os
 				@echo "Powershell"

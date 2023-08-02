@@ -23,6 +23,7 @@ import bin.graphics.objects.Global;
 import bin.graphics.objects.Pointer;
 import bin.graphics.objects.PointerOutline;
 
+import bin.graphics.ui.UIBox;
 import bin.graphics.ui.UIScreen;
 import bin.graphics.ui.UIText;
 import bin.graphics.ui.UIBoxRow;
@@ -47,6 +48,9 @@ import bin.graphics.ui.colorUtils.UIColorSlider;
 import bin.graphics.ui.colorUtils.UIGlobeDisplay;
 
 import java.awt.image.BufferedImage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jogamp.opengl.GL2;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -57,6 +61,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import com.jogamp.newt.event.KeyEvent;
 import java.util.function.Consumer;
+import java.util.concurrent.ExecutionException;
+import javax.swing.*;
 
 class PaletteBar {
   private static ClickHandler clickHandler;
@@ -115,6 +121,47 @@ class PaletteBar {
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+  }
+
+  private static String gradientSlidersToJSON(ArrayList<ColorPosition> gradientPositions) {
+    ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+
+    try {
+      String jsonString = mapper.writeValueAsString(gradientPositions);
+      return jsonString;
+    } catch (Exception e) {
+      System.out.println(e);
+      return "[]";
+    }
+  }
+
+  private static void gradientSlidersFromJSON(String json, UIBox parent, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, BufferedImage gradientTestBuffer) {
+    ObjectMapper mapper = new ObjectMapper();
+
+    try{
+      ArrayList<ColorPosition> jsonArray = mapper.readValue(json, new TypeReference<ArrayList<ColorPosition>>() {});
+
+      gradientPositions.clear();
+      for (int i = parent.children.size() - 1; i >= 0; i--) {
+        UIElement child = parent.children.get(i);
+        System.out.println(child + " (" + child.defInfo + ")");
+        if(child instanceof UIVerticalValueSlider) {
+          parent.children.remove(i);
+          child.parent = null;
+          child.cleanUp();
+        }
+      }
+
+      for (ColorPosition newPosition: jsonArray) {
+        gradientPositions.add(newPosition);
+        palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
+        addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
+      }
+
+      GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+    } catch (Exception e) {
+      System.out.println(e);
+    }
   }
 
   private static void addGradientSlider(UIElement parent, ArrayList<ColorPosition> gradientPositions, ArrayList<ColorPosition> solidPositions, ColorPosition newPosition, BufferedImage gradientTestBuffer) {
@@ -498,6 +545,85 @@ class PaletteBar {
     addIcon.minHeight = 1f;
     addIcon.padding = .25f;
     addNewSliderButton.addChild(addIcon);
+
+    UIButton saveButton = new UIButton(buttonsRow) {
+      private boolean isOpen = false;
+      @Override
+      public void mousedUp(float x, float y) {
+        if (isOpen) {
+          return;
+        }
+        isOpen = true;
+        SwingWorker<Void, Void> fileChooserWorker = new SwingWorker<Void, Void>() {
+
+          @Override
+          protected Void doInBackground() {
+            EditorUtils.saveResource("/palettes", gradientSlidersToJSON(gradientPositions));
+            return null;
+          }
+
+          @Override
+          protected void done() {
+            isOpen = false;
+          }
+        };
+        fileChooserWorker.execute();
+      }
+    };
+    saveButton.mouseOverColor = new Color("#777777");
+    saveButton.outlineWeight = .1f;
+    saveButton.padding = .5f;
+    buttonsRow.addChild(saveButton);
+    clickHandler.register(saveButton);
+
+    UIImage saveIcon = new UIImage(saveButton, ImageResources.saveIcon);
+    saveIcon.minWidth = 1f;
+    saveIcon.minHeight = 1f;
+    saveIcon.padding = .25f;
+    saveButton.addChild(saveIcon);
+
+    UIButton loadButton = new UIButton(buttonsRow) {
+      private boolean isOpen = false;
+      @Override
+      public void mousedUp(float x, float y) {
+        if (isOpen) {
+          return;
+        }
+        isOpen = true;
+        SwingWorker<String, Void> fileChooserWorker = new SwingWorker<String, Void>() {
+
+          @Override
+          protected String doInBackground() {
+            return EditorUtils.openResource("/palettes");
+          }
+
+          @Override
+          protected void done() {
+            try {
+              String content = get();
+              gradientSlidersFromJSON(content, sliderContainer, gradientPositions, solidPositions, gradientTestBuffer);
+            } catch (InterruptedException | ExecutionException e) {
+              e.printStackTrace();
+            }
+            Comparator<ColorPosition> comparator = (ColorPosition o1, ColorPosition o2) -> o1.position - o2.position;
+            Collections.sort(gradientPositions, comparator);
+            isOpen = false;
+          }
+        };
+        fileChooserWorker.execute();
+      }
+    };
+    loadButton.mouseOverColor = new Color("#777777");
+    loadButton.outlineWeight = .1f;
+    loadButton.padding = .5f;
+    buttonsRow.addChild(loadButton);
+    clickHandler.register(loadButton);
+
+    UIImage loadIcon = new UIImage(loadButton, ImageResources.loadIcon);
+    loadIcon.minWidth = 1f;
+    loadIcon.minHeight = 1f;
+    loadIcon.padding = .25f;
+    loadButton.addChild(loadIcon);
 
     UIImage gradientPreview = new UIImage(contentRow, palettResourceWrapper);
     gradientPreview.minWidth = 1f;

@@ -58,6 +58,17 @@ public class ClickHandler {
     }
   }
 
+  public boolean isRegistered(IClickable clickable) {
+    boolean rv = false;
+    clickablesLock.lock();
+    try {
+      rv = this.clickables.contains(clickable);
+    } finally {
+      clickablesLock.unlock();
+    }
+    return rv;
+  }
+
   public void setMask(UIElement mask) {
     if (this.hasMask()) {
       this.maskHistory.add(this.mask);

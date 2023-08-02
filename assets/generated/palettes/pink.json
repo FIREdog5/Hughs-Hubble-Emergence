@@ -1,0 +1,46 @@
+[ {
+  "color" : {
+    "red" : 1.0,
+    "green" : 0.0,
+    "blue" : 0.35287428,
+    "alpha" : 1.0
+  },
+  "width" : 1,
+  "position" : 255
+}, {
+  "color" : {
+    "red" : 1.0,
+    "green" : 0.6862745,
+    "blue" : 0.0,
+    "alpha" : 1.0
+  },
+  "width" : 1,
+  "position" : 206
+}, {
+  "color" : {
+    "red" : 1.0,
+    "green" : 0.0,
+    "blue" : 0.9657383,
+    "alpha" : 1.0
+  },
+  "width" : 1,
+  "position" : 108
+}, {
+  "color" : {
+    "red" : 0.6808729,
+    "green" : 0.0,
+    "blue" : 1.0,
+    "alpha" : 1.0
+  },
+  "width" : 1,
+  "position" : 53
+}, {
+  "color" : {
+    "red" : 0.0,
+    "green" : 0.020593643,
+    "blue" : 1.0,
+    "alpha" : 1.0
+  },
+  "width" : 1,
+  "position" : 0
+} ]

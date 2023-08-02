@@ -10,43 +10,53 @@ public class UIBoxRow extends UIBox {
 
   @Override
   public float getWidth() {
-    float minimum = Math.max(this.minWidth, this.margin * 2);
-    if (this.children.size() == 0) {
-      return minimum;
-    }
-
-    float sum = this.margin;
-    UIElement child = null;
-    for (int index = 0; index < this.children.size(); index++) {
-      UIElement newChild = this.children.get(index);
-      if (child != null) {
-        sum += Math.max(child.getPadding(), newChild.getPadding()) + child.getWidth();
-      } else {
-        sum += newChild.getPadding();
+    try {
+      float minimum = Math.max(this.minWidth, this.margin * 2);
+      if (this.children.size() == 0) {
+        return minimum;
       }
-      child = newChild;
-      sum = Math.max(child.x, sum);
-    }
 
-    minimum = Math.max(minimum, sum + child.getPadding() + this.margin + child.getWidth());
-    if (this.maxWidth != -1) {
-      minimum = Math.min(minimum, maxWidth);
+      float sum = this.margin;
+      UIElement child = null;
+      for (int index = 0; index < this.children.size(); index++) {
+        UIElement newChild = this.children.get(index);
+        if (child != null) {
+          sum += Math.max(child.getPadding(), newChild.getPadding()) + child.getWidth();
+        } else {
+          sum += newChild.getPadding();
+        }
+        child = newChild;
+        sum = Math.max(child.x, sum);
+      }
+
+      minimum = Math.max(minimum, sum + child.getPadding() + this.margin + child.getWidth());
+      if (this.maxWidth != -1) {
+        minimum = Math.min(minimum, maxWidth);
+      }
+      return minimum;
+    } catch (Exception e) {
+      System.out.println("An exception occured in " + this + " (" + this.defInfo + ")");
+      throw e;
     }
-    return minimum;
   }
 
   @Override
   public float getHeight() {
-    float minimum = Math.max(this.minHeight, this.margin * 2);
-    for (int i = 0; i < this.children.size(); i++) {
-      UIElement child = this.children.get(i);
-      float height = Math.max(child.y, this.margin + child.getPadding()) + child.getPadding() + this.margin + child.getHeight();
-      minimum = Math.max(minimum, height);
+    try {
+      float minimum = Math.max(this.minHeight, this.margin * 2);
+      for (int i = 0; i < this.children.size(); i++) {
+        UIElement child = this.children.get(i);
+        float height = Math.max(child.y, this.margin + child.getPadding()) + child.getPadding() + this.margin + child.getHeight();
+        minimum = Math.max(minimum, height);
+      }
+      if (this.maxHeight != -1) {
+        minimum = Math.min(minimum, maxHeight);
+      }
+      return minimum;
+    }  catch (Exception e) {
+      System.out.println("An exception occured in " + this + " (" + this.defInfo + ")");
+      throw e;
     }
-    if (this.maxHeight != -1) {
-      minimum = Math.min(minimum, maxHeight);
-    }
-    return minimum;
   }
 
   @Override

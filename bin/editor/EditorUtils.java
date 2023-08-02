@@ -28,6 +28,8 @@ import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class EditorUtils {
@@ -55,17 +57,19 @@ public class EditorUtils {
         disableNav((Container)x);
   }
 
-  public static String openResource() {
-    File dirToLock = new File("assets/generated");
+  public static String openResource(String path) {
+    File dirToLock = new File("assets/generated" + path);
     Boolean old = UIManager.getBoolean("FileChooser.readOnly");
     UIManager.put("FileChooser.readOnly", Boolean.TRUE);
     JFileChooser jfc = new JFileChooser(dirToLock);
     disableNav(jfc);
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Planet Terrain", "json");
     jfc.setFileFilter(filter);
+    jfc.requestFocusInWindow();
     JDialog wrapper = new JDialog((Window)null);
     wrapper.setVisible(true);
     wrapper.setAlwaysOnTop(true);
+    wrapper.toFront();
     int returnValue = jfc.showOpenDialog(wrapper);
     wrapper.setVisible(false);
     UIManager.put("FileChooser.readOnly", old);
@@ -80,10 +84,54 @@ public class EditorUtils {
         }
         return String.join("\n", returnContent);
       } catch (Exception e) {
-        return openResource();
+        return openResource(path);
       }
     } else {
-      return openResource();
+      return openResource(path);
+    }
+  }
+
+  public static void saveResource(String path, String content) {
+    File dirToLock = new File("assets/generated" + path);
+    Boolean old = UIManager.getBoolean("FileChooser.readOnly");
+    UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+    JFileChooser jfc = new JFileChooser(dirToLock);
+    disableNav(jfc);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Planet Terrain", "json");
+    jfc.setFileFilter(filter);
+    jfc.requestFocusInWindow();
+    JDialog wrapper = new JDialog((Window)null);
+    wrapper.setVisible(true);
+    wrapper.setAlwaysOnTop(true);
+    wrapper.toFront();
+    int returnValue = jfc.showSaveDialog(wrapper);
+    wrapper.setVisible(false);
+    UIManager.put("FileChooser.readOnly", old);
+
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+      try {
+  			File selectedFile = jfc.getSelectedFile();
+
+        String filePath = selectedFile.getAbsolutePath();
+        if (!filePath.toLowerCase().endsWith(".json")) {
+            selectedFile = new File(filePath + ".json");
+        }
+
+        try {
+               FileWriter fileWriter = new FileWriter(selectedFile);
+               fileWriter.write(content);
+               fileWriter.close();
+               return;
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+      } catch (Exception e) {
+        saveResource(path, content);
+        return;
+      }
+    } else {
+      saveResource(path, content);
+      return;
     }
   }
 

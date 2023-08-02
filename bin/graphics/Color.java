@@ -1,5 +1,15 @@
 package bin.graphics;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.IOException;
+
+@JsonDeserialize(using = Color.ColorDeserializer.class)
 public class Color {
   protected float red;
   protected float green;
@@ -88,12 +98,14 @@ public class Color {
     this.alpha = Math.max(0f, Math.min(1f, value));
   }
 
+  @JsonIgnore
   public void setRGB(float[] rgb) {
     this.setRed(rgb[0]);
     this.setGreen(rgb[1]);
     this.setBlue(rgb[2]);
   }
 
+  @JsonIgnore
   public void setRGBA(float[] rgba) {
     this.setRed(rgba[0]);
     this.setGreen(rgba[1]);
@@ -121,16 +133,19 @@ public class Color {
     return this.alpha;
   }
 
+  @JsonIgnore
   public float[] getRGB() {
     this.transformRef();
     return new float[]{this.red, this.green, this.blue};
   }
 
+  @JsonIgnore
   public float[] getRGBA() {
     this.transformRef();
     return new float[]{this.red, this.green, this.blue, this.alpha};
   }
 
+  @JsonIgnore
   public void setHSV(float hue, float saturation, float value) {
 
     // from https://medium.com/@bantic/hand-coding-a-color-wheel-with-canvas-78256c9d7d43
@@ -161,6 +176,7 @@ public class Color {
     this.setBlue(rgb[2] + m);
   }
 
+  @JsonIgnore
   public void setHSV(float[] hsv) {
     this.setHSV(hsv[0], hsv[1], hsv[2]);
   }
@@ -195,10 +211,12 @@ public class Color {
     return out.length() == 1 ? "0"+out : out;
   }
 
+  @JsonIgnore
   public String getHex() {
     return "#" + convertToHexRep(this.getRed()) + convertToHexRep(this.getGreen()) + convertToHexRep(this.getBlue());
   }
 
+  @JsonIgnore
   public String getHexA() {
     return "#" + convertToHexRep(this.getRed()) + convertToHexRep(this.getGreen()) + convertToHexRep(this.getBlue()) + convertToHexRep(this.getAlpha());
   }
@@ -216,5 +234,25 @@ public class Color {
     return rColor;
   }
 
+  public static class ColorDeserializer extends StdDeserializer<Color> {
+
+        public ColorDeserializer() {
+            this(null);
+        }
+
+        public ColorDeserializer(Class<?> vc) {
+            super(vc);
+        }
+
+        @Override
+        public Color deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+            JsonNode node = jp.getCodec().readTree(jp);
+            float red = (float) node.get("red").asDouble();
+            float green = (float) node.get("green").asDouble();
+            float blue = (float) node.get("blue").asDouble();
+            float alpha = (float) node.get("alpha").asDouble();
+            return new Color(red, green, blue, alpha);
+        }
+    }
 
 }
