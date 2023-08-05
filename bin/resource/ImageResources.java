@@ -35,6 +35,9 @@ public class ImageResources{
   public static ImageResource gradientTest = null;
   public static ImageResource stripeTest = null;
   public static ImageResource domainWarpRBTest = null;
+  public static ImageResource biomeTestNew1 = null;
+  public static ImageResource biomeTestNew2 = null;
+  public static ImageResource biomeTestNew3 = null;
 
   //resources
   public static ImageResource blankGradient = null;
@@ -123,6 +126,22 @@ public class ImageResources{
     // GradientGenerator.setColumn(gradientTestBuffer, 0, new ColorPosition[]{new ColorPosition(new Color("#ff0000"), 1, 20)}, new ColorPosition[]{new ColorPosition(new Color("#ffff00"), 4, 40)});
     GradientGenerator.setColumn(gradientTestBuffer, 0, new ColorPosition[]{new ColorPosition(new Color("#ff0000"), 1, 20), new ColorPosition(new Color("#00ff00"), 1, 21), new ColorPosition(new Color("#0000ff"), 1, 30)}, new ColorPosition[]{new ColorPosition(new Color("#ffff00"), 4, 40)});
     gradientTest = new ImageResource(gradientTestBuffer);
+
+    FastNoiseLiteDomainWarp fnl3 = new FastNoiseLiteDomainWarp();
+    fnl3.SetSeed(3);
+    fnl3.SetFrequency(.005f);
+    fnl3.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
+    fnl3.SetCellularReturnType(FastNoiseLite.CellularReturnType.Z);
+    fnl3.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
+    fnl3.SetDomainWarpAmp(200f);
+    fnl3.SetDomainWarpFrequency(.005f);
+    CompoundImage biomeTestNewImage = new CompoundImage();
+    biomeTestNewImage.addStep(new ImageCreateModifier(fnl3));
+    biomeTestNewImage.addStep(new ImageScaleModifier(0f, 255f));
+    biomeTestNew1 = new ImageResource(biomeTestNewImage.resolve(2400, 800), 1, 1000);
+    biomeTestNew2 = new ImageResource(ImagePreprocessor.biasPoles(biomeTestNewImage.resolve(2400, 800)), 1, 1000);
+    biomeTestNew3 = new ImageResource(ImagePreprocessor.bucket(ImagePreprocessor.biasPoles(biomeTestNewImage.resolve(2400, 800)), 4), 1, 1000);
+
 
     //resources
     BufferedImage blankGradientBuffer = GradientGenerator.newGradient(1);

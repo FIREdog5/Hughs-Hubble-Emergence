@@ -94,6 +94,7 @@ public class FastNoiseLite
     public enum CellularReturnType
     {
         CellValue,
+        Z,
         Distance,
         Distance2,
         Distance2Add,
@@ -1585,6 +1586,7 @@ public class FastNoiseLite
         float distance0 = Float.MAX_VALUE;
         float distance1 = Float.MAX_VALUE;
         int closestHash = 0;
+        float closestZ = 0;
 
         float cellularJitter = 0.39614353f * mCellularJitterModifier;
 
@@ -1620,6 +1622,7 @@ public class FastNoiseLite
                             {
                                 distance0 = newDistance;
                                 closestHash = hash;
+                                closestZ = zi + RandVecs3D[idx | 2] * cellularJitter;
                             }
                             zPrimed += PrimeZ;
                         }
@@ -1653,6 +1656,7 @@ public class FastNoiseLite
                             {
                                 distance0 = newDistance;
                                 closestHash = hash;
+                                closestZ = zi;
                             }
                             zPrimed += PrimeZ;
                         }
@@ -1686,6 +1690,7 @@ public class FastNoiseLite
                             {
                                 distance0 = newDistance;
                                 closestHash = hash;
+                                closestZ = zi;
                             }
                             zPrimed += PrimeZ;
                         }
@@ -1698,7 +1703,7 @@ public class FastNoiseLite
                 break;
         }
 
-        if (mCellularDistanceFunction == CellularDistanceFunction.Euclidean && mCellularReturnType != CellularReturnType.CellValue)
+        if (mCellularDistanceFunction == CellularDistanceFunction.Euclidean && mCellularReturnType != CellularReturnType.CellValue && mCellularReturnType != CellularReturnType.Z)
         {
             distance0 = FastSqrt(distance0);
 
@@ -1712,6 +1717,8 @@ public class FastNoiseLite
         {
             case CellValue:
                 return closestHash * (1 / 2147483648.0f);
+            case Z:
+                return (closestZ + 2.9911507142f) * 2f / 5.9896627258f - 1f;
             case Distance:
                 return distance0 - 1;
             case Distance2:

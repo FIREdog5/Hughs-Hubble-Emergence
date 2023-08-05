@@ -48,7 +48,6 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.GL2;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import com.jogamp.opengl.GLContext;
@@ -492,6 +491,12 @@ public class GraphicsTest extends Thread{
       Global.drawColor(new Color("#ffffff"));
       Globe.draw(ImageResources.stripeTest, camera.scaleToZoom(15), camera.convertXToCamera(170), camera.convertYToCamera(-79));
       Shaders.turbulenceShader.stopShader(gl);
+
+      //draw biomes test
+      Global.drawColor(new Color("#ffffff"));
+      Globe.draw(ImageResources.biomeTestNew1, camera.scaleToZoom(15), camera.convertXToCamera(110), camera.convertYToCamera(-109));
+      Globe.draw(ImageResources.biomeTestNew2, camera.scaleToZoom(15), camera.convertXToCamera(140), camera.convertYToCamera(-109));
+      Globe.draw(ImageResources.biomeTestNew3, camera.scaleToZoom(15), camera.convertXToCamera(170), camera.convertYToCamera(-109));
 
       //draw circles
       Global.drawColor(new Color("#ffffff"));

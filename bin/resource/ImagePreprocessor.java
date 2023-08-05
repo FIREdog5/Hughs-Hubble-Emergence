@@ -268,4 +268,39 @@ public class ImagePreprocessor {
     return newImage;
   }
 
+  public static BufferedImage bucket(BufferedImage image, int buckets) {
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        int strength = (int) (colorStrength(color1) * 255f);
+        strength = (int) (Math.floor(strength / (255f / buckets)) * (255f / (buckets - 1)));
+        newImage.setRGB(i, j, clampColor(strengthToColor(strength / 255f)));
+      }
+    }
+    return newImage;
+  }
+
+  public static BufferedImage biasPoles(BufferedImage image) {
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        int color1 = image.getRGB(i, j);
+        int strength = (int) (colorStrength(color1) * 255f);
+        strength = (int) (Math.abs(strength - (255f / 2f)) * 2f);
+        if (j < 100 || j > 700) {
+          strength = 255;
+        }
+        newImage.setRGB(i, j, clampColor(strengthToColor(strength / 255f)));
+        // this code will make the poles more pronounced, but i didn't really like it.
+        // float fstrength = (float) strength / 255f;
+        // // change scale. higher = more poles.
+        // float scale = 6f;
+        // fstrength = (float) Math.log(fstrength * scale + 1f) / (float) Math.log(scale + 1f);
+        // newImage.setRGB(i, j, clampColor(strengthToColor(fstrength)));
+      }
+    }
+    return newImage;
+  }
+
 }
