@@ -497,6 +497,38 @@ public class GraphicsTest extends Thread{
       Globe.draw(ImageResources.biomeTestNew1, camera.scaleToZoom(15), camera.convertXToCamera(110), camera.convertYToCamera(-109));
       Globe.draw(ImageResources.biomeTestNew2, camera.scaleToZoom(15), camera.convertXToCamera(140), camera.convertYToCamera(-109));
       Globe.draw(ImageResources.biomeTestNew3, camera.scaleToZoom(15), camera.convertXToCamera(170), camera.convertYToCamera(-109));
+      Shaders.terrainShader.startShader(gl);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+1);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.fourBiomeTest.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+2);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.biomeTestNew3.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+3);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.threeXThreeKernel.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0);
+      Global.drawColor(new Color("#ffffff"));
+      Globe.draw(ImageResources.generationTest2, camera.scaleToZoom(15), camera.convertXToCamera(200), camera.convertYToCamera(-109));
+      Shaders.terrainShader.stopShader(gl);
+      Shaders.terrainShader.startShader(gl);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+1);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.fourBiomeTest2.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glActiveTexture(GL2.GL_TEXTURE0+2);
+      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.biomeTestNew3.getTexture().getTextureObject());
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+      gl.glActiveTexture(GL2.GL_TEXTURE0);
+      Global.drawColor(new Color("#ffffff"));
+      Globe.draw(ImageResources.generationTest2, camera.scaleToZoom(15), camera.convertXToCamera(230), camera.convertYToCamera(-109));
+      Shaders.terrainShader.stopShader(gl);
 
       //draw circles
       Global.drawColor(new Color("#ffffff"));

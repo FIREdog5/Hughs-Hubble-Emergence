@@ -4,6 +4,7 @@ uniform sampler2D paletteSampler;
 uniform sampler2D biomeSampler;
 
 vec4 sample(float x, float y);
+vec4 sampleBmap(vec4 height, float x, float y);
 
 void main(void)
 {
@@ -33,9 +34,36 @@ void main(void)
   gl_FragColor = color;
 }
 
+int border = 5;
+
 vec4 sample(float x, float y)
 {
+
+  mat3 weights = mat3(0.46, 0.75, 0.46, 0.75, 0.85, 0.75, 0.46, 0.75, 0.46);
+
   vec4 height = texture2D(heightSampler, vec2(x,y));
+  vec2 textureSize2d = textureSize(heightSampler, 0);
+  float scaledBorder = border / textureSize2d.y;
+
+  vec4 rColor = {0.0, 0.0, 0.0, 0.0};
+  float totalRatio = 0;
+  //TODO look into vectorization for this
+  for (int i = 0; i < 3; i++){
+    for (int j = 0; j < 3; j++){
+      //TODO reduce mem usage here
+      float ratio = weights[i][j];
+      float xs = x + 5 * (i - floor(3 / 2)) / textureSize2d.y;
+      float ys = max(min(y + 5 * (j - floor(3 / 2)) / textureSize2d.y, 1.0), 0.0);
+      rColor = rColor + ratio * sampleBmap(height, xs, ys);
+      totalRatio = totalRatio + ratio;
+    }
+  }
+
+  return rColor / totalRatio;
+}
+
+vec4 sampleBmap(vec4 height, float x, float y)
+{
   vec4 biome = texture2D(biomeSampler, vec2(x,y));
 
   float paletteSamplerSize = textureSize(paletteSampler, 0).x;
