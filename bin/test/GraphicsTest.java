@@ -507,10 +507,6 @@ public class GraphicsTest extends Thread{
       gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
       gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
       gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
-      gl.glActiveTexture(GL2.GL_TEXTURE0+3);
-      gl.glBindTexture(GL2.GL_TEXTURE_2D, ImageResources.threeXThreeKernel.getTexture().getTextureObject());
-      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
-      gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
       gl.glActiveTexture(GL2.GL_TEXTURE0);
       Global.drawColor(new Color("#ffffff"));
       Globe.draw(ImageResources.generationTest2, camera.scaleToZoom(15), camera.convertXToCamera(200), camera.convertYToCamera(-109));

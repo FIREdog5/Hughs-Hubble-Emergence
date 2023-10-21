@@ -45,15 +45,15 @@ vec4 sample(float x, float y)
   vec2 textureSize2d = textureSize(heightSampler, 0);
   float scaledBorder = border / textureSize2d.y;
 
-  vec4 rColor = {0.0, 0.0, 0.0, 0.0};
+  vec4 rColor = vec4(0.0, 0.0, 0.0, 0.0);
   float totalRatio = 0;
   //TODO look into vectorization for this
   for (int i = 0; i < 3; i++){
     for (int j = 0; j < 3; j++){
       //TODO reduce mem usage here
       float ratio = weights[i][j];
-      float xs = x + 5 * (i - floor(3 / 2)) / textureSize2d.y;
-      float ys = max(min(y + 5 * (j - floor(3 / 2)) / textureSize2d.y, 1.0), 0.0);
+      float xs = x + 5 * (i - 1) / textureSize2d.y;
+      float ys = max(min(y + 5 * (j - 1) / textureSize2d.y, 1.0), 0.0);
       rColor = rColor + ratio * sampleBmap(height, xs, ys);
       totalRatio = totalRatio + ratio;
     }

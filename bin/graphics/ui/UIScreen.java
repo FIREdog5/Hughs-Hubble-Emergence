@@ -6,6 +6,7 @@ import bin.input.IClickable;
 import java.util.Comparator;
 import java.util.Collections;
 import java.lang.IndexOutOfBoundsException;
+import java.util.ArrayList;
 
 public class UIScreen extends UIElement {
 
@@ -82,7 +83,7 @@ public class UIScreen extends UIElement {
       child.parent = null;
       child.cleanUp();
     }
-    this.children = null;
+    this.children = new ArrayList<UIElement>();
   }
 
   @Override

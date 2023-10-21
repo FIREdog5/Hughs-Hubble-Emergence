@@ -274,7 +274,11 @@ public class ImagePreprocessor {
       for (int j = 0; j < image.getHeight(); j++) {
         int color1 = image.getRGB(i, j);
         int strength = (int) (colorStrength(color1) * 255f);
-        strength = (int) (Math.floor(strength / (255f / buckets)) * (255f / (buckets - 1)));
+        if (buckets <= 1) {
+          strength = 0;
+        } else {
+          strength = (int) (Math.floor(strength / (255f / buckets)) * (255f / (buckets - 1)));
+        }
         newImage.setRGB(i, j, clampColor(strengthToColor(strength / 255f)));
       }
     }

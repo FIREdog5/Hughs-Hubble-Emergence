@@ -110,7 +110,7 @@ public abstract class UIBox extends UIElement implements IColorable, IOutlineabl
       return;
     }
     this.removeChildren();
-    this.children = null;
+    this.children = new ArrayList<UIElement>();
   }
 
   public void removeChildren() {

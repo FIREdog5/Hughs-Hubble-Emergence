@@ -40,7 +40,6 @@ public class ImageResources{
   public static ImageResource biomeTestNew3 = null;
   public static ImageResource fourBiomeTest = null;
   public static ImageResource fourBiomeTest2 = null;
-  public static ImageResource threeXThreeKernel = null;
 
   //resources
   public static ImageResource blankGradient = null;
@@ -78,7 +77,6 @@ public class ImageResources{
     stripeTest = new ImageResource("/assets/images/tests/stripeTest.png", 1, 1000);
     fourBiomeTest = new ImageResource("/assets/images/tests/fourBiomeTest.png");
     fourBiomeTest2 = new ImageResource("/assets/images/tests/fourBiomeTest2.png");
-    threeXThreeKernel = new ImageResource("/assets/images/tests/3x3Kernel.png");
 
     FastNoiseLite fnlRB1 = new FastNoiseLiteDomainWarp();
     fnlRB1.SetSeed(1);

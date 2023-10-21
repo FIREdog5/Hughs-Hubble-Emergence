@@ -261,7 +261,7 @@ public abstract class UISelectionMenu extends UISelectable {
     this.isDead = true;
     if (this.children != null) {
       this.removeChildren();
-      this.children = null;
+      this.children = new ArrayList<UIElement>();
     }
     if (this.scrollableList != null) {
       this.scrollableList.removeFromParent();
