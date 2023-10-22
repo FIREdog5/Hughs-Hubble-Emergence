@@ -1,4 +1,7 @@
 package bin.graphics;
+import com.jogamp.opengl.GL2;
+
+import bin.ClientMain;
 
 import bin.input.MouseInput;
 import bin.input.KeyInput;

@@ -10,15 +10,30 @@ import bin.graphics.objects.Globe;
 import bin.graphics.objects.RoundedBoxOutline;
 import bin.graphics.objects.RoundedBox;
 
+import com.jogamp.opengl.GL;
+
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 
 public class EditorEventListener extends EventListener {
+
+  private static boolean firstLoop = true;
+
   @Override
   public void display(GLAutoDrawable drawable) {
     GL2 gl = ClientMain.gl;
     gl.glClearColor(0f, 0f, 0f, 1.0f);
     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+
+    if (firstLoop) {
+      GL2 gl2 = drawable.getGL().getGL2();
+      String vendor = gl2.glGetString(GL.GL_VENDOR);
+      String renderer = gl2.glGetString(GL.GL_RENDERER);
+      System.out.println("GPU Vendor: " + vendor);
+      System.out.println("GPU Renderer: " + renderer);
+      firstLoop = false;
+    }
+
 
     //start better planets
 
