@@ -82,45 +82,38 @@ class PaletteBar {
 
     newPosition = new ColorPosition(new Color("#004CFF"), 1, 255);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#00FFFF"), 1, 213);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#FFAF00"), 1, 212);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#31A500"), 1, 110);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#31A500"), 1, 16);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#FFFFFF"), 1, 15);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#86FFFF"), 1, 1);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     newPosition = new ColorPosition(new Color("#FFFFFF"), 1, 0);
     gradientPositions.add(newPosition);
-    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
 
     GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+    palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
   }
 
   private static String gradientSlidersToJSON(ArrayList<ColorPosition> gradientPositions) {
@@ -154,11 +147,11 @@ class PaletteBar {
 
       for (ColorPosition newPosition: jsonArray) {
         gradientPositions.add(newPosition);
-        palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
         addGradientSlider(parent, gradientPositions, solidPositions, newPosition, gradientTestBuffer);
       }
 
       GradientGenerator.setColumn(gradientTestBuffer, 0, gradientPositions.toArray(new ColorPosition[]{}), solidPositions.toArray(new ColorPosition[]{}));
+      palettResourceWrapper.set(new ImageResource(gradientTestBuffer));
     } catch (Exception e) {
       System.out.println(e);
     }
@@ -386,7 +379,7 @@ class PaletteBar {
     screen.addChild(rightCenterer);
 
     UIRightPositioner rightPositioner = new UIRightPositioner(rightCenterer);
-    rightPositioner.x = .5f;
+    // rightPositioner.x = .5f;
     rightCenterer.addChild(rightPositioner);
 
     UIBoxCol rightContainer = new UIBoxCol(rightPositioner);
@@ -397,7 +390,7 @@ class PaletteBar {
     rightPositioner.addChild(rightContainer);
 
     //TODO remove these eventually
-    rightContainer.minWidth = 15f;
+    rightContainer.minWidth = 7f;
     rightContainer.minHeight = 40f;
 
     UIBoxRow buttonsRow = new UIBoxRow(rightContainer);

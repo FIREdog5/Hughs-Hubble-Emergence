@@ -1,10 +1,10 @@
 GITBASH := C:/Program Files/Git/usr/bin/sh.exe
+JAVA_ARGS := ""
+ifeq ($(SHELL),$(GITBASH))
 JAVA_CLASSPATH := .
 LIB_FILES := $(shell find lib -type f -name '*.jar' -exec echo -n :./{} \;)
 JAVA_CLASSPATH := "$(JAVA_CLASSPATH)$(LIB_FILES)"
 JAVA_CLASSPATH := $(subst /,\,$(JAVA_CLASSPATH))
-JAVA_ARGS := ""
-ifeq ($(SHELL),$(GITBASH))
 default: ## 'make' will clean, compile, and run the project.
 default: clean classes run
 
@@ -36,6 +36,11 @@ help: ## 'make help' shows this help message
 				@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 else
+JAVA_CLASSPATH := .
+LIB_FILES := $(shell for /r .\lib %%f in (*.jar) do (echo :./lib/%%~nxf))
+LIB_FILES := $(subst r :,r:,$(LIB_FILES))
+JAVA_CLASSPATH := "$(JAVA_CLASSPATH)$(LIB_FILES)"
+JAVA_CLASSPATH := $(subst /,\,$(JAVA_CLASSPATH))
 JAVA_CLASSPATH := $(subst :,;,$(JAVA_CLASSPATH))
 default: clean classes run
 
@@ -59,6 +64,7 @@ run:
 
 report: ## 'make report' prints the os
 				@echo "Powershell"
+				@echo $(LIB_FILES)
 
 help:
 				@echo here are the valid make targets:
